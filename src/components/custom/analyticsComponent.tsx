@@ -36,7 +36,7 @@ function AnalyticsComponent() {
           Total analytics
         </h1>
       </header>
-      <section className="flex justify-around gap-8" role="list">
+      <section className="flex flex-wrap justify-around gap-8 mt-4" role="list">
         {analyticsData.map((item, index) => (
           <article
             key={index}
