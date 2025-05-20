@@ -36,11 +36,11 @@ function AnalyticsComponent() {
           Total analytics
         </h1>
       </header>
-      <section className="flex flex-wrap justify-around gap-8 mt-4" role="list">
+      <section className="flex flex-wrap justify-start gap-4 mt-4 md:gap-8 lg:justify-between" role="list">
         {analyticsData.map((item, index) => (
           <article
             key={index}
-            className="w-[310px] h-[100px] rounded-[8px] p-4"
+            className="w-full sm:w-[calc(50%-0.5rem)] md:w-[280px] lg:w-[310px] h-[100px] rounded-[8px] p-4"
             style={{ backgroundColor: item.color }}
             role="listitem"
           >
