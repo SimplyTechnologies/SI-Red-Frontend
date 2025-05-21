@@ -1,3 +1,3 @@
 export default function Vehicles() {
-  return <div className="text-xl font-bold">Vehicles</div>;
+  return <h1 className="text-xl font-bold">Vehicles</h1>;
 }

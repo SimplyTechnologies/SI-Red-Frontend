@@ -21,6 +21,7 @@ export default {
         header: {
           bg: "#E4E4E4",
         },
+        heading: "#192252",
         main: {
           bg: "#F8F9F9",
         },
