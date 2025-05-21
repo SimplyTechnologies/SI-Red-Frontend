@@ -2,17 +2,33 @@ import { Button } from '../ui/button.tsx';
 import { Input } from '../ui/input.tsx';
 import { Checkbox } from '../ui/checkbox.tsx';
 import { Label } from '../ui/label.tsx';
-
 import { useState } from 'react';
+import axios from 'axios';
+import { useAuthStore } from '../../store/authStore';
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { email, password, setEmail, setPassword, reset } = useAuthStore();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Replace with actual login logic or API call
-    console.log('Logging in with:', { email, password });
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/login', {
+        email,
+        password,
+      });
+      // Handle success (save token, redirect, etc.)
+      console.log('Login success:', response.data);
+      reset();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +47,9 @@ function LoginPage() {
             Welcome Back!
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="text-red-500 text-sm mb-2">{error}</div>
+            )}
             <div className="mb-2 w-full max-w-[450px]">
               <Label
                 htmlFor="email"
@@ -48,12 +67,12 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="
-      w-full h-[56px] rounded-[8px]
-      border border-[#DBDDE1] bg-[#FFFFFF]
-      focus:border-2 focus:border-[#3652E0] focus:outline-none
-      transition-colors
-      peer
-    "
+                  w-full h-[56px] rounded-[8px]
+                  border border-[#DBDDE1] bg-[#FFFFFF]
+                  focus:border-2 focus:border-[#3652E0] focus:outline-none
+                  transition-colors
+                  peer
+                "
               />
             </div>
             <div className="mb-2 w-full max-w-[450px]">
@@ -73,17 +92,20 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="
-      w-full max-w-[450px] h-[56px] rounded-[8px]
-      border border-[#DBDDE1] bg-[#FFFFFF]
-      focus:border-2 focus:border-[#3652E0] focus:outline-none
-      transition-colors
-      peer
-    "
+                  w-full max-w-[450px] h-[56px] rounded-[8px]
+                  border border-[#DBDDE1] bg-[#FFFFFF]
+                  focus:border-2 focus:border-[#3652E0] focus:outline-none
+                  transition-colors
+                  peer
+                "
               />
             </div>
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <Checkbox id="remember" />
+                <Checkbox
+                  id="remember"
+                  className="data-[state=checked]:bg-[#403C89] data-[state=checked]:border-[#403C89] border-[#403C89] bg-[#fff]"
+                />
                 <Label htmlFor="remember">Remember me</Label>
               </div>
               <a href="#" className="text-[#1C1C3A] underline text-sm">
@@ -93,8 +115,9 @@ function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-[#3E368E] hover:bg-[#2F2B6A]"
+              disabled={loading}
             >
-              Sign in
+              {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
         </div>
@@ -108,7 +131,7 @@ function LoginPage() {
             maxHeight: '1161px',
             position: 'relative',
             top: '-91px',
-            left: '0', // left is handled by flex/grid layout, not absolute here
+            left: '0',
           }}
         />
       </div>
@@ -117,26 +140,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
-/*
-function Signup() {
-  return (
-    <div style={{ maxWidth: 400, margin: "0 auto", padding: 24 }}>
-      <img src="/auto.png" alt="Auto" style={{ width: "100%", marginBottom: 24 }} />
-      <form>
-        <label>Login</label>
-        <Input type="email" placeholder="Email" name="email" style={{ marginBottom: 16 }} />
-        <label>Password</label>
-        <Input type="password" placeholder="Password" name="password" style={{ marginBottom: 24 }} />
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
-          <Checkbox id="terms" />
-          <label htmlFor="terms" style={{ marginLeft: 8 }}>Remember me</label>
-        </div>
-        <Button type="submit">Sign Up</Button>
-      </form>
-    </div>
-  );
-}
-
-export default Signup;
-*/
