@@ -4,10 +4,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "../../../components/ui/sheet";
+} from "@/components/ui/sheet";
 
 import SidebarContent from "./SidebarContent";
-import { useSidebarStore } from "../../../store/useSidebarStore";
+import { useSidebarStore } from "@/store/useSidebarStore";
 
 export default function SidebarMobile() {
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();

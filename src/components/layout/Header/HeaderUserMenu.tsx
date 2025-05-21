@@ -4,16 +4,12 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-} from "../../../components/ui/dropdown-menu";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../../components/ui/avatar";
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import Profile from "../../../assets/icons/profile.svg?react";
-import Logout from "../../../assets/icons/logout.svg?react";
-import userDefaultPhoto from "../../../assets/photos/userDefaultPhoto.png";
+import Profile from "@/assets/icons/profile.svg?react";
+import Logout from "@/assets/icons/logout.svg?react";
+import userDefaultPhoto from "@/assets/photos/userDefaultPhoto.png";
 
 export default function HeaderUserMenu() {
   const navigate = useNavigate();
@@ -30,14 +26,14 @@ export default function HeaderUserMenu() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => navigate("/account")}
-          className="hover:bg-[#F4F6F9] cursor-pointer group"
+          className="hover:bg-userMenu-hover cursor-pointer group"
         >
-          <Profile className="mr-2 w-5 h-5 stroke-[#AFAFAF] group-hover:stroke-[#192252]" />{" "}
+          <Profile className="mr-2 w-5 h-5 stroke-icon-default group-hover:stroke-icon-hover" />{" "}
           My Profile
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="hover:bg-[#F4F6F9] cursor-pointer group">
-          <Logout className="mr-2 w-5 h-5 stroke-[#AFAFAF] group-hover:stroke-[#192252]" />
+        <DropdownMenuItem className="hover:bg-userMenu-hover cursor-pointer group">
+          <Logout className="mr-2 w-5 h-5 stroke-icon-default group-hover:stroke-icon-hover" />
           Log Out
         </DropdownMenuItem>
       </DropdownMenuContent>
