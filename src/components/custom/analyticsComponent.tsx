@@ -1,7 +1,7 @@
-import { useAnalyticsStore } from "../../store/analyticsStore";
-import vehicle_icon from "../../../public/vehicle.svg";
-import vehicles_sold_icon from "../../../public/vehicles_sold.svg";
-import customers_icon from "../../../public/customers.svg";
+import { useAnalyticsStore } from "@/store/analyticsStore";
+import vehicle_icon from "@/assets/icons/vehicle.svg?react";
+import vehicles_sold_icon from "@/assets/icons/vehicles_sold.svg?react";
+import customers_icon from "@/assets/icons/customers_fill.svg?react";
 
 function AnalyticsComponent() {
   const totalVehicles = useAnalyticsStore((state) => state.totalVehicles);
@@ -36,7 +36,10 @@ function AnalyticsComponent() {
           Total analytics
         </h1>
       </header>
-      <section className="flex flex-wrap justify-start gap-4 mt-4 md:gap-8 lg:justify-between" role="list">
+      <section
+        className="flex flex-wrap justify-start gap-4 mt-4 md:gap-8 lg:justify-between"
+        role="list"
+      >
         {analyticsData.map((item, index) => (
           <article
             key={index}
@@ -45,7 +48,8 @@ function AnalyticsComponent() {
             role="listitem"
           >
             <figure className="flex items-center space-x-2">
-              <img src={item.icon} alt={`${item.label} icon`} />
+              <item.icon />
+              {/* <img src={item.icon} alt={`${item.label} icon`} /> */}
               <figcaption>{item.label}</figcaption>
             </figure>
             <div className="pt-4 text-left">
