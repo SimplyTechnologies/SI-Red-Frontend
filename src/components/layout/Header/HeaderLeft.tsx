@@ -26,8 +26,6 @@ export default function HeaderLeft() {
         <Menu className="w-6 h-6 text-sidebar-collapsed" />
       </button>
 
-      <MainLogo className="w-[74px] h-[46px]" />
-
       <h1 className="text-lg font-semibold text-sidebar-collapsed">
         {pageTitle}
       </h1>
