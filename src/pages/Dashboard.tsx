@@ -1,4 +1,4 @@
-import AnalyticsComponent from "@/components/custom/analyticsComponent";
+import AnalyticsComponent from "@/components/custom/AnalyticsComponent";
 
 export default function Dashboard() {
   return (
