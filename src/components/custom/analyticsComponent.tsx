@@ -49,7 +49,6 @@ function AnalyticsComponent() {
           >
             <figure className="flex items-center space-x-2">
               <item.icon />
-              {/* <img src={item.icon} alt={`${item.label} icon`} /> */}
               <figcaption>{item.label}</figcaption>
             </figure>
             <div className="pt-4 text-left">
