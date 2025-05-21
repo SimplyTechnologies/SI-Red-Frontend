@@ -1,3 +1,3 @@
 export default function Customers() {
-  return <div className="text-xl font-bold">Customers</div>;
+  return <h1 className="text-xl font-bold">Customers</h1>;
 }

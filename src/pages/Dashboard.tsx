@@ -1,3 +1,10 @@
+import AnalyticsComponent from "@/components/custom/AnalyticsComponent";
+
 export default function Dashboard() {
-  return <div className="text-xl font-bold">Dashboard</div>;
+  return (
+    <>
+      <h1 className="text-xl font-bold">Dashboard</h1>
+      <AnalyticsComponent />
+    </>
+  );
 }
