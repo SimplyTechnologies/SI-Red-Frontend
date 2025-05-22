@@ -13,23 +13,32 @@ const carPositions = [
 export default function CustomMap() {
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
-      <Map
-        defaultCenter={center}
-        defaultZoom={13}
-        mapId="DEMO_MAP_ID"
-        style={{ width: "100%", height: "500px" }}
-      >
-        {carPositions.map((pos, index) => (
-          <AdvancedMarker key={index} position={pos}>
-            <img
-              src="/icons/mapCarMark.svg"
-              alt={`Car ${index + 1}`}
-              width={40}
-              height={40}
-            />
-          </AdvancedMarker>
-        ))}
-      </Map>
+      <div className="flex justify-center w-full">
+        <Map
+          defaultCenter={center}
+          defaultZoom={13}
+          mapId="DEMO_MAP_ID"
+          style={{ width: "85%", height: "58vh" }}
+          disableDefaultUI={true}
+          clickableIcons={false}
+          keyboardShortcuts={false}
+          mapTypeControl={false}
+          streetViewControl={false}
+          fullscreenControl={false}
+          zoomControl={false}
+        >
+          {carPositions.map((pos, index) => (
+            <AdvancedMarker key={index} position={pos}>
+              <img
+                src="/icons/mapCarMark.svg"
+                alt={`Car ${index + 1}`}
+                width={40}
+                height={40}
+              />
+            </AdvancedMarker>
+          ))}
+        </Map>
+      </div>
     </APIProvider>
   );
 }

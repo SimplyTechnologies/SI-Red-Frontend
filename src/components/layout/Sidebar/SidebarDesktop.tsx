@@ -17,13 +17,15 @@ export default function SidebarDesktop() {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col h-full transition-all duration-300 relative",
-        isExpanded ? "w-[250px] bg-white" : "w-[90px] bg-sidebar-collapsed"
+        "hidden md:flex flex-col transition-all duration-150 relative",
+        isExpanded
+          ? "w-[17vw] bg-white"
+          : "w-[6vw] bg-sidebar-collapsed min-w-[80px]"
       )}
     >
       <div
         className={cn(
-          "h-16 border-b px-4 flex items-center",
+          "h-16 border-b px-4 flex items-center shrink-0",
           isExpanded ? "justify-start" : "justify-center"
         )}
       >
