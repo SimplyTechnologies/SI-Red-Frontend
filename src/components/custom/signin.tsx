@@ -17,10 +17,13 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost:5000/api/auth/login',
+        {
+          email,
+          password,
+        }
+      );
       // Handle success (save token, redirect, etc.)
       console.log('Login success:', response.data);
       reset();
@@ -47,9 +50,7 @@ function LoginPage() {
             Welcome Back!
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="text-red-500 text-sm mb-2">{error}</div>
-            )}
+            {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
             <div className="mb-2 w-full max-w-[450px]">
               <Label
                 htmlFor="email"
@@ -108,7 +109,10 @@ function LoginPage() {
                 />
                 <Label htmlFor="remember">Remember me</Label>
               </div>
-              <a href="#" className="text-[#1C1C3A] underline text-sm">
+              <a
+                href="#"
+                className="font-medium text-[14px] leading-[1.4] text-[#403C89] underline"
+              >
                 Forgot password
               </a>
             </div>
