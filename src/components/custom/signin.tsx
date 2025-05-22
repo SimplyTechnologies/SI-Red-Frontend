@@ -3,43 +3,53 @@ import { Input } from '../ui/input.tsx';
 import { Checkbox } from '../ui/checkbox.tsx';
 import { Label } from '../ui/label.tsx';
 import { useState } from 'react';
-import axios from 'axios';
 import { useAuthStore } from '../../store/authStore';
+import type { CheckedState } from '@radix-ui/react-checkbox';
+import { useSignIn } from '../../api/authentication/authentication';
+import type { SignInRequest } from '../../api/schemas';
 
 function LoginPage() {
   const { email, password, setEmail, setPassword, reset } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [checked, setChecked] = useState<CheckedState>(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const signInMutation = useSignIn({
+    mutation: {
+      onSuccess: (data) => {
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        alert(data.message || 'Login successful!');
+        reset();
+      },
+      onError: (error: any) => {
+        setError(error?.response?.data?.message || 'Login failed');
+      },
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    try {
-      const response = await axios.post(
-        'http://localhost:5000/api/auth/login',
-        {
-          email,
-          password,
-        }
-      );
-      // Handle success (save token, redirect, etc.)
-      console.log('Login success:', response.data);
-      reset();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
+    const payload: SignInRequest = {
+      email,
+      password,
+      rememberMe: checked === true,
+    };
+
+    signInMutation.mutate({ data: payload });
+    setLoading(false);
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="w-1/2 flex flex-col justify-center items-center px-10">
+    <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
+      {/* Form Section */}
+      <div className="w-full md:w-[46%] flex flex-col justify-center items-center px-4 md:px-10 py-8 md:py-0 bg-white h-auto md:h-full">
         <div className="w-full max-w-md space-y-6">
           <h1
-            className="font-bold text-[36px] leading-[1.2] font-dm-sans"
+            className="font-bold text-2xl md:text-[36px] leading-[1.2] font-dm-sans"
             style={{
               maxWidth: '269px',
               letterSpacing: '0px',
@@ -68,7 +78,7 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="
-                  w-full h-[56px] rounded-[8px]
+                  w-full h-[48px] md:h-[56px] rounded-[8px]
                   border border-[#DBDDE1] bg-[#FFFFFF]
                   focus:border-2 focus:border-[#3652E0] focus:outline-none
                   transition-colors
@@ -93,7 +103,7 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="
-                  w-full max-w-[450px] h-[56px] rounded-[8px]
+                  w-full h-[48px] md:h-[56px] rounded-[8px]
                   border border-[#DBDDE1] bg-[#FFFFFF]
                   focus:border-2 focus:border-[#3652E0] focus:outline-none
                   transition-colors
@@ -101,10 +111,12 @@ function LoginPage() {
                 "
               />
             </div>
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex flex-col md:flex-row items-center justify-between text-sm gap-2">
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="remember"
+                  checked={checked}
+                  onCheckedChange={setChecked}
                   className="data-[state=checked]:bg-[#403C89] data-[state=checked]:border-[#403C89] border-[#403C89] bg-[#fff]"
                 />
                 <Label htmlFor="remember">Remember me</Label>
@@ -119,23 +131,27 @@ function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-[#3E368E] hover:bg-[#2F2B6A]"
-              disabled={loading}
+              disabled={loading || signInMutation.isPending}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading || signInMutation.isPending
+                ? 'Signing in...'
+                : 'Sign in'}
             </Button>
           </form>
         </div>
       </div>
-      <div className="w-1/2 relative flex items-center justify-center overflow-hidden">
+      {/* Image Section */}
+      <div className="w-full md:w-[54%] h-48 md:h-full flex justify-center items-center p-0 m-0 bg-white">
         <img
           src="/auto.png"
           alt="Car Image"
-          className="max-w-[774px] w-full h-auto object-cover"
+          className="w-full h-full object-contain"
           style={{
-            maxHeight: '1161px',
-            position: 'relative',
-            top: '-91px',
-            left: '0',
+            display: 'block',
+            margin: 0,
+            padding: 0,
+            objectPosition: 'right',
+            background: '#fff',
           }}
         />
       </div>

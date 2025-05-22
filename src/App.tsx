@@ -1,17 +1,20 @@
+// filepath: c:\Users\sonas\SI-Red-Frontend\src\App.tsx
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import AnalyticsComponent from './components/custom/analyticsComponent';
-import Signin from './components/custom/signin'; // Note: capitalized component name
-// Note: capitalized component
+import Signin from './components/custom/signin';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Routes>
-        <Route path="/signup" element={<Signin />} />
+        <Route path="/signin" element={<Signin />} />
         <Route path="/analytics" element={<AnalyticsComponent />} />
       </Routes>
-    </>
+    </QueryClientProvider>
   );
 }
 
