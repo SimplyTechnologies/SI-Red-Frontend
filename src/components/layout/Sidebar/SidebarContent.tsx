@@ -17,7 +17,8 @@ const navItems = [
 ];
 
 export default function SidebarContent() {
-  const { isExpanded, closeMobileSidebar } = useSidebarStore();
+  const { isExpanded, closeMobileSidebar, isMobileSidebarOpen } =
+    useSidebarStore();
 
   return (
     <nav className="flex flex-col space-y-1 mt-4">
@@ -31,11 +32,12 @@ export default function SidebarContent() {
             cn(
               "group relative flex items-center rounded-2xl transition-all",
               isExpanded
-                ? "gap-3 px-[1vw] py-[1vh] w-[234px] h-[40px] hover:bg-sidebar-active-expanded"
-                : "justify-center h-[46px] w-[74px] mx-auto hover:bg-sidebar-active-collapsed",
+                ? "gap-3 px-[1vw] py-[1vh]  w-[16vw] h-[46px] hover:bg-sidebar-active-expanded"
+                : "justify-center h-[46px]  w-[5vw] mx-auto hover:bg-sidebar-active-collapsed",
               isActive && isExpanded ? "bg-sidebar-active-expanded" : "",
               isActive && !isExpanded ? "bg-sidebar-active-collapsed" : "",
-              isActive ? "text-primary font-medium" : ""
+              isActive ? "text-primary font-medium" : "",
+              isMobileSidebarOpen ? "min-w-[220px]" : ""
             )
           }
         >
