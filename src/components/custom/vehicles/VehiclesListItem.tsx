@@ -32,7 +32,7 @@ export default function VehiclesListItem({ vehicle }: Props) {
                     <p className="text-[#636777]">
                         Location:{' '}
                         <span className="text-[#192252] font-medium">
-                            {vehicle.location}
+                            {vehicle.city}, {vehicle.street}
                         </span>
                     </p>
                 </div>
