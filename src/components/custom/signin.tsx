@@ -46,7 +46,7 @@ function LoginPage() {
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
       {/* Form Section */}
-      <div className="w-full md:w-[46%] flex flex-col justify-center items-center px-4 md:px-10 py-8 md:py-0 bg-white h-auto md:h-full">
+      <div className="w-full md:w-[50%] flex flex-col justify-center items-center px-4 md:px-10 py-8 md:py-0 bg-white h-auto md:h-full">
         <div className="w-full max-w-md space-y-6">
           <h1
             className="font-bold text-2xl md:text-[36px] leading-[1.2] font-dm-sans"
@@ -141,7 +141,7 @@ function LoginPage() {
         </div>
       </div>
       {/* Image Section */}
-      <div className="w-full md:w-[54%] h-48 md:h-full flex justify-center items-center p-0 m-0 bg-white">
+      <div className="w-full md:w-[50%] h-full flex justify-center items-center bg-white">
         <img
           src="/auto.png"
           alt="Car Image"
