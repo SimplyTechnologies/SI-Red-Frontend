@@ -1,15 +1,14 @@
 import VehiclesListItem from './VehiclesListItem';
-import type { Vehicle } from '@/types/vehicleType';
+import type { VehicleResponse } from '@/api/schemas';
+import { useVehiclesStore } from '@/store/useVehiclesStore';
 
-type Props = {
-    vehicles: Vehicle[];
-};
-
-function VehiclesList({ vehicles }: Props) {
+function VehiclesList() {
+    const vehicles = useVehiclesStore((s) => s.vehicles);
+    
     return (
         <div className="gap-2 pl-3 pr-1.5 mt-6">
-            {vehicles.map((vehicle: Vehicle) => {
-                return <VehiclesListItem vehicle={vehicle}/>
+            {vehicles.map((vehicle: VehicleResponse) => {
+                return <VehiclesListItem vehicle={vehicle} key={vehicle.id}/>;
             })}
         </div>
     );
