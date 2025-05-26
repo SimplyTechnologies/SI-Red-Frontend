@@ -7,9 +7,7 @@ export const useVehiclesWithStore = () => {
     const setVehicles = useVehiclesStore((s) => s.setVehicles);
 
     useEffect(() => {
-        if (data) {
-            console.log(data);
-            
+        if (data) {            
             setVehicles(data);
         }
     }, [data, setVehicles]);
