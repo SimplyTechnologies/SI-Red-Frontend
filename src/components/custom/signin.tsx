@@ -5,24 +5,26 @@ import { Label } from '../ui/label.tsx';
 import { useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import type { CheckedState } from '@radix-ui/react-checkbox';
-import { useSignIn } from '../../api/authentication/authentication';
+import { useSignIn } from '../../api/authentication/authentication'; // Orval-generated hook
 import type { SignInRequest } from '../../api/schemas';
 
 function LoginPage() {
   const { email, password, setEmail, setPassword, reset } = useAuthStore();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [checked, setChecked] = useState<CheckedState>(false);
+  const [error, setError] = useState('');
 
-  const signInMutation = useSignIn({
+  // Use Orval-generated `useSignIn` mutation
+  const { mutate: signIn, isLoading } = useSignIn({
     mutation: {
       onSuccess: (data) => {
+        // Handle successful login
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
         alert(data.message || 'Login successful!');
         reset();
       },
       onError: (error: any) => {
+        // Handle login error
         setError(error?.response?.data?.message || 'Login failed');
       },
     },
@@ -31,16 +33,16 @@ function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
+    // Prepare the payload
     const payload: SignInRequest = {
       email,
       password,
       rememberMe: checked === true,
     };
 
-    signInMutation.mutate({ data: payload });
-    setLoading(false);
+    // Call the Orval-generated `signIn` mutation
+    signIn({ data: payload });
   };
 
   return (
@@ -131,11 +133,9 @@ function LoginPage() {
             <Button
               type="submit"
               className="w-full bg-[#3E368E] hover:bg-[#2F2B6A]"
-              disabled={loading || signInMutation.isPending}
+              disabled={isLoading}
             >
-              {loading || signInMutation.isPending
-                ? 'Signing in...'
-                : 'Sign in'}
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
         </div>
