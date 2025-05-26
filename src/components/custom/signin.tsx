@@ -5,7 +5,7 @@ import { Label } from '../ui/label.tsx';
 import { useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import type { CheckedState } from '@radix-ui/react-checkbox';
-import { useSignIn } from '../../api/authentication/authentication'; // Orval-generated hook
+import { useSignIn } from '../../api/authentication/authentication';
 import type { SignInRequest } from '../../api/schemas';
 
 function LoginPage() {
@@ -13,18 +13,15 @@ function LoginPage() {
   const [checked, setChecked] = useState<CheckedState>(false);
   const [error, setError] = useState('');
 
-  // Use Orval-generated `useSignIn` mutation
-  const { mutate: signIn, isLoading } = useSignIn({
+  const { mutate: signIn, status } = useSignIn({
     mutation: {
       onSuccess: (data) => {
-        // Handle successful login
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
         alert(data.message || 'Login successful!');
         reset();
       },
       onError: (error: any) => {
-        // Handle login error
         setError(error?.response?.data?.message || 'Login failed');
       },
     },
@@ -34,16 +31,16 @@ function LoginPage() {
     e.preventDefault();
     setError('');
 
-    // Prepare the payload
     const payload: SignInRequest = {
       email,
       password,
       rememberMe: checked === true,
     };
 
-    // Call the Orval-generated `signIn` mutation
     signIn({ data: payload });
   };
+
+  const isLoading = status === 'pending'; 
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
