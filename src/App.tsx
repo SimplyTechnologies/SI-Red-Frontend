@@ -4,6 +4,7 @@ import Vehicles from "./pages/Vehicles";
 import Users from "./pages/Users";
 import Customers from "./pages/Customers";
 import Account from "./pages/Account";
+import {AddVehicleDialog} from "./components/custom/AddVehicleDialog";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/add-vehicle" element={<AddVehicleDialog />} />
       </Routes>
     </Layout>
   );

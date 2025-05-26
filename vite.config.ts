@@ -11,4 +11,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      '/vin': 'http://localhost:3306',
+      '/makes': 'http://localhost:3306',
+      '/models': 'http://localhost:3306',
+    },
+  },
 });
