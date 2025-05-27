@@ -22,7 +22,7 @@ export const customMutator = <T>({
       ).toString()
     : '';
 
-  return fetch(`http://localhost:3306${url}${queryString}`, {
+  return fetch(`http://localhost:3000${url}${queryString}`, {
     method,
     headers: {
       "Content-Type": "application/json",
