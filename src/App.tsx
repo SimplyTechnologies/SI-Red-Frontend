@@ -1,9 +1,9 @@
 // filepath: c:\Users\sonas\SI-Red-Frontend\src\App.tsx
-import './App.css';
-import { Routes, Route } from 'react-router-dom';
-import AnalyticsComponent from './components/custom/analyticsComponent';
-import Signin from './components/custom/signin';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import "./App.css";
+import { Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AnalyticsComponent from "./components/custom/analyticsComponent";
+import Signin from "./components/custom/signin";
 
 const queryClient = new QueryClient();
 

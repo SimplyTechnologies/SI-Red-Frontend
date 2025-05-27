@@ -1,7 +1,7 @@
 import { useAnalyticsStore } from "../../store/analyticsStore";
-import vehicle_icon from "../../../public/vehicle.svg";
-import vehicles_sold_icon from "../../../public/vehicles_sold.svg";
-import customers_icon from "../../../public/customers.svg";
+import vehicle_icon from "../../assets/vehicle.svg";
+import vehicles_sold_icon from "../../assets/vehicles_sold.svg";
+import customers_icon from "../../assets/customers.svg";
 
 function AnalyticsComponent() {
   const totalVehicles = useAnalyticsStore((state) => state.totalVehicles);

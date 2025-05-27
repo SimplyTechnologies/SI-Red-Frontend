@@ -1,35 +1,35 @@
-import { Button } from '../ui/button.tsx';
-import { Input } from '../ui/input.tsx';
-import { Checkbox } from '../ui/checkbox.tsx';
-import { Label } from '../ui/label.tsx';
-import { useState } from 'react';
-import { useAuthStore } from '../../store/authStore';
-import type { CheckedState } from '@radix-ui/react-checkbox';
-import { useSignIn } from '../../api/authentication/authentication';
-import type { SignInRequest } from '../../api/schemas';
+import { Button } from "../ui/button.tsx";
+import { Input } from "../ui/input.tsx";
+import { Checkbox } from "../ui/checkbox.tsx";
+import { Label } from "../ui/label.tsx";
+import { useState } from "react";
+import { useAuthStore } from "../../store/authStore";
+import type { CheckedState } from "@radix-ui/react-checkbox";
+import { useSignIn } from "../../api/authentication/authentication";
+import type { SignInRequest } from "../../api/schemas";
 
 function LoginPage() {
   const { email, password, setEmail, setPassword, reset } = useAuthStore();
   const [checked, setChecked] = useState<CheckedState>(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const { mutate: signIn, status } = useSignIn({
     mutation: {
       onSuccess: (data) => {
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        alert(data.message || 'Login successful!');
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        alert(data.message || "Login successful!");
         reset();
       },
       onError: (error: any) => {
-        setError(error?.response?.data?.message || 'Login failed');
+        setError(error?.response?.data?.message || "Login failed");
       },
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     const payload: SignInRequest = {
       email,
@@ -40,7 +40,7 @@ function LoginPage() {
     signIn({ data: payload });
   };
 
-  const isLoading = status === 'pending'; 
+  const isLoading = status === "pending";
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-screen overflow-hidden">
@@ -50,10 +50,10 @@ function LoginPage() {
           <h1
             className="font-bold text-2xl md:text-[36px] leading-[1.2] font-dm-sans"
             style={{
-              maxWidth: '269px',
-              letterSpacing: '0px',
-              textTransform: 'none',
-              color: '#192252',
+              maxWidth: "269px",
+              letterSpacing: "0px",
+              textTransform: "none",
+              color: "#192252",
             }}
           >
             Welcome Back!
@@ -64,8 +64,8 @@ function LoginPage() {
               <Label
                 htmlFor="email"
                 className={
-                  'block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 ' +
-                  (email.length > 0 ? 'text-[#192252]' : 'text-[#636777]')
+                  "block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 " +
+                  (email.length > 0 ? "text-[#192252]" : "text-[#636777]")
                 }
               >
                 Email address
@@ -89,8 +89,8 @@ function LoginPage() {
               <Label
                 htmlFor="password"
                 className={
-                  'block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 ' +
-                  (password.length > 0 ? 'text-[#192252]' : 'text-[#636777]')
+                  "block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 " +
+                  (password.length > 0 ? "text-[#192252]" : "text-[#636777]")
                 }
               >
                 Password
@@ -132,7 +132,7 @@ function LoginPage() {
               className="w-full bg-[#3E368E] hover:bg-[#2F2B6A]"
               disabled={isLoading}
             >
-              {isLoading ? 'Signing in...' : 'Sign in'}
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </div>
@@ -144,11 +144,11 @@ function LoginPage() {
           alt="Car Image"
           className="w-full h-full object-cover"
           style={{
-            display: 'block',
+            display: "block",
             margin: 0,
             padding: 0,
-            objectPosition: 'right',
-            background: '#fff',
+            objectPosition: "right",
+            background: "#fff",
           }}
         />
       </div>
