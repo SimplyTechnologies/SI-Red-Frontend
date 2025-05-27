@@ -11,7 +11,7 @@ export default {
       client: "react-query",
       override: {
         mutator: {
-          path: "./src/api/authentication/customMutator.ts",
+          path: './src/lib/api/customMutator.ts',
           name: "customMutator",
         },
       },

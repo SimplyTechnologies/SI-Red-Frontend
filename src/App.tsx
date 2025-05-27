@@ -1,21 +1,24 @@
-// filepath: c:\Users\sonas\SI-Red-Frontend\src\App.tsx
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AnalyticsComponent from "./components/custom/analyticsComponent";
-import Signin from "./components/custom/signin";
+import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import Signin from './components/custom/signin';
+import Layout from './components/layout/Layout';
+import Dashboard from './pages/Dashboard';
+import Vehicles from './pages/Vehicles';
+import Users from './pages/Users';
+import Customers from './pages/Customers';
+import Account from './pages/Account';
 
-const queryClient = new QueryClient();
-
-function App() {
+export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <Layout>
       <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/vehicles" element={<Vehicles />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/customers" element={<Customers />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/analytics" element={<AnalyticsComponent />} />
       </Routes>
-    </QueryClientProvider>
+    </Layout>
   );
 }
-
-export default App;
