@@ -1,6 +1,6 @@
 import { AddNewVehicleButton } from '@/components/custom/vehicles/AddNewVehicleButton';
 import Filter from '@/components/custom/vehicles/Filter';
-import VehiclesTab from '@/components/custom/vehicles/VehiclesTab';
+import VehiclesTab from '@/components/custom/vehicles/vehiclesTab/VehiclesTab';
 
 export default function Vehicles() {
     return (

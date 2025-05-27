@@ -1,4 +1,3 @@
-// stores/useVehiclesStore.ts
 import { create } from 'zustand';
 import type { VehicleResponse } from '@/api/schemas';
 
