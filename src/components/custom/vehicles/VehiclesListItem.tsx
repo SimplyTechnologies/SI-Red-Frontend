@@ -9,11 +9,12 @@ type Props = {
 
 export default function VehiclesListItem({ vehicle }: Props) {
     const VehicleStatusIcon = getVehicleStatusIcon(vehicle.status);
-    const LikeButtonIcon = getLikeIcon(vehicle.isFavorite ?? false);
-    const { toggleFavorite } = useVehiclesStore((s) => ({
+    const { favorites, toggleFavorite } = useVehiclesStore((s) => ({
         favorites: s.favorites,
         toggleFavorite: s.toggleFavorite,
     }));
+    const isFavorite = favorites.some((v) => v.id === vehicle.id);
+    const LikeButtonIcon = getLikeIcon(isFavorite ?? false);
 
     return (
         <div
