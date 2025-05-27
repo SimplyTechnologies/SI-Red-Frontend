@@ -1,4 +1,5 @@
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
+import type { CSSProperties } from "react";
 
 const center = { lat: 40.7128, lng: -74.006 };
 
@@ -10,15 +11,20 @@ const carPositions = [
   { lat: 40.716, lng: -74.008 },
 ];
 
-export default function CustomMap() {
+interface CustomMapProps {
+  style?: CSSProperties;
+  className?: string;
+}
+
+export default function CustomMap({ style, className }: CustomMapProps) {
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
-      <div className="flex justify-center w-full">
+      <div className={`w-full h-full ${className ?? ""}`}>
         <Map
           defaultCenter={center}
           defaultZoom={13}
           mapId="DEMO_MAP_ID"
-          style={{ width: "85%", height: "58vh" }}
+          style={style ?? { width: "100%", height: "100%" }}
           disableDefaultUI={true}
           clickableIcons={false}
           keyboardShortcuts={false}

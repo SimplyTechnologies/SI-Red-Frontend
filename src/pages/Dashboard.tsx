@@ -1,5 +1,5 @@
 import Map from "@/components/map/Map";
-import AnalyticsComponent from "@/components/custom/AnalyticsComponent";
+import AnalyticsComponent from "@/components/custom/analyticsComponent";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -13,7 +13,12 @@ export default function Dashboard() {
         </Button>
       </div>
       <AnalyticsComponent />
-      <Map />
+      <div>
+        <Map
+          className="flex justify-center w-full"
+          style={{ width: "85%", height: "58vh" }}
+        />
+      </div>
     </div>
   );
 }

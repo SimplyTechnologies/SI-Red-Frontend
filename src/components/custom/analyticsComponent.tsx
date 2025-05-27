@@ -3,7 +3,7 @@ import vehicle_icon from "@/assets/icons/vehicle.svg?react";
 import vehicles_sold_icon from "@/assets/icons/vehicles_sold.svg?react";
 import customers_icon from "@/assets/icons/customers_fill.svg?react";
 
-function AnalyticsComponent() {
+export default function AnalyticsComponent() {
   const totalVehicles = useAnalyticsStore((state) => state.totalVehicles);
   const customers = useAnalyticsStore((state) => state.customers);
   const vehiclesSold = useAnalyticsStore((state) => state.vehiclesSold);
@@ -64,5 +64,3 @@ function AnalyticsComponent() {
     </section>
   );
 }
-
-export default AnalyticsComponent;
