@@ -1,7 +1,6 @@
 import { Menu } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useSidebarStore } from "@/store/useSidebarStore";
-import MainLogo from "@/assets/icons/mainLogoCollapsed.svg?react";
 
 const pageTitles: Record<string, string> = {
   "/": "Dashboard",

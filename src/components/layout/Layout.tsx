@@ -8,7 +8,7 @@ export default function Layout({ children }: PropsWithChildren) {
       <Sidebar />
       <div className="flex flex-col flex-1 h-full">
         <Header />
-        <main className="flex-1 overflow-auto bg-main-bg">{children}</main>
+        <main className="flex-1 overflow-auto p-0 bg-main-bg">{children}</main>
       </div>
     </div>
   );
