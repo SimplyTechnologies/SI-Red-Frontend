@@ -7,19 +7,21 @@ import { useAuthStore } from "../../store/authStore";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 import { useSignIn } from "../../api/authentication/authentication";
 import type { SignInRequest } from "../../api/schemas";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function LoginPage() {
   const { email, password, setEmail, setPassword, reset } = useAuthStore();
   const [checked, setChecked] = useState<CheckedState>(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const { mutate: signIn, status } = useSignIn({
     mutation: {
       onSuccess: (data) => {
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
-        alert(data.message || "Login successful!");
         reset();
+        navigate("/"); // Redirect to the dashboard
       },
       onError: (error: any) => {
         setError(error?.response?.data?.message || "Login failed");
