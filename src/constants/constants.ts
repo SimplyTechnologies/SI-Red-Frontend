@@ -1,10 +1,4 @@
-export const VEHICLES_TABS = [
-    {
-        name: 'Vehicles',
-        value: 'Vehicles',
-    },
-    {
-        name: 'Favorites',
-        value: 'Favorites',
-    },
-];
+export const VEHICLES_TABS = {
+    VEHICLES: 'Vehicles',
+    FAVORITES: 'Favorites',
+} as const;

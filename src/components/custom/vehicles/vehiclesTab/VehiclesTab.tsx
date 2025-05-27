@@ -10,7 +10,7 @@ export default function VehiclesTab() {
 
     return (
         <Tabs
-            defaultValue={VEHICLES_TABS[0].value}
+            defaultValue={VEHICLES_TABS.VEHICLES}
             className=" w-full h-[68%] sm:h-[65%] md:h-[75%] lg:h-[81%] bg-background mt-5"
         >
             <VehiclesTabList />

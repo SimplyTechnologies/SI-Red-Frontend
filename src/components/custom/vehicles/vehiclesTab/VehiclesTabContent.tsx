@@ -11,25 +11,19 @@ export default function VehiclesTabContent() {
 
     return (
         <>
-            {VEHICLES_TABS.map((tab) => (
-                <TabsContent
-                    key={tab.value}
-                    value={tab.value}
-                    className="h-full overflow-auto"
-                >
-                    {tab.value === 'Vehicles' ? (
-                        vehicles.length ? (
-                            <VehiclesList />
-                        ) : (
-                            <EmptyVehicles />
-                        )
-                    ) : favorites.length ? (
-                        <FavoritesList />
-                    ) : (
-                        <EmptyFavorites />
-                    )}
-                </TabsContent>
-            ))}
+            <TabsContent
+                value={VEHICLES_TABS.VEHICLES}
+                className="h-full overflow-auto"
+            >
+                {vehicles.length ? <VehiclesList /> : <EmptyVehicles />}
+            </TabsContent>
+
+            <TabsContent
+                value={VEHICLES_TABS.FAVORITES}
+                className="h-full overflow-auto"
+            >
+                {favorites.length ? <FavoritesList /> : <EmptyFavorites />}
+            </TabsContent>
         </>
     );
 }
