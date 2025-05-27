@@ -23,7 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 
-/api/*
-!/api/customMutator.ts 
-.env
-
+src/api/

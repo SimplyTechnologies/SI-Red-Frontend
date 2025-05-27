@@ -10,7 +10,7 @@ export default function VehiclesTabContent() {
     const { vehicles, favorites } = useVehiclesStore();
 
     return (
-        <div>
+        <>
             {VEHICLES_TABS.map((tab) => (
                 <TabsContent
                     key={tab.value}
@@ -30,6 +30,6 @@ export default function VehiclesTabContent() {
                     )}
                 </TabsContent>
             ))}
-        </div>
+        </>
     );
 }

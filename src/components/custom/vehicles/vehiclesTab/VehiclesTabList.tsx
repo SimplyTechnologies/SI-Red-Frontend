@@ -4,7 +4,7 @@ import { VEHICLES_TABS } from "@/constants/constants";
 
 export default function VehiclesTabList() {
   return (
-    <TabsList className="w-full md:w-2/3 p-0 bg-background justify-between border-b rounded-none">
+    <TabsList className="w-full md:w-2/3 p-0 bg-background justify-between border-b rounded-none ">
                 <div>
                     {VEHICLES_TABS.map((tab) => (
                         <TabsTrigger

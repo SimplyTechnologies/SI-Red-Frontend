@@ -4,7 +4,7 @@ import LikeIcon from '@/assets/icons/like.svg?react';
 import UnLikeIcon from '@/assets/icons/unlike.svg?react';
 
 export function getVehicleStatusIcon(status: string) {
-  return status === 'instock' ? VehicleAvatarInstock : VehicleAvatarSold;
+  return status === 'In Stock' ? VehicleAvatarInstock : VehicleAvatarSold;
 }
 
 export function getLikeIcon(liked: boolean) {
