@@ -1,5 +1,7 @@
 export const customMutator = <T>({ url, method, data }: any): Promise<T> => {
-  return fetch(`http://localhost:3000${url}`, {
+  const baseUrl = import.meta.env.VITE_API_URL;
+
+  return fetch(`${baseUrl}${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
