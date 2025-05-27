@@ -1,14 +1,14 @@
 import { TabsContent } from "@/components/ui/tabs";
 import { VEHICLES_TABS } from "@/constants/constants";
-import VehiclesList from "../VehiclesList";
-import EmptyVehicles from "../EmptyVehicles";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
-import { useVehiclesWithStore } from "@/hooks/useVehiclesWithStore";
 import VehiclesTabListSkeleton from "./VehiclesTabListSkeleton";
+import { useFavoritesWithStore } from "@/hooks/useFavoritesWithStore";
+import FavoritesList from "../FavoritesList";
+import EmptyFavorites from "../EmptyFavorites";
 
-export default function VehiclesTabContent() {
-  const { vehicles } = useVehiclesStore();
-  const { isLoading } = useVehiclesWithStore();
+export default function FavoritesTabContent() {
+  const { favorites } = useVehiclesStore();
+  const { isLoading } = useFavoritesWithStore();
 
   return (
     <>
@@ -16,10 +16,10 @@ export default function VehiclesTabContent() {
         <VehiclesTabListSkeleton />
       ) : (
         <TabsContent
-          value={VEHICLES_TABS.VEHICLES}
+          value={VEHICLES_TABS.FAVORITES}
           className="h-full overflow-auto"
         >
-          {vehicles.length ? <VehiclesList /> : <EmptyVehicles />}
+          {favorites.length ? <FavoritesList /> : <EmptyFavorites />}
         </TabsContent>
       )}
     </>

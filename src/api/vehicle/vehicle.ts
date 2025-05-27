@@ -25,6 +25,7 @@ import type {
 
 import type {
   DeleteVehicle200,
+  GetVehiclesParams,
   PartialVehicleInput,
   VehicleInput,
   VehicleResponse
@@ -94,33 +95,34 @@ const {mutation: mutationOptions} = options ?
       return useMutation(mutationOptions , queryClient);
     }
     export const getVehicles = (
-    
+    params?: GetVehiclesParams,
  signal?: AbortSignal
 ) => {
       
       
       return customMutator<VehicleResponse[]>(
-      {url: `/vehicles`, method: 'GET', signal
+      {url: `/vehicles`, method: 'GET',
+        params, signal
     },
       );
     }
   
 
-export const getGetVehiclesQueryKey = () => {
-    return [`/vehicles`] as const;
+export const getGetVehiclesQueryKey = (params?: GetVehiclesParams,) => {
+    return [`/vehicles`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetVehiclesQueryOptions = <TData = Awaited<ReturnType<typeof getVehicles>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>>, }
+export const getGetVehiclesQueryOptions = <TData = Awaited<ReturnType<typeof getVehicles>>, TError = unknown>(params?: GetVehiclesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetVehiclesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetVehiclesQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getVehicles>>> = ({ signal }) => getVehicles(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getVehicles>>> = ({ signal }) => getVehicles(params, signal);
 
       
 
@@ -134,7 +136,7 @@ export type GetVehiclesQueryError = unknown
 
 
 export function useGetVehicles<TData = Awaited<ReturnType<typeof getVehicles>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>> & Pick<
+ params: undefined |  GetVehiclesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getVehicles>>,
           TError,
@@ -144,7 +146,7 @@ export function useGetVehicles<TData = Awaited<ReturnType<typeof getVehicles>>, 
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetVehicles<TData = Awaited<ReturnType<typeof getVehicles>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>> & Pick<
+ params?: GetVehiclesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getVehicles>>,
           TError,
@@ -154,16 +156,16 @@ export function useGetVehicles<TData = Awaited<ReturnType<typeof getVehicles>>, 
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetVehicles<TData = Awaited<ReturnType<typeof getVehicles>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>>, }
+ params?: GetVehiclesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetVehicles<TData = Awaited<ReturnType<typeof getVehicles>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>>, }
+ params?: GetVehiclesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getVehicles>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetVehiclesQueryOptions(options)
+  const queryOptions = getGetVehiclesQueryOptions(params,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

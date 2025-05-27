@@ -6,9 +6,10 @@ type VehiclesStore = {
     favorites: VehicleResponse[];
     setVehicles: (vehicles: VehicleResponse[]) => void;
     setFavorites: (vehicles: VehicleResponse[]) => void;
+    toggleFavorite: (vehicle: VehicleResponse) => void;
 };
 
-export const useVehiclesStore = create<VehiclesStore>((set) => ({
+export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
     vehicles: [],
 
     favorites: [],
@@ -19,9 +20,19 @@ export const useVehiclesStore = create<VehiclesStore>((set) => ({
         });
     },
 
-    setFavorites: (vehicles) => {
+    setFavorites: (favorites) => {
         set({
-            vehicles,
+            favorites,
         });
+    },
+
+    toggleFavorite: (vehicle) => {
+        const { favorites } = get();
+        const isAlreadyFavorite = favorites.some((v) => v.id === vehicle.id);
+        const updatedFavorites = isAlreadyFavorite
+            ? favorites.filter((v) => v.id !== vehicle.id)
+            : [...favorites, vehicle];
+
+        set({ favorites: updatedFavorites });
     },
 }));

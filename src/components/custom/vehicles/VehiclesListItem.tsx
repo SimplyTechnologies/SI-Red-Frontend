@@ -1,6 +1,7 @@
 import type { VehicleResponse } from '@/api/schemas';
 import { getVehicleStatusIcon, getLikeIcon } from '@/utils/vehicleHelpers';
 import { getVehicleStatusBadge } from '@/helpers/getVehicleStatusBadge';
+import { useVehiclesStore } from '@/store/useVehiclesStore';
 
 type Props = {
     vehicle: VehicleResponse;
@@ -8,7 +9,11 @@ type Props = {
 
 export default function VehiclesListItem({ vehicle }: Props) {
     const VehicleStatusIcon = getVehicleStatusIcon(vehicle.status);
-    const LikeButtonIcon = getLikeIcon(true); //TODO vaehicle.isFavorite
+    const LikeButtonIcon = getLikeIcon(vehicle.isFavorite ?? false);
+    const { toggleFavorite } = useVehiclesStore((s) => ({
+        favorites: s.favorites,
+        toggleFavorite: s.toggleFavorite,
+    }));
 
     return (
         <div
@@ -35,7 +40,9 @@ export default function VehiclesListItem({ vehicle }: Props) {
             <div className="flex items-start w-1/3  md:w-1/5 justify-between">
                 {getVehicleStatusBadge(vehicle.status)}
                 <div>
-                    <LikeButtonIcon />
+                    <LikeButtonIcon className='cursor-pointer' 
+                        onClick={() => toggleFavorite(vehicle)} //TODO
+                    />
                 </div>
             </div>
         </div>

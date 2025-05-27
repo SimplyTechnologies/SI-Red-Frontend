@@ -20,4 +20,5 @@ export interface VehicleResponse {
   location: string;
   id: string;
   model?: ModelInfo;
+  isFavorite?: boolean;
 }
