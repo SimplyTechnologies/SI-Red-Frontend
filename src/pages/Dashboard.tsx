@@ -2,8 +2,10 @@ import Map from "@/components/map/Map";
 import AnalyticsComponent from "@/components/custom/analyticsComponent";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useVehiclesWithStore } from "@/hooks/useVehiclesWithStore";
 
 export default function Dashboard() {
+  useVehiclesWithStore();
   return (
     <div className="flex flex-col p-1">
       <div className="flex justify-end items-center">

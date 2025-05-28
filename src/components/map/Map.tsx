@@ -1,41 +1,22 @@
-import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
-import type { CSSProperties } from "react";
+import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useFitMapToVehicles } from "@/hooks/useFitMapToVehicles";
+import { VehicleMarkers } from "./VehicleMarkers";
+import type { CSSProperties } from "react";
 
 interface CustomMapProps {
   style?: CSSProperties;
   className?: string;
 }
 
-const fallbackCenter = { lat: 40.1792, lng: 44.4991 };
-
 export default function CustomMap({ style, className }: CustomMapProps) {
-  const vehicles = useVehiclesStore((s) => s.vehicles);
+  const vehicles = useVehiclesStore((s) => s.vehicles); // TODO: (Levon) later make this dynamic based on filtered vehicles:
+
   const mapRef = useRef<google.maps.Map | null>(null);
-  const hasFittedRef = useRef(false);
+  const [isMapReady, setIsMapReady] = useState(false);
 
-  function handleIdle() {
-    if (!mapRef.current || hasFittedRef.current || vehicles.length === 0)
-      return;
-
-    const bounds = new google.maps.LatLngBounds();
-
-    vehicles.forEach((vehicle) => {
-      const [latStr, lngStr] = vehicle.location?.split(",") ?? [];
-      const lat = parseFloat(latStr);
-      const lng = parseFloat(lngStr);
-
-      if (!isNaN(lat) && !isNaN(lng)) {
-        bounds.extend({ lat, lng });
-      }
-    });
-
-    if (!bounds.isEmpty()) {
-      mapRef.current.fitBounds(bounds);
-      hasFittedRef.current = true;
-    }
-  }
+  useFitMapToVehicles(vehicles, mapRef, isMapReady);
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
@@ -44,7 +25,7 @@ export default function CustomMap({ style, className }: CustomMapProps) {
           mapId="DEMO_MAP_ID"
           style={style ?? { width: "100%", height: "100%" }}
           defaultZoom={13}
-          defaultCenter={fallbackCenter}
+          defaultCenter={{ lat: 40.1792, lng: 44.4991 }}
           disableDefaultUI
           clickableIcons={false}
           keyboardShortcuts={false}
@@ -54,27 +35,10 @@ export default function CustomMap({ style, className }: CustomMapProps) {
           zoomControl={false}
           onIdle={(event) => {
             mapRef.current = event.map;
-            handleIdle();
+            setIsMapReady(true);
           }}
         >
-          {vehicles.map((vehicle) => {
-            const [latStr, lngStr] = vehicle.location?.split(",") ?? [];
-            const lat = parseFloat(latStr);
-            const lng = parseFloat(lngStr);
-
-            if (isNaN(lat) || isNaN(lng)) return null;
-
-            return (
-              <AdvancedMarker key={vehicle.id} position={{ lat, lng }}>
-                <img
-                  src="/icons/mapCarMark.svg"
-                  alt={`Car ${vehicle.vin}`}
-                  width={40}
-                  height={40}
-                />
-              </AdvancedMarker>
-            );
-          })}
+          <VehicleMarkers vehicles={vehicles} />
         </Map>
       </div>
     </APIProvider>
