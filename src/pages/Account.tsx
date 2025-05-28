@@ -1,3 +1,3 @@
 export default function Account() {
-  return <div className="text-xl font-bold">Account</div>;
+  return <h1 className="text-xl font-bold">Account</h1>;
 }
