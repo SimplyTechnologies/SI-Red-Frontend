@@ -1,9 +1,18 @@
 export const customMutator = <T>({ url, method, data }: any): Promise<T> => {
-  return fetch(`http://localhost:3000${url}`, {
+  const token = localStorage.getItem("accessToken");
+  const baseUrl = import.meta.env.VITE_API_URL;
+
+  return fetch(`${baseUrl}${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
     },
     body: data ? JSON.stringify(data) : undefined,
-  }).then((res) => res.json());
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  });
 };

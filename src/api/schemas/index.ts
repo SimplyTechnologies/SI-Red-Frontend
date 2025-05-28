@@ -7,8 +7,11 @@
 
 export * from './addToFavorites200';
 export * from './decodeVinParams';
+<<<<<<< HEAD
 export * from './decodeVinParams';
 export * from './deleteVehicle200';
+=======
+>>>>>>> 3dd0dece8a057b4c5c6957bf6b0e44f7a9a97847
 export * from './deleteVehicle200';
 export * from './favoriteRequestBody';
 export * from './getFavoritesParams';
@@ -26,8 +29,11 @@ export * from './refreshRequest';
 export * from './refreshResponse';
 export * from './removeFromFavorites200';
 export * from './signInRequest';
+<<<<<<< HEAD
 export * from './signInRequest';
 export * from './signInResponse';
+=======
+>>>>>>> 3dd0dece8a057b4c5c6957bf6b0e44f7a9a97847
 export * from './signInResponse';
 export * from './vehicleAttributes';
 export * from './vehicleInput';
