@@ -1,8 +1,9 @@
+import "dotenv/config";
+
 export default {
   users: {
-    // NOTE: That is just an example please swap "users" depending on your task
     input: {
-      target: "http://localhost:3000/swagger.json",
+      target: `${process.env.VITE_API_URL}/swagger.json`,
     },
     output: {
       mode: "tags-split",
@@ -11,7 +12,7 @@ export default {
       client: "react-query",
       override: {
         mutator: {
-          path: './src/lib/api/customMutator.ts',
+          path: "./src/lib/api/customMutator.ts",
           name: "customMutator",
         },
       },
