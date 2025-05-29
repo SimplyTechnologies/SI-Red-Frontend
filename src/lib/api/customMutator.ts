@@ -1,4 +1,4 @@
-export const customMutator = <T>({
+export const customMutator = async <T>({
   url,
   method,
   data,
@@ -23,7 +23,7 @@ export const customMutator = <T>({
       ).toString()
     : "";
 
-  return fetch(`${baseUrl}${url}${queryString}`, {
+  const res = await fetch(`${baseUrl}${url}${queryString}`, {
     method,
     headers: {
       "Content-Type": "application/json",
@@ -31,10 +31,18 @@ export const customMutator = <T>({
     },
     body: data ? JSON.stringify(data) : undefined,
     signal,
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
   });
+
+  if (res.status === 401) {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/signin";
+    throw new Error("Unauthorized");
+  }
+
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+
+  return res.json();
 };

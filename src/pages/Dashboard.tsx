@@ -1,20 +1,19 @@
-import Map from '@/components/map/Map';
-import AnalyticsComponent from '@/components/custom/analyticsComponent';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { useVehiclesWithStore } from '@/hooks/useVehiclesWithStore';
-import { AddVehicleDialog } from '@/components/custom/AddVehicleDialog';
-import { useState } from 'react';
+import Map from "@/components/map/Map";
+import AnalyticsComponent from "@/components/custom/analyticsComponent";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useVehiclesWithStore } from "@/hooks/useVehiclesWithStore";
+import { useVehicleStore } from "@/store/useVehicleStore";
 
 export default function Dashboard() {
   useVehiclesWithStore();
+  const { setAddNewVehicleModalOpen } = useVehicleStore();
 
-  const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col p-1">
       <div className="flex justify-end items-center">
         <Button
-          onClick={() => setOpen(true)}
+          onClick={() => setAddNewVehicleModalOpen(true)}
           className="bg-sidebar-collapsed hover:bg-sidebar-active-collapsed h-[45px] w-[200px] mr-[0.6%] mt-[0.5%]"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -25,10 +24,9 @@ export default function Dashboard() {
       <div>
         <Map
           className="flex justify-center w-full"
-          style={{ width: '85%', height: '58vh' }}
+          style={{ width: "85%", height: "58vh" }}
         />
       </div>
-      <AddVehicleDialog open={open} onOpenChange={setOpen}></AddVehicleDialog>
     </div>
   );
 }

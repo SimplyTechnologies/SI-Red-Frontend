@@ -26,7 +26,9 @@ export default function HeaderLeft() {
         <Menu className="w-6 h-6 text-sidebar-collapsed" />
       </button>
 
-      <MenuLineHorizontal />
+      <div className="hidden md:block">
+        <MenuLineHorizontal />
+      </div>
       <h1 className="text-lg font-semibold text-sidebar-collapsed">
         {pageTitle}
       </h1>
