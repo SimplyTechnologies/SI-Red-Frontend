@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import MenuLineHorizontal from "@/assets/icons/menu-line-horizontal.svg?react";
 
-import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomer";
+import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomerDialog";
 import { useState } from "react";
 
 const pageTitles: Record<string, string> = {
