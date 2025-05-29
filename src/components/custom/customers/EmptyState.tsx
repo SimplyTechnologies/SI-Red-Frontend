@@ -9,7 +9,7 @@ export default function EmptyState() {
         colSpan={customersTableHeaders.length}
         className="p-0 relative"
       >
-        <div className="min-h-[calc(100vh-180px)] flex flex-col items-center justify-center text-center">
+        <div className="min-h-[calc(100vh-240px)] flex flex-col items-center justify-center text-center">
           <EmptyCustomersTableIcon className="mb-2" />
           <p className="font-sans text-[18px] font-bold leading-[140%] text-[#192252]">
             There are no customers to display

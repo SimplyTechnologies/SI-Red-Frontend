@@ -1,9 +1,12 @@
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg?react";
-import { useState } from "react";
 
-export default function Header() {
-  const [search, setSearch] = useState("");
+interface Props {
+  search: string;
+  setSearch: (value: string) => void;
+}
+
+export default function SearchBar({ search, setSearch }: Props) {
   return (
     <div className="flex w-full items-center mb-5">
       <div className="flex items-center h-[42px] w-[327px] border border-[#DBDDE1] rounded-[8px] px-2.5 pl-6 bg-white">
