@@ -4,13 +4,13 @@ import { useVehiclesStore } from "@/store/useVehiclesStore";
 
 export const useFavoritesWithStore = () => {
   const { data, isLoading } = useGetVehicles({
-    userId: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",//TODO
+    userId: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3", //TODO
   });
   const setFavorites = useVehiclesStore((s) => s.setFavorites);
 
   useEffect(() => {
     if (data) {
-      const favorites = data.filter((fav) => fav.isFavorite);
+      const favorites = data.filter((fav) => fav.isFavorite); // TODO isFavorite must be boolean property in get vehicles
       setFavorites(favorites);
     }
   }, [data, setFavorites]);
