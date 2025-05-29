@@ -11,4 +11,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+  proxy: {
+    '/vin': 'http://localhost:3000',
+    '/makes': 'http://localhost:3000',
+    '/models': 'http://localhost:3000',
+    '/vehicles': 'http://localhost:3000',
+  },
+},
 });

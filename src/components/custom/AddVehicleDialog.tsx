@@ -1,11 +1,9 @@
 import {
   Dialog,
-  DialogTrigger,
+  DialogDescription,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -17,10 +15,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVehicleStore } from '../../store/useVehicleStore';
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from 'use-places-autocomplete';
 
-export function AddVehicleDialog() {
+interface Props {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function AddVehicleDialog({ open, onOpenChange }: Props) {
   const {
     make,
     model,
@@ -34,9 +41,6 @@ export function AddVehicleDialog() {
     zip,
     makes,
     models,
-    isLoadingModels,
-    isLoadingVin,
-    error,
     setMake,
     setModel,
     setYear,
@@ -52,268 +56,354 @@ export function AddVehicleDialog() {
     decodeVin,
   } = useVehicleStore();
 
-  const vinRef = useRef<HTMLInputElement>(null);
   const [vinError, setVinError] = useState('');
-  const [vinDecoded, setVinDecoded] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [isLoadingVin, setIsLoadingVin] = useState(false);
+  const [coordinates, setCoordinates] = useState<{
+    lat: number | null;
+    lng: number | null;
+  }>({
+    lat: null,
+    lng: null,
+  });
+
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({ debounce: 300 });
 
   useEffect(() => {
     fetchMakes();
-    setTimeout(() => vinRef.current?.focus(), 300);
   }, [fetchMakes]);
 
-  const handleVinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVinChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().trim();
     setVin(value);
-
-    if (value.length < 17) {
-      setVinError('VIN must be 17 characters.');
-      setVinDecoded(false);
-    } else {
-      setVinError('');
-      decodeVin(value);
-      setVinDecoded(true);
-    }
-  };
-
-  const handleMakeChange = (value: string) => {
-    if (vinDecoded) {
-      setModel('');
-      setYear('');
-    }
-    setMake(value);
-    fetchModels(value);
-  };
-
-  const handleModelChange = (value: string) => {
-    if (vinDecoded) {
-      setMake('');
-      setYear('');
-    }
-    setModel(value);
-  };
-
-  const handleYearChange = (value: string) => {
-    if (vinDecoded) {
-      setMake('');
-      setModel('');
-    }
-    setYear(value);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!make || !model || !year || vin.length !== 17 || error) {
-      alert('Please fill all required fields.');
+    const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
+    if (!vinRegex.test(value)) {
+      setVinError('VIN must be 17 valid alphanumeric characters.');
       return;
     }
-    alert('Vehicle added successfully!');
+
+    setVinError('');
+    setIsLoadingVin(true);
+
+    try {
+      const decodedData = await decodeVin(value);
+      if (decodedData?.make && decodedData?.model && decodedData?.year) {
+        const matchedMake = makes.find(
+          (m) => m.name.toLowerCase() === decodedData.make.toLowerCase()
+        );
+
+        if (!matchedMake) {
+          setVinError(
+            `Make "${decodedData.make}" not found in the available makes.`
+          );
+          return;
+        }
+
+        setMake(matchedMake);
+        const fetchedModels = await fetchModels(matchedMake.id);
+        const matchedModel = fetchedModels.find(
+          (m) => m.name.toLowerCase() === decodedData.model.toLowerCase()
+        );
+
+        if (!matchedModel) {
+          setVinError(
+            `Model "${decodedData.model}" not found in the available models.`
+          );
+          return;
+        }
+
+        setModel(matchedModel);
+        setYear(String(decodedData.year));
+      } else {
+        setVinError(
+          'Failed to decode VIN. Please check the VIN and try again.'
+        );
+      }
+    } catch (error) {
+      setVinError('Failed to decode VIN. Please check the VIN and try again.');
+    } finally {
+      setIsLoadingVin(false);
+    }
+  };
+
+  const handleLocationSelect = async (description: string) => {
+    setValue(description, false);
+    clearSuggestions();
+    try {
+      const results = await getGeocode({ address: description });
+      const { lat, lng } = await getLatLng(results[0]);
+      setCoordinates({ lat, lng });
+
+      const getComponent = (type: string) =>
+        results[0].address_components.find((c) => c.types.includes(type))
+          ?.long_name || '';
+
+      setStreet(getComponent('route'));
+      setCity(getComponent('locality'));
+      setState(getComponent('administrative_area_level_1'));
+      setCountry(getComponent('country'));
+      setZip(getComponent('postal_code'));
+      setLocation(description);
+    } catch (err) {
+      console.error('Location fetch failed', err);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError('');
+
+    if (!model || !year || vin.length !== 17) {
+      setFormError('Please fill all required fields.');
+      return;
+    }
+
+    const locationString =
+      coordinates.lat && coordinates.lng
+        ? `${coordinates.lat},${coordinates.lng}`
+        : '';
+
+    const vehicleData = {
+      model_id: model.id,
+      year,
+      vin,
+      location: locationString,
+      street,
+      city,
+      state,
+      country,
+      zipcode: zip,
+      user_id: '34f12fda-f361-47b9-96a3-b75a09cdf95e',
+    };
+
+    try {
+      const res = await fetch('/vehicles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(vehicleData),
+      });
+      if (!res.ok) throw new Error();
+      alert('Vehicle added successfully!');
+    } catch {
+      setFormError('Failed to add vehicle. Please try again.');
+    }
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button className="bg-[#3E368E] hover:bg-[#2F2B6A] text-white font-semibold text-sm py-2 px-4 rounded">
-          + Add New Vehicle
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogDescription>
+        <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] bg-white rounded-[12px] px-[24px] py-[20px] shadow-md">
+          <DialogHeader>
+            <DialogTitle className="text-[20px] font-bold text-center text-[#192252] font-dm-sans">
+              Add New Vehicle
+            </DialogTitle>
+          </DialogHeader>
 
-      <DialogContent className="w-full sm:w-[516px] max-w-[90vw] max-h-[90vh] overflow-y-auto rounded-[16px] p-5">
-        {error && (
-          <DialogDescription className="text-red-500 text-xs mb-2 font-dm-sans">
-            {error}
-          </DialogDescription>
-        )}
+          {formError && (
+            <p className="mb-3 text-red-500 text-sm">{formError}</p>
+          )}
+          {vinError && <p className="mb-3 text-red-500 text-sm">{vinError}</p>}
 
-        <DialogHeader className="text-center flex flex-col items-center">
-          <DialogTitle className="text-[#192252] text-[24px] font-bold leading-[130%] font-dm-sans">
-            Add New Vehicle
-          </DialogTitle>
-        </DialogHeader>
-
-        <h4 className="text-[#192252] text-[18px] font-bold leading-[140%] mb-1 font-dm-sans">
-          General
-        </h4>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <Label
-                className="text-[#636777] text-[12px] font-medium font-dm-sans"
-                htmlFor="make"
-              >
-                Make
-              </Label>
-              <Select value={make} onValueChange={handleMakeChange}>
-                <SelectTrigger
-                  id="make"
-                  className="w-full h-[44px] rounded-[8px] border border-[#DBDDE1]"
-                >
-                  <SelectValue placeholder="Select make" />
-                </SelectTrigger>
-                <SelectContent>
-                  {makes.map((opt) => (
-                    <SelectItem key={opt.id} value={String(opt.id)}>
-                      {opt.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label
-                className="text-[#636777] text-[12px] font-medium font-dm-sans"
-                htmlFor="model"
-              >
-                Model
-              </Label>
-              <Select
-                value={model}
-                onValueChange={handleModelChange}
-                disabled={isLoadingModels}
-              >
-                <SelectTrigger
-                  id="model"
-                  className="w-full h-[44px] rounded-[8px] border border-[#DBDDE1]"
-                >
-                  <SelectValue
-                    placeholder={
-                      isLoadingModels ? 'Loading...' : 'Select model'
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {models.map((opt) => (
-                    <SelectItem key={opt.id} value={String(opt.id)}>
-                      {opt.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label
-                className="text-[#636777] text-[12px] font-medium font-dm-sans"
-                htmlFor="year"
-              >
-                Year
-              </Label>
-              <Select value={year} onValueChange={handleYearChange}>
-                <SelectTrigger
-                  id="year"
-                  className="w-full h-[44px] rounded-[8px] border border-[#DBDDE1]"
-                >
-                  <SelectValue placeholder="Select year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 26 }, (_, i) =>
-                    (2000 + i).toString()
-                  ).map((y) => (
-                    <SelectItem key={y} value={y}>
-                      {y}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label
-                className="text-[#636777] text-[12px] font-medium font-dm-sans"
-                htmlFor="vin"
-              >
-                VIN
-              </Label>
-              <Input
-                id="vin"
-                ref={vinRef}
-                value={vin}
-                onChange={handleVinChange}
-                placeholder="Enter VIN"
-                maxLength={17}
-                className="w-full h-[44px] rounded-[8px] border border-[#DBDDE1]"
-              />
-              {vinError && (
-                <div className="text-red-500 text-[11px] mt-1 font-dm-sans">
-                  {vinError}
-                </div>
-              )}
-              {isLoadingVin && (
-                <div className="text-xs text-gray-500 mt-1 font-dm-sans">
-                  Decoding VIN...
-                </div>
-              )}
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
+          >
+            <div className="col-span-2 text-[16px] font-[700] text-[#192252] font-dm-sans mb-0.5">
+              General
             </div>
 
             {[
               {
-                id: 'location',
-                label: 'Location',
-                value: location,
-                setValue: setLocation,
+                id: 'make',
+                label: 'Make',
+                component: (
+                  <Select
+                    value={make?.id?.toString() || ''}
+                    onValueChange={(val) => {
+                      const selected = makes.find((m) => m.id === +val);
+                      if (selected) {
+                        setMake(selected);
+                        setModel(null);
+                        fetchModels(selected.id);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+                      <SelectValue placeholder="Select make" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {makes.map((m) => (
+                        <SelectItem key={m.id} value={String(m.id)}>
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ),
               },
               {
-                id: 'street',
-                label: 'Street',
-                value: street,
-                setValue: setStreet,
+                id: 'model',
+                label: 'Model',
+                component: (
+                  <Select
+                    value={model?.id?.toString() || ''}
+                    onValueChange={(val) => {
+                      const selected = models.find((m) => m.id === +val);
+                      if (selected) setModel(selected);
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+                      <SelectValue placeholder="Select model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {models.map((m) => (
+                        <SelectItem key={m.id} value={String(m.id)}>
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ),
               },
               {
-                id: 'city',
-                label: 'City',
-                value: city,
-                setValue: setCity,
+                id: 'year',
+                label: 'Year',
+                component: (
+                  <Select value={year} onValueChange={setYear}>
+                    <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+                      <SelectValue placeholder="Select year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 26 }, (_, i) => 2000 + i).map(
+                        (y) => (
+                          <SelectItem key={y} value={String(y)}>
+                            {y}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                ),
               },
               {
-                id: 'state',
-                label: 'State',
-                value: state,
-                setValue: setState,
+                id: 'vin',
+                label: 'VIN',
+                component: (
+                  <div>
+                    <Input
+                      id="vin"
+                      value={vin}
+                      onChange={handleVinChange}
+                      maxLength={17}
+                      placeholder="Enter VIN"
+                      className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+                    />
+                    {isLoadingVin && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Decoding VIN...
+                      </p>
+                    )}
+                  </div>
+                ),
               },
-              {
-                id: 'country',
-                label: 'Country',
-                value: country,
-                setValue: setCountry,
-              },
-              {
-                id: 'zip',
-                label: 'Zip Code',
-                value: zip,
-                setValue: setZip,
-              },
-            ].map(({ id, label, value, setValue }) => (
+            ].map(({ id, label, component }) => (
               <div key={id}>
                 <Label
-                  className="text-[#636777] text-[12px] font-medium font-dm-sans"
                   htmlFor={id}
+                  className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
                 >
                   {label}
+                </Label>
+                {component}
+              </div>
+            ))}
+
+            <div className="col-span-2 relative">
+              <Label
+                htmlFor="location"
+                className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+              >
+                Location
+              </Label>
+              <Input
+                id="location"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                disabled={!ready}
+                placeholder="Set location"
+                className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+              />
+              {status === 'OK' && (
+                <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-40 overflow-y-auto">
+                  {data.map(({ place_id, description }) => (
+                    <li
+                      key={place_id}
+                      className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                      onClick={() => handleLocationSelect(description)}
+                    >
+                      {description}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {[
+              { id: 'street', value: street, set: setStreet },
+              { id: 'city', value: city, set: setCity },
+              { id: 'state', value: state, set: setState },
+              { id: 'country', value: country, set: setCountry },
+            ].map(({ id, value, set }) => (
+              <div key={id}>
+                <Label
+                  htmlFor={id}
+                  className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+                >
+                  {id.charAt(0).toUpperCase() + id.slice(1)}
                 </Label>
                 <Input
                   id={id}
                   value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  className="w-full h-[44px] rounded-[8px] border border-[#DBDDE1]"
-                  placeholder={`Enter ${label}`}
+                  onChange={(e) => set(e.target.value)}
+                  placeholder={`Enter ${id}`}
+                  className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
                 />
               </div>
             ))}
-          </div>
 
-          <DialogFooter>
-            <Button
-              type="submit"
-              className="w-full h-[44px] bg-[#3E368E] hover:bg-[#2F2B6A] text-white text-sm font-semibold rounded-[12px] mt-3 font-dm-sans"
-            >
-              Submit
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
+            <div className="col-span-2">
+              <Label
+                htmlFor="zip"
+                className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+              >
+                Zip Code
+              </Label>
+              <Input
+                id="zip"
+                value={zip}
+                onChange={(e) => setZip(e.target.value)}
+                placeholder="Enter zip code"
+                className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+              />
+            </div>
+
+            <div className="col-span-2">
+              <Button
+                type="submit"
+                className="w-full h-[48px] bg-[#403C89] text-white rounded-[8px] text-[14px] font-semibold leading-[140%]"
+              >
+                Submit
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </DialogDescription>
     </Dialog>
   );
 }
-
-export default AddVehicleDialog;
