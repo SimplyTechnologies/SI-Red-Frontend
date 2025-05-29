@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useFitMapToVehicles } from "@/hooks/useFitMapToVehicles";
 import { VehicleMarkers } from "./VehicleMarkers";
 import type { CSSProperties } from "react";
+import { VEHICLES_TABS } from "@/constants/constants";
 
 interface CustomMapProps {
   style?: CSSProperties;
@@ -11,7 +12,9 @@ interface CustomMapProps {
 }
 
 export default function CustomMap({ style, className }: CustomMapProps) {
-  const vehicles = useVehiclesStore((s) => s.vehicles); // TODO: (Levon) later make this dynamic based on filtered vehicles:
+  const vehicles = useVehiclesStore((s) =>
+    s.activeTab === VEHICLES_TABS.FAVORITES ? s.favorites : s.vehicles
+  );
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
