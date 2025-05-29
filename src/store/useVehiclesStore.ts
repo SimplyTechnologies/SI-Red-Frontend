@@ -1,50 +1,57 @@
-import { create } from 'zustand';
-import type { VehicleResponse } from '@/api/schemas';
-import { addToFavorites, removeFromFavorites } from '@/api/favorite/favorite';
+import { create } from "zustand";
+import type { VehicleResponse } from "@/api/schemas";
+import { addToFavorites, removeFromFavorites } from "@/api/favorite/favorite";
+import { VEHICLES_TABS } from "@/constants/constants";
+
+type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
 
 type VehiclesStore = {
-    vehicles: VehicleResponse[];
-    favorites: VehicleResponse[];
-    setVehicles: (vehicles: VehicleResponse[]) => void;
-    setFavorites: (vehicles: VehicleResponse[]) => void;
-    toggleFavorite: (vehicle: VehicleResponse) => void;
+  vehicles: VehicleResponse[];
+  favorites: VehicleResponse[];
+  activeTab: VehiclesTab;
+  setVehicles: (vehicles: VehicleResponse[]) => void;
+  setFavorites: (vehicles: VehicleResponse[]) => void;
+  setActiveTab: (tab: VehiclesTab) => void;
+  toggleFavorite: (vehicle: VehicleResponse) => void;
 };
 
 export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
-    vehicles: [],
+  vehicles: [],
+  favorites: [],
+  activeTab: "Vehicles",
 
-    favorites: [],
+  setVehicles: (vehicles) => {
+    set({ vehicles });
+  },
 
-    setVehicles: (vehicles) => {
-        set({
-            vehicles,
-        });
-    },
+  setFavorites: (favorites) => {
+    set({ favorites });
+  },
 
-    setFavorites: (favorites) => {
-        set({
-            favorites,
-        });
-    },
+  setActiveTab: (tab) => {
+    set({ activeTab: tab });
+  },
 
-    toggleFavorite: async (vehicle) => {
+  toggleFavorite: async (vehicle) => {
     const { favorites } = get();
     const isFavorite = favorites.some((v) => v.id === vehicle.id);
 
     try {
       if (isFavorite) {
-        await removeFromFavorites({vehicle_id: vehicle.id, user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3'});//TODO
-        set({
-          favorites: favorites.filter((v) => v.id !== vehicle.id),
-        });
+        await removeFromFavorites({
+          vehicle_id: vehicle.id,
+          user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",
+        }); // TODO
+        set({ favorites: favorites.filter((v) => v.id !== vehicle.id) });
       } else {
-        await addToFavorites({vehicle_id: vehicle.id, user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3'});//TODO
-        set({
-          favorites: [...favorites, vehicle],
-        });
+        await addToFavorites({
+          vehicle_id: vehicle.id,
+          user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",
+        }); // TODO
+        set({ favorites: [...favorites, vehicle] });
       }
     } catch (error) {
-      console.error('Failed to toggle favorite:', error);
+      console.error("Failed to toggle favorite:", error);
     }
   },
 }));
