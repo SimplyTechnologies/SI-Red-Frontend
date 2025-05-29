@@ -12,10 +12,11 @@ export default defineConfig({
     },
   },
   server: {
-    proxy: {
-      '/vin': 'http://localhost:3306',
-      '/makes': 'http://localhost:3306',
-      '/models': 'http://localhost:3306',
-    },
+  proxy: {
+    '/vin': 'http://localhost:3000',
+    '/makes': 'http://localhost:3000',
+    '/models': 'http://localhost:3000',
+    '/vehicles': 'http://localhost:3000',
   },
+},
 });
