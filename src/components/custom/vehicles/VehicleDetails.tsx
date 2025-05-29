@@ -5,13 +5,17 @@ import BackIcon from "@/assets/icons/back.svg?react";
 import { formatDate } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import ActionMenu from "@/components/layout/ActionMenu/ActionMenu";
+import { useState } from "react";
+import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomerDialog";
 
 export default function VehicleDetails() {
   const { selectedVehicle, setSelectedVehicle } = useVehiclesStore((s) => ({
     selectedVehicle: s.selectedVehicle,
     setSelectedVehicle: s.setSelectedVehicle,
   }));
-  
+
+  const [open, setOpen] = useState(false);
+
   const VehicleStatusIcon = getVehicleStatusIcon(selectedVehicle?.status ?? "");
   const dateCreated = selectedVehicle?.createdAt
     ? formatDate(new Date(selectedVehicle.createdAt), "dd.MM.yyyy")
@@ -20,17 +24,14 @@ export default function VehicleDetails() {
   const navigate = useNavigate();
 
   const backToVehicles = () => {
-    navigate('/vehicles');
+    navigate("/vehicles");
     setSelectedVehicle(null);
-  }
+  };
 
   return (
     <>
       <div className="flex justify-between">
-        <BackIcon 
-            onClick={backToVehicles}
-            className="cursor-pointer" 
-        />
+        <BackIcon onClick={backToVehicles} className="cursor-pointer" />
         <ActionMenu />
       </div>
       <div className="py-5 flex gap-2 border-b w-full">
@@ -51,11 +52,15 @@ export default function VehicleDetails() {
             </p>
             <p>Date Created: {dateCreated}</p>
             <div className="mt-2 w-full">
-              <Button className="w-full">Assign to Customer</Button>
+              <Button className="w-full" onClick={() => setOpen(true)}>
+                Assign to Customer
+              </Button>
             </div>
           </div>
         </div>
       </div>
+
+      <AssignToCustomerDialog open={open} onOpenChange={setOpen} />
     </>
   );
 }
