@@ -5,15 +5,19 @@ import { addToFavorites, removeFromFavorites } from '@/api/favorite/favorite';
 type VehiclesStore = {
     vehicles: VehicleResponse[];
     favorites: VehicleResponse[];
+    selectedVehicle: VehicleResponse | null;
     setVehicles: (vehicles: VehicleResponse[]) => void;
     setFavorites: (vehicles: VehicleResponse[]) => void;
     toggleFavorite: (vehicle: VehicleResponse) => void;
+    setSelectedVehicle: (vehicle: VehicleResponse | null) => void;
 };
 
 export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
     vehicles: [],
 
     favorites: [],
+
+    selectedVehicle: null,
 
     setVehicles: (vehicles) => {
         set({
@@ -47,4 +51,6 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
       console.error('Failed to toggle favorite:', error);
     }
   },
+
+  setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
 }));
