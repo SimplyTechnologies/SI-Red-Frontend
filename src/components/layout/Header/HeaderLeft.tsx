@@ -1,6 +1,7 @@
 import { Menu } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useSidebarStore } from "@/store/useSidebarStore";
+import MenuLineHorizontal from "@/assets/icons/menu-line-horizontal.svg?react";
 
 const pageTitles: Record<string, string> = {
   "/": "Dashboard",
@@ -25,6 +26,7 @@ export default function HeaderLeft() {
         <Menu className="w-6 h-6 text-sidebar-collapsed" />
       </button>
 
+      <MenuLineHorizontal />
       <h1 className="text-lg font-semibold text-sidebar-collapsed">
         {pageTitle}
       </h1>
