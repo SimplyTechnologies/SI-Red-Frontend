@@ -1,11 +1,11 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Signin from './components/custom/signin';
-import Layout from './components/layout/Layout';
-import Dashboard from './pages/Dashboard';
-import Vehicles from './pages/Vehicles';
-import Users from './pages/Users';
-import Customers from './pages/Customers';
-import Account from './pages/Account';
+import { Routes, Route, Navigate } from "react-router-dom";
+import Signin from "./components/custom/signin";
+import Layout from "./components/layout/Layout";
+import Dashboard from "./pages/Dashboard";
+import Vehicles from "./pages/Vehicles";
+import Users from "./pages/Users";
+import Customers from "./pages/Customers";
+import Account from "./pages/Account";
 
 export default function App() {
   return (
