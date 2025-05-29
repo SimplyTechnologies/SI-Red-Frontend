@@ -8,11 +8,13 @@ type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
 type VehiclesStore = {
   vehicles: VehicleResponse[];
   favorites: VehicleResponse[];
-  activeTab: VehiclesTab;
+  selectedVehicle: VehicleResponse | null;
   setVehicles: (vehicles: VehicleResponse[]) => void;
   setFavorites: (vehicles: VehicleResponse[]) => void;
-  setActiveTab: (tab: VehiclesTab) => void;
   toggleFavorite: (vehicle: VehicleResponse) => void;
+  setSelectedVehicle: (vehicle: VehicleResponse | null) => void;
+  activeTab: VehiclesTab;
+  setActiveTab: (tab: VehiclesTab) => void;
 };
 
 export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
@@ -23,6 +25,8 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
   setVehicles: (vehicles) => {
     set({ vehicles });
   },
+
+  selectedVehicle: null,
 
   setFavorites: (favorites) => {
     set({ favorites });
@@ -54,4 +58,6 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
       console.error("Failed to toggle favorite:", error);
     }
   },
+
+  setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
 }));

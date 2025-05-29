@@ -18,6 +18,7 @@ export default function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/vehicles/:id" element={<Vehicles />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />
