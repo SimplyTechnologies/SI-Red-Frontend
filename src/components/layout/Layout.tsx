@@ -1,8 +1,12 @@
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
+import { AddVehicleDialog } from "@/components/custom/AddVehicleDialog";
+import { useVehicleStore } from "@/store/useVehicleStore";
 
 export default function Layout() {
+  const { setAddNewVehicleModalOpen, isAddNewVehicleModalOpened } =
+    useVehicleStore();
   return (
     <div className="flex h-screen w-screen">
       <Sidebar />
@@ -12,6 +16,11 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+
+      <AddVehicleDialog
+        open={isAddNewVehicleModalOpened}
+        onOpenChange={setAddNewVehicleModalOpen} //TODO: we can use store instead of using props here
+      ></AddVehicleDialog>
     </div>
   );
 }
