@@ -33,12 +33,12 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
 
     try {
       if (isFavorite) {
-        await removeFromFavorites({vehicle_id: vehicle.id, user_id: '4f1cedb7-a6b5-492d-9929-616ae9598d21'});//TODO
+        await removeFromFavorites({vehicle_id: vehicle.id, user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3'});//TODO
         set({
           favorites: favorites.filter((v) => v.id !== vehicle.id),
         });
       } else {
-        await addToFavorites({vehicle_id: vehicle.id, user_id: '4f1cedb7-a6b5-492d-9929-616ae9598d21'});//TODO
+        await addToFavorites({vehicle_id: vehicle.id, user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3'});//TODO
         set({
           favorites: [...favorites, vehicle],
         });

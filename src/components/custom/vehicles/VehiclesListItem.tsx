@@ -42,7 +42,7 @@ export default function VehiclesListItem({ vehicle }: Props) {
                 {getVehicleStatusBadge(vehicle.status)}
                 <div>
                     <LikeButtonIcon className='cursor-pointer' 
-                        onClick={() => toggleFavorite(vehicle)} //TODO
+                        onClick={() => toggleFavorite(vehicle)}
                     />
                 </div>
             </div>

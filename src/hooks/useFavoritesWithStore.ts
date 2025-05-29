@@ -4,7 +4,7 @@ import { useVehiclesStore } from "@/store/useVehiclesStore";
 
 export const useFavoritesWithStore = () => {
   const { data, isLoading } = useGetVehicles({
-    userId: "4f1cedb7-a6b5-492d-9929-616ae9598d21",//TODO
+    userId: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",//TODO
   });
   const setFavorites = useVehiclesStore((s) => s.setFavorites);
 
