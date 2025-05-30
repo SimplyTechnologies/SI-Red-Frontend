@@ -3,6 +3,7 @@ import { getVehicleStatusIcon, getLikeIcon } from '@/utils/vehicleHelpers';
 import { getVehicleStatusBadge } from '@/helpers/getVehicleStatusBadge';
 import { useVehiclesStore } from '@/store/useVehiclesStore';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 type Props = {
     vehicle: VehicleResponse;

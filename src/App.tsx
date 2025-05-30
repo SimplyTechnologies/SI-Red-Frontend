@@ -6,6 +6,7 @@ import Vehicles from "./pages/Vehicles";
 import Users from "./pages/Users";
 import Customers from "./pages/Customers";
 import Account from "./pages/Account";
+import VehicleDetails from "./components/custom/vehicles/VehicleDetails";
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
         <Route path="/users" element={<Users />} />
         <Route path="/customers" element={<Customers />} />
         <Route path="/account" element={<Account />} />
-        <Route path="/vehicles/:id" element={<Vehicles />} />
+        <Route path="/vehicles/:id" element={<VehicleDetails />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />
