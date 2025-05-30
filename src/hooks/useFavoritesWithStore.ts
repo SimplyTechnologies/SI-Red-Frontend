@@ -1,17 +1,16 @@
 import { useEffect } from "react";
-import { useGetVehicles } from "@/api/vehicle/vehicle";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
+import { useGetFavorites } from "@/api/favorite/favorite";
 
 export const useFavoritesWithStore = () => {
-  const { data, isLoading } = useGetVehicles({
-    userId: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3", //TODO
+  const { data, isLoading } = useGetFavorites({
+    user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3", //TODO
   });
   const setFavorites = useVehiclesStore((s) => s.setFavorites);
 
   useEffect(() => {
-    if (data) {
-      const favorites = data.filter((fav) => fav.isFavorite); // TODO isFavorite must be boolean property in get vehicles
-      setFavorites(favorites);
+    if (data) {      
+      setFavorites(data);
     }
   }, [data, setFavorites]);
 

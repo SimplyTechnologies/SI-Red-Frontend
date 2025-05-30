@@ -1,57 +1,82 @@
-import { create } from "zustand";
-import type { VehicleResponse } from "@/api/schemas";
-import { addToFavorites, removeFromFavorites } from "@/api/favorite/favorite";
-import { VEHICLES_TABS } from "@/constants/constants";
+import { create } from 'zustand';
+import type { VehicleResponse } from '@/api/schemas';
+import { addToFavorites, removeFromFavorites } from '@/api/favorite/favorite';
+import { VEHICLES_TABS } from '@/constants/constants';
 
 type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
 
 type VehiclesStore = {
-  vehicles: VehicleResponse[];
-  favorites: VehicleResponse[];
-  activeTab: VehiclesTab;
-  setVehicles: (vehicles: VehicleResponse[]) => void;
-  setFavorites: (vehicles: VehicleResponse[]) => void;
-  setActiveTab: (tab: VehiclesTab) => void;
-  toggleFavorite: (vehicle: VehicleResponse) => void;
+    vehicles: VehicleResponse[];
+    favorites: VehicleResponse[];
+    activeTab: VehiclesTab;
+    search: string;
+    setSearch: (search: string) => void;
+    setVehicles: (vehicles: VehicleResponse[]) => void;
+    setFavorites: (vehicles: VehicleResponse[]) => void;
+    setActiveTab: (tab: VehiclesTab) => void;
+    toggleFavorite: (vehicle: VehicleResponse) => void;
+    fetchNextPage: () => void;
+    hasNextPage: boolean;
+    isFetchingNextPage: boolean;
+    setPagination: (opts: {
+        fetchNextPage: () => void;
+        hasNextPage: boolean;
+        isFetchingNextPage: boolean;
+    }) => void;
 };
 
 export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
-  vehicles: [],
-  favorites: [],
-  activeTab: "Vehicles",
+    vehicles: [],
+    favorites: [],
+    activeTab: VEHICLES_TABS.VEHICLES,
+    search: '',
 
-  setVehicles: (vehicles) => {
-    set({ vehicles });
-  },
+    setSearch: (search) => set({ search }),
 
-  setFavorites: (favorites) => {
-    set({ favorites });
-  },
+    setVehicles: (vehicles) => set({ vehicles }),
 
-  setActiveTab: (tab) => {
-    set({ activeTab: tab });
-  },
+    setFavorites: (favorites) => set({ favorites }),
 
-  toggleFavorite: async (vehicle) => {
-    const { favorites } = get();
-    const isFavorite = favorites.some((v) => v.id === vehicle.id);
+    setActiveTab: (tab) => set({ activeTab: tab }),
 
-    try {
-      if (isFavorite) {
-        await removeFromFavorites({
-          vehicle_id: vehicle.id,
-          user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",
-        }); // TODO
-        set({ favorites: favorites.filter((v) => v.id !== vehicle.id) });
-      } else {
-        await addToFavorites({
-          vehicle_id: vehicle.id,
-          user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",
-        }); // TODO
-        set({ favorites: [...favorites, vehicle] });
-      }
-    } catch (error) {
-      console.error("Failed to toggle favorite:", error);
-    }
-  },
+    toggleFavorite: async (vehicle) => {
+        const { favorites, vehicles } = get();
+        const isFavorite = favorites.some((v) => v.id === vehicle.id);
+
+        try {
+            if (isFavorite) {
+                await removeFromFavorites({
+                    vehicle_id: vehicle.id,
+                    user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3',
+                });
+
+                set({
+                    favorites: favorites.filter((v) => v.id !== vehicle.id),
+                    vehicles: vehicles.map((v) =>
+                        v.id === vehicle.id ? { ...v, isFavorite: false } : v
+                    ),
+                });
+            } else {
+                await addToFavorites({
+                    vehicle_id: vehicle.id,
+                    user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3',
+                });
+
+                set({
+                    favorites: [...favorites, { ...vehicle, isFavorite: true }],
+                    vehicles: vehicles.map((v) =>
+                        v.id === vehicle.id ? { ...v, isFavorite: true } : v
+                    ),
+                });
+            }
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error);
+        }
+    },
+
+    fetchNextPage: () => {},
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    setPagination: ({ fetchNextPage, hasNextPage, isFetchingNextPage }) =>
+        set({ fetchNextPage, hasNextPage, isFetchingNextPage }),
 }));

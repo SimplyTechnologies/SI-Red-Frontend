@@ -27,7 +27,7 @@ export default function VehiclesListItem({ vehicle }: Props) {
                     <p className="text-[#192252] font-bold">{vehicle.vin}</p>
                     <p className="text-[#636777]">
                         {' '}
-                        {vehicle.model!.name} {vehicle?.model!.make.name}{' '}
+                        {vehicle?.model?.name} {vehicle?.model?.make?.name}{' '}
                         {vehicle.year}
                     </p>
                     <p className="text-[#636777]">
