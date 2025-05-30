@@ -10,6 +10,7 @@ import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustom
 import Map from "@/components/map/Map";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
 import { VEHICLES_TABS } from "@/constants/constants";
+import VehiclesTabListSkeleton from "./vehiclesTab/VehiclesTabListSkeleton";
 
 export default function VehicleDetails() {
   const { selectedVehicle, setSelectedVehicle, setActiveTab } =
@@ -21,7 +22,7 @@ export default function VehicleDetails() {
 
   const params = useParams<{ id: string }>();
   const id = params.id || "";
-  const { data: vehicle } = useGetVehicle(id);
+  const { data: vehicle, isLoading } = useGetVehicle(id);
 
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -51,7 +52,10 @@ export default function VehicleDetails() {
           </div>
           <div className="py-5 flex gap-2 w-full">
             <VehicleStatusIcon />
-            <div className="flex w-[220px]">
+    
+            {isLoading ? <VehiclesTabListSkeleton /> :
+
+            <div className="flex w-[350px]">
               <div className="text-[14px] ml-3 w-full">
                 <p className="text-[#192252] font-bold">{selectedVehicle?.vin}</p>
                 <p className="text-[#636777]">
@@ -68,6 +72,7 @@ export default function VehicleDetails() {
                 <p>Date Created: {dateCreated}</p>
               </div>
             </div>
+            }
           </div>
           <div className="mt-2 w-full border-b pb-5">
             <Button className="w-full" onClick={() => setOpen(true)}>
