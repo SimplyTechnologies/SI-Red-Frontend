@@ -26,7 +26,6 @@ export default function SidebarContent() {
         <NavLink
           key={label}
           to={to}
-          end
           onClick={closeMobileSidebar}
           className={({ isActive }) =>
             cn(

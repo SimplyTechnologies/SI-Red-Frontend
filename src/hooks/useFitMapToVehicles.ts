@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import type { VehicleResponse } from "@/api/schemas";
 
 export function useFitMapToVehicles(
@@ -6,16 +6,8 @@ export function useFitMapToVehicles(
   mapRef: React.MutableRefObject<google.maps.Map | null>,
   isMapReady: boolean
 ) {
-  const hasFittedRef = useRef(false);
-
   useEffect(() => {
-    if (
-      !isMapReady ||
-      !mapRef.current ||
-      hasFittedRef.current ||
-      vehicles.length === 0
-    )
-      return;
+    if (!isMapReady || !mapRef.current || vehicles.length === 0) return;
 
     const bounds = new google.maps.LatLngBounds();
 
@@ -31,7 +23,6 @@ export function useFitMapToVehicles(
 
     if (!bounds.isEmpty()) {
       mapRef.current.fitBounds(bounds);
-      hasFittedRef.current = true;
     }
   }, [vehicles, isMapReady]);
 }
