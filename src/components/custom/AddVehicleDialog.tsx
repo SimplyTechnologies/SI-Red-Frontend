@@ -4,25 +4,27 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { useEffect, useState } from "react";
-import { useVehicleStore } from "../../store/useVehicleStore";
+} from '../ui/select';
+import { useEffect, useState } from 'react';
+import { useVehicleStore } from '../../store/useVehicleStore';
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
-} from "use-places-autocomplete";
+} from 'use-places-autocomplete';
 
-import { useCreateVehicle } from "@/api/vehicle/vehicle";
+import { useCreateVehicle } from '@/api/vehicle/vehicle';
+import { toast, ToastContainer, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Props {
   open: boolean;
@@ -58,8 +60,8 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     decodeVin,
   } = useVehicleStore();
 
-  const [vinError, setVinError] = useState("");
-  const [formError, setFormError] = useState("");
+  const [vinError, setVinError] = useState('');
+  const [formError, setFormError] = useState('');
   const [isLoadingVin, setIsLoadingVin] = useState(false);
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
@@ -86,11 +88,11 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     setVin(value);
     const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
     if (!vinRegex.test(value)) {
-      setVinError("VIN must be 17 valid alphanumeric characters.");
+      setVinError('VIN must be 17 valid alphanumeric characters.');
       return;
     }
 
-    setVinError("");
+    setVinError('');
     setIsLoadingVin(true);
 
     try {
@@ -124,11 +126,11 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
         setYear(String(decodedData.year));
       } else {
         setVinError(
-          "Failed to decode VIN. Please check the VIN and try again."
+          'Failed to decode VIN. Please check the VIN and try again.'
         );
       }
     } catch (error) {
-      setVinError("Failed to decode VIN. Please check the VIN and try again.");
+      setVinError('Failed to decode VIN. Please check the VIN and try again.');
     } finally {
       setIsLoadingVin(false);
     }
@@ -144,44 +146,65 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
 
       const getComponent = (type: string) =>
         results[0].address_components.find((c) => c.types.includes(type))
-          ?.long_name || "";
+          ?.long_name || '';
 
-      setStreet(getComponent("route"));
-      setCity(getComponent("locality"));
-      setState(getComponent("administrative_area_level_1"));
-      setCountry(getComponent("country"));
-      setZip(getComponent("postal_code"));
+      setStreet(getComponent('route'));
+      setCity(getComponent('locality'));
+      setState(getComponent('administrative_area_level_1'));
+      setCountry(getComponent('country'));
+      setZip(getComponent('postal_code'));
       setLocation(description);
     } catch (err) {
-      console.error("Location fetch failed", err);
+      console.error('Location fetch failed', err);
     }
   };
 
   const { mutate: createVehicle, isPending } = useCreateVehicle({
     mutation: {
       onSuccess: () => {
-        alert("Vehicle added successfully!");
-        onOpenChange(false); // закроем модалку после успеха, если нужно
+        toast.success('Vehicle added successfully!', {
+          position: 'top-right',
+        });
+        onOpenChange(false); // Close the modal
       },
-      onError: () => {
-        setFormError("Failed to add vehicle. Please try again.");
+       onError: () => {
+        setFormError('Failed to add vehicle. Please try again.');
       },
     },
   });
 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError("");
+    setFormError('');
 
-    if (!model || !year || vin.length !== 17) {
-      setFormError("Please fill all required fields.");
+    if (
+      !make ||
+      !model ||
+      !year ||
+      !vin ||
+      !location ||
+      !street ||
+      !city ||
+      !state ||
+      !country ||
+      !zip
+    ) {
+      setFormError('Please fill all required fields.');
       return;
     }
 
+    const zipCodeRegex = /^\d{4}$/;
+    if (!zipCodeRegex.test(zip)) {
+      setFormError('Zip code must contain exactly 4 digits.');
+      return;
+    }
+
+  
     const locationString =
       coordinates.lat && coordinates.lng
         ? `${coordinates.lat},${coordinates.lng}`
-        : "";
+        : '';
 
     const vehicleData = {
       model_id: model.id,
@@ -193,7 +216,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
       state,
       country,
       zipcode: zip,
-      user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3", // TODO
+      user_id: '8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3', // TODO
     };
 
     createVehicle({ data: vehicleData });
@@ -224,11 +247,11 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
 
             {[
               {
-                id: "make",
-                label: "Make",
+                id: 'make',
+                label: 'Make',
                 component: (
                   <Select
-                    value={make?.id?.toString() || ""}
+                    value={make?.id?.toString() || ''}
                     onValueChange={(val) => {
                       const selected = makes.find((m) => m.id === +val);
                       if (selected) {
@@ -252,11 +275,11 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
                 ),
               },
               {
-                id: "model",
-                label: "Model",
+                id: 'model',
+                label: 'Model',
                 component: (
                   <Select
-                    value={model?.id?.toString() || ""}
+                    value={model?.id?.toString() || ''}
                     onValueChange={(val) => {
                       const selected = models.find((m) => m.id === +val);
                       if (selected) setModel(selected);
@@ -276,8 +299,8 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
                 ),
               },
               {
-                id: "year",
-                label: "Year",
+                id: 'year',
+                label: 'Year',
                 component: (
                   <Select value={year} onValueChange={setYear}>
                     <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
@@ -296,8 +319,8 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
                 ),
               },
               {
-                id: "vin",
-                label: "VIN",
+                id: 'vin',
+                label: 'VIN',
                 component: (
                   <div>
                     <Input
@@ -343,7 +366,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
                 placeholder="Set location"
                 className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
               />
-              {status === "OK" && (
+              {status === 'OK' && (
                 <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-40 overflow-y-auto">
                   {data.map(({ place_id, description }) => (
                     <li
@@ -359,10 +382,10 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
             </div>
 
             {[
-              { id: "street", value: street, set: setStreet },
-              { id: "city", value: city, set: setCity },
-              { id: "state", value: state, set: setState },
-              { id: "country", value: country, set: setCountry },
+              { id: 'street', value: street, set: setStreet },
+              { id: 'city', value: city, set: setCity },
+              { id: 'state', value: state, set: setState },
+              { id: 'country', value: country, set: setCountry },
             ].map(({ id, value, set }) => (
               <div key={id}>
                 <Label
@@ -406,8 +429,10 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
               </Button>
             </div>
           </form>
+          <ToastContainer transition={Slide} position="top-right" />
         </DialogContent>
       </DialogDescription>
     </Dialog>
+    
   );
 }
