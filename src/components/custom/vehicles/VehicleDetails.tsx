@@ -7,12 +7,15 @@ import { useNavigate } from "react-router-dom";
 import ActionMenu from "@/components/layout/ActionMenu/ActionMenu";
 import { useState } from "react";
 import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomerDialog";
+import { VEHICLES_TABS } from "@/constants/constants";
 
 export default function VehicleDetails() {
-  const { selectedVehicle, setSelectedVehicle } = useVehiclesStore((s) => ({
-    selectedVehicle: s.selectedVehicle,
-    setSelectedVehicle: s.setSelectedVehicle,
-  }));
+  const { selectedVehicle, setSelectedVehicle, setActiveTab } =
+    useVehiclesStore((s) => ({
+      selectedVehicle: s.selectedVehicle,
+      setSelectedVehicle: s.setSelectedVehicle,
+      setActiveTab: s.setActiveTab,
+    }));
 
   const [open, setOpen] = useState(false);
 
@@ -26,6 +29,7 @@ export default function VehicleDetails() {
   const backToVehicles = () => {
     navigate("/vehicles");
     setSelectedVehicle(null);
+    setActiveTab(VEHICLES_TABS.VEHICLES);
   };
 
   return (
