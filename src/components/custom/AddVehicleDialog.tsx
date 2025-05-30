@@ -23,6 +23,7 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 
 import { useCreateVehicle } from "@/api/vehicle/vehicle";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   open: boolean;
@@ -76,6 +77,8 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     setValue,
     clearSuggestions,
   } = usePlacesAutocomplete({ debounce: 300 });
+
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchMakes();
@@ -157,14 +160,23 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     }
   };
 
-  const { mutate: createVehicle, isPending } = useCreateVehicle({
+  const { mutate: createVehicle } = useCreateVehicle({
     mutation: {
       onSuccess: () => {
-        alert("Vehicle added successfully!");
-        onOpenChange(false); // закроем модалку после успеха, если нужно
+        toast({
+          title: "Vehicle added",
+          description: "Vehicle added successfully.",
+          variant: "default",
+        });
+
+        onOpenChange(false); // Close the modal
       },
       onError: () => {
-        setFormError("Failed to add vehicle. Please try again.");
+        toast({
+          title: "Error",
+          description: "Failed to add vehicle. Please try again.",
+          variant: "destructive",
+        });
       },
     },
   });
@@ -173,8 +185,25 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     e.preventDefault();
     setFormError("");
 
-    if (!model || !year || vin.length !== 17) {
+    if (
+      !make ||
+      !model ||
+      !year ||
+      !vin ||
+      !location ||
+      !street ||
+      !city ||
+      !state ||
+      !country ||
+      !zip
+    ) {
       setFormError("Please fill all required fields.");
+      return;
+    }
+
+    const zipCodeRegex = /^\d{4}$/;
+    if (!zipCodeRegex.test(zip)) {
+      setFormError("Zip code must contain exactly 4 digits.");
       return;
     }
 
