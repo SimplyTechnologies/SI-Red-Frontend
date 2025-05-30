@@ -9,15 +9,18 @@ import { useEffect, useState } from "react";
 import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomerDialog";
 import Map from "@/components/map/Map";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
+import { VEHICLES_TABS } from "@/constants/constants";
 
 export default function VehicleDetails() {
-  const { selectedVehicle, setSelectedVehicle } = useVehiclesStore((s) => ({
-    selectedVehicle: s.selectedVehicle,
-    setSelectedVehicle: s.setSelectedVehicle,
-  }));
+  const { selectedVehicle, setSelectedVehicle, setActiveTab } =
+    useVehiclesStore((s) => ({
+      selectedVehicle: s.selectedVehicle,
+      setSelectedVehicle: s.setSelectedVehicle,
+      setActiveTab: s.setActiveTab,
+    }));
 
   const params = useParams<{ id: string }>();
-  const id = params.id || '';
+  const id = params.id || "";
   const { data: vehicle } = useGetVehicle(id);
 
   const [open, setOpen] = useState(false);
@@ -28,13 +31,14 @@ export default function VehicleDetails() {
     ? formatDate(new Date(selectedVehicle.createdAt), "dd.MM.yyyy")
     : "";
 
-    useEffect(() => {
-      setSelectedVehicle(vehicle || null)
-    }, [vehicle])
+  useEffect(() => {
+    setSelectedVehicle(vehicle || null);
+  }, [vehicle]);
 
   const backToVehicles = () => {
     navigate("/vehicles");
     setSelectedVehicle(null);
+    setActiveTab(VEHICLES_TABS.VEHICLES);
   };
 
   return (

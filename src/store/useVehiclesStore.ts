@@ -21,7 +21,7 @@ type VehiclesStore = {
 export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
   vehicles: [],
   favorites: [],
-  activeTab: "Vehicles",
+  activeTab: VEHICLES_TABS.VEHICLES,
 
   setVehicles: (vehicles) => {
     set({ vehicles });
