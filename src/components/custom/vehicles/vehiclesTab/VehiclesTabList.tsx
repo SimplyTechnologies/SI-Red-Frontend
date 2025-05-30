@@ -13,7 +13,7 @@ export default function VehiclesTabList() {
           <TabsTrigger
             key={tabLabel}
             value={tabLabel}
-            onClick={() => setActiveTab(tabLabel)} // 👈 вот тут
+            onClick={() => setActiveTab(tabLabel)}
             className="rounded-none h-full font-normal data-[state=active]:shadow-none pb-[10px] border-b-[3px] border-transparent data-[state=active]:border-sidebar-collapsed data-[state=active]:text-sidebar-collapsed data-[state=active]:font-bold"
           >
             {tabLabel}
