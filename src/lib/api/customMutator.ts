@@ -1,5 +1,3 @@
-import "dotenv/config";
-
 export const customMutator = async <T>({
   url,
   method,
@@ -14,7 +12,7 @@ export const customMutator = async <T>({
   signal?: AbortSignal;
 }): Promise<T> => {
   const token = localStorage.getItem("accessToken");
-  const baseUrl = process.env.VITE_API_URL;
+  const baseUrl = import.meta.env.VITE_API_URL;
   const queryString = params
     ? "?" +
       new URLSearchParams(
