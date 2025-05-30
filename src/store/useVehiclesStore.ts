@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { VehicleResponse } from "@/api/schemas";
 import { addToFavorites, removeFromFavorites } from "@/api/favorite/favorite";
 import { VEHICLES_TABS } from "@/constants/constants";
+import { getVehicle } from "@/api/vehicle/vehicle";
 
 type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
 
@@ -59,5 +60,16 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
     }
   },
 
-  setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
+  setSelectedVehicle: async (vehicle) => {
+    try {
+      if (vehicle) {
+        const v = await getVehicle(vehicle.id);        
+        set({ selectedVehicle: v });
+      } else {
+        set({ selectedVehicle: null });
+      }
+    } catch (error) {
+      console.error("Failed to get vehicle:", error);
+    }
+  },
 }));

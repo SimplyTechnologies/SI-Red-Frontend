@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 import { getAllMakes } from "../api/make/make";
 import { getAllModelsByMakeId } from "../api/model/model";
 import { decodeVin as decodeVinApi } from "../api/vin/vin";
@@ -7,7 +7,6 @@ import type { ModelResponse } from "../api/schemas";
 import type { VinResponse } from "../api/schemas";
 
 interface VehicleState {
-  // Form values
   make: MakeInfo | null;
   model: ModelResponse | null;
   year: string;
