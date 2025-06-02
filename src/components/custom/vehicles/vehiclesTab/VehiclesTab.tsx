@@ -3,7 +3,6 @@ import { VEHICLES_TABS } from "@/constants/constants";
 import VehiclesTabList from './VehiclesTabList';
 import VehiclesTabContent from './VehiclesTabContent';
 import FavoritesTabContent from './FavoritesTabContent';
-import Map from "@/components/map/Map";
 
 export default function VehiclesTab() {
 
@@ -15,7 +14,6 @@ export default function VehiclesTab() {
             <VehiclesTabList />
             <VehiclesTabContent />
             <FavoritesTabContent />
-            <Map className="w-full h-full" /> 
         </Tabs>
     );
 }

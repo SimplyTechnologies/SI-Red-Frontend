@@ -3,6 +3,7 @@ import Filter from "@/components/custom/vehicles/Filter";
 import VehicleDetails from "@/components/custom/vehicles/VehicleDetails";
 import VehiclesTab from "@/components/custom/vehicles/vehiclesTab/VehiclesTab";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
+import Map from "@/components/map/Map";
 
 export default function Vehicles() {
   const { selectedVehicle } = useVehiclesStore((s) => ({
@@ -24,6 +25,10 @@ export default function Vehicles() {
           <VehiclesTab />
         </article>
       )}
+
+      <article className="w-full lg:w-3/5 h-full lg:h-full">
+        <Map className="w-full h-full" />
+      </article>
     </section>
   );
 }
