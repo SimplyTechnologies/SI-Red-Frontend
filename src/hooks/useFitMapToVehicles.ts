@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import type { VehicleResponse } from "@/api/schemas";
+import type { VehicleResponse, VehicleMapPoint } from "@/api/schemas";
 
 export function useFitMapToVehicles(
-  vehicles: VehicleResponse[],
+  vehicles: VehicleResponse[] | VehicleMapPoint[],
   mapRef: React.MutableRefObject<google.maps.Map | null>,
   isMapReady: boolean
 ) {

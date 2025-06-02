@@ -1,3 +1,5 @@
+import { BASE_URL } from "@/config/apiConfig";
+
 export const customMutator = async <T>({
   url,
   method,
@@ -12,7 +14,6 @@ export const customMutator = async <T>({
   signal?: AbortSignal;
 }): Promise<T> => {
   const token = localStorage.getItem("accessToken");
-  const baseUrl = import.meta.env.VITE_API_URL;
   const queryString = params
     ? "?" +
       new URLSearchParams(
@@ -23,7 +24,7 @@ export const customMutator = async <T>({
       ).toString()
     : "";
 
-  const res = await fetch(`${baseUrl}${url}${queryString}`, {
+  const res = await fetch(`${BASE_URL}${url}${queryString}`, {
     method,
     headers: {
       "Content-Type": "application/json",

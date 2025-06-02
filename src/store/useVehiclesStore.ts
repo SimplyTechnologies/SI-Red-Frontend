@@ -1,62 +1,75 @@
 import { create } from "zustand";
 import type { VehicleResponse } from "@/api/schemas";
+import type { VehicleMapPoint } from "@/api/schemas";
 import { addToFavorites, removeFromFavorites } from "@/api/favorite/favorite";
 import { VEHICLES_TABS } from "@/constants/constants";
 import { getVehicle } from "@/api/vehicle/vehicle";
 
+
 type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
 
 type VehiclesStore = {
-  vehicles: VehicleResponse[];
-  favorites: VehicleResponse[];
-  selectedVehicle: VehicleResponse | null;
-  setVehicles: (vehicles: VehicleResponse[]) => void;
-  setFavorites: (vehicles: VehicleResponse[]) => void;
-  toggleFavorite: (vehicle: VehicleResponse) => void;
-  setSelectedVehicle: (vehicle: VehicleResponse | null) => void;
-  activeTab: VehiclesTab;
-  setActiveTab: (tab: VehiclesTab) => void;
+    vehicles: VehicleResponse[];
+    vehicleMapPoints: VehicleMapPoint[];
+    favorites: VehicleResponse[];
+    activeTab: VehiclesTab;
+    search: string;
+    selectedVehicle: VehicleResponse | null;
+    setSelectedVehicle: (vehicle: VehicleResponse | null) => void;
+    setSearch: (search: string) => void;
+    setVehicles: (vehicles: VehicleResponse[]) => void;
+    setVehicleMapPoints: (points: VehicleMapPoint[]) => void;
+    setFavorites: (vehicles: VehicleResponse[]) => void;
+    setActiveTab: (tab: VehiclesTab) => void;
+    toggleFavorite: (vehicle: VehicleResponse) => void;
+    fetchNextPage: () => void;
+    hasNextPage: boolean;
+    isFetchingNextPage: boolean;
+    setPagination: (opts: {
+        fetchNextPage: () => void;
+        hasNextPage: boolean;
+        isFetchingNextPage: boolean;
+    }) => void;
 };
 
 export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
-  vehicles: [],
-  favorites: [],
-  activeTab: VEHICLES_TABS.VEHICLES,
+    vehicles: [],
+    vehicleMapPoints: [],
+    favorites: [],
+    activeTab: VEHICLES_TABS.VEHICLES,
+    search: '',
+    selectedVehicle: null,
 
-  setVehicles: (vehicles) => {
-    set({ vehicles });
-  },
+    setSearch: (search) => set({ search }),
 
-  selectedVehicle: null,
+    setVehicles: (vehicles) => set({ vehicles }),
 
-  setFavorites: (favorites) => {
-    set({ favorites });
-  },
+    setVehicleMapPoints: (points) => set({ vehicleMapPoints: points }),
 
-  setActiveTab: (tab) => {
-    set({ activeTab: tab });
-  },
+    setFavorites: (favorites) => set({ favorites }),
 
-  toggleFavorite: async (vehicle) => {
-    const { favorites } = get();
-    const isFavorite = favorites.some((v) => v.id === vehicle.id);
+    setActiveTab: (tab) => set({ activeTab: tab }),
 
-    try {
-      if (isFavorite) {
-        await removeFromFavorites({
-          vehicle_id: vehicle.id,
-        });
-        set({ favorites: favorites.filter((v) => v.id !== vehicle.id) });
-      } else {
-        await addToFavorites({
-          vehicle_id: vehicle.id,
-        });
-        set({ favorites: [...favorites, vehicle] });
-      }
-    } catch (error) {
-      console.error("Failed to toggle favorite:", error);
-    }
-  },
+    toggleFavorite: async (vehicle) => {
+        const { favorites } = get();
+        const isFavorite = favorites.some((v) => v.id === vehicle.id);
+
+        try {
+          if (isFavorite) {
+            await removeFromFavorites({
+              vehicle_id: vehicle.id,
+            });
+            set({ favorites: favorites.filter((v) => v.id !== vehicle.id) });
+          } else {
+            await addToFavorites({
+              vehicle_id: vehicle.id,
+            });
+            set({ favorites: [...favorites, vehicle] });
+          }
+        } catch (error) {
+          console.error("Failed to toggle favorite:", error);
+        }
+    },
 
   setSelectedVehicle: async (vehicle) => {
     try {
@@ -70,4 +83,9 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
       console.error("Failed to get vehicle:", error);
     }
   },
+    fetchNextPage: () => {},
+    hasNextPage: false,
+    isFetchingNextPage: false,
+    setPagination: ({ fetchNextPage, hasNextPage, isFetchingNextPage }) =>
+        set({ fetchNextPage, hasNextPage, isFetchingNextPage }),
 }));
