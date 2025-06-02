@@ -2,7 +2,6 @@ import { AddNewVehicleButton } from "@/components/custom/vehicles/AddNewVehicleB
 import Filter from "@/components/custom/vehicles/Filter";
 import VehicleDetails from "@/components/custom/vehicles/VehicleDetails";
 import VehiclesTab from "@/components/custom/vehicles/vehiclesTab/VehiclesTab";
-import Map from "@/components/map/Map";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 
 export default function Vehicles() {
@@ -25,10 +24,6 @@ export default function Vehicles() {
           <VehiclesTab />
         </article>
       )}
-
-      <article className="w-full lg:w-3/5 h-full lg:h-full">
-        <Map className="w-full h-full" />
-      </article>
     </section>
   );
 }

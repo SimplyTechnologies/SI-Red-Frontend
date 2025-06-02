@@ -7,7 +7,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import ActionMenu from "@/components/layout/ActionMenu/ActionMenu";
 import { useEffect, useState } from "react";
 import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomerDialog";
-import Map from "@/components/map/Map";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
 import { VEHICLES_TABS } from "@/constants/constants";
 import VehiclesTabListSkeleton from "./vehiclesTab/VehiclesTabListSkeleton";
@@ -82,8 +81,6 @@ export default function VehicleDetails() {
           </div>
         </div>
       </div>
-
-      <Map className="w-full h-full" />
     </div>
   );
 }
