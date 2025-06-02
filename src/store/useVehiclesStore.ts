@@ -45,14 +45,12 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
       if (isFavorite) {
         await removeFromFavorites({
           vehicle_id: vehicle.id,
-          user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",
-        }); // TODO
+        });
         set({ favorites: favorites.filter((v) => v.id !== vehicle.id) });
       } else {
         await addToFavorites({
           vehicle_id: vehicle.id,
-          user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3",
-        }); // TODO
+        });
         set({ favorites: [...favorites, vehicle] });
       }
     } catch (error) {
@@ -63,7 +61,7 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
   setSelectedVehicle: async (vehicle) => {
     try {
       if (vehicle) {
-        const v = await getVehicle(vehicle.id);        
+        const v = await getVehicle(vehicle.id);
         set({ selectedVehicle: v });
       } else {
         set({ selectedVehicle: null });
