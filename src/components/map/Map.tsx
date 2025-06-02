@@ -12,14 +12,23 @@ interface CustomMapProps {
 }
 
 export default function CustomMap({ style, className }: CustomMapProps) {
-  const vehicles = useVehiclesStore((s) =>
-    s.activeTab === VEHICLES_TABS.FAVORITES ? s.favorites : s.vehicles
-  );
+  const { vehicles, favorites, selectedVehicle } = useVehiclesStore((s) => ({
+    vehicles: s.vehicles,
+    favorites: s.favorites,
+    selectedVehicle: s.selectedVehicle,
+  }));
+  const activeTab = useVehiclesStore((s) => s.activeTab);
+
+  const visibleVehicles = selectedVehicle
+    ? [selectedVehicle]
+    : activeTab === VEHICLES_TABS.FAVORITES
+    ? favorites
+    : vehicles;
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
-  useFitMapToVehicles(vehicles, mapRef, isMapReady);
+  useFitMapToVehicles(visibleVehicles, mapRef, isMapReady);
 
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}>
@@ -41,7 +50,7 @@ export default function CustomMap({ style, className }: CustomMapProps) {
             setIsMapReady(true);
           }}
         >
-          <VehicleMarkers vehicles={vehicles} />
+          <VehicleMarkers vehicles={visibleVehicles} />
         </Map>
       </div>
     </APIProvider>

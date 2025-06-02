@@ -6,7 +6,7 @@ function FavoritesList() {
     const favorites = useVehiclesStore((s) => s.favorites);
     
     return (
-        <div className="gap-2 pl-3 pr-1.5 mt-6">
+        <div className="gap-2 pl-3 pr-1.5 mt-1">
             {favorites.map((vehicle: VehicleResponse) => {
                 return <VehiclesListItem vehicle={vehicle} key={vehicle.id}/>;
             })}

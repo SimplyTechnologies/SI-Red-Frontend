@@ -32,7 +32,14 @@ export default function HeaderUserMenu() {
           My Profile
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="hover:bg-userMenu-hover cursor-pointer group">
+        <DropdownMenuItem
+          onClick={() => {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            navigate("/signin");
+          }}
+          className="hover:bg-userMenu-hover cursor-pointer group"
+        >
           <Logout className="mr-2 w-5 h-5 stroke-icon-default group-hover:stroke-icon-hover" />
           Log Out
         </DropdownMenuItem>

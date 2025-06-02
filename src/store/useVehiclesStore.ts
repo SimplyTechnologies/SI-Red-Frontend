@@ -10,6 +10,8 @@ type VehiclesStore = {
     favorites: VehicleResponse[];
     activeTab: VehiclesTab;
     search: string;
+    selectedVehicle: VehicleResponse | null;
+    setSelectedVehicle: (vehicle: VehicleResponse | null) => void;
     setSearch: (search: string) => void;
     setVehicles: (vehicles: VehicleResponse[]) => void;
     setFavorites: (vehicles: VehicleResponse[]) => void;
@@ -30,6 +32,10 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
     favorites: [],
     activeTab: VEHICLES_TABS.VEHICLES,
     search: '',
+    selectedVehicle: null,
+
+    setSelectedVehicle: (vehicle) => set({ selectedVehicle: vehicle }),
+
 
     setSearch: (search) => set({ search }),
 
