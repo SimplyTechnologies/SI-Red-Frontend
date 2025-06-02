@@ -3,8 +3,11 @@ import Sidebar from "./Sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 import { AddVehicleDialog } from "@/components/custom/AddVehicleDialog";
 import { useVehicleStore } from "@/store/useVehicleStore";
+import { Toaster } from "@/components/ui/toaster";
+import { useVehiclesWithStore } from "@/hooks/useVehiclesWithStore";
 
 export default function Layout() {
+  useVehiclesWithStore();
   const { setAddNewVehicleModalOpen, isAddNewVehicleModalOpened } =
     useVehicleStore();
   return (
@@ -21,6 +24,8 @@ export default function Layout() {
         open={isAddNewVehicleModalOpened}
         onOpenChange={setAddNewVehicleModalOpen} //TODO: we can use store instead of using props here
       ></AddVehicleDialog>
+
+      <Toaster />
     </div>
   );
 }

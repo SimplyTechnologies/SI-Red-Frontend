@@ -30,7 +30,7 @@ export default function AnalyticsComponent() {
   ];
 
   return (
-    <section className="w-full px-4 px-[10%] mb-[40px]">
+    <section className="w-full px-[10%] mb-[40px]">
       <div className="max-w-screen-xl mx-auto">
         <h1
           id="analytics-title"

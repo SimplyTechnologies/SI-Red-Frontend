@@ -4,21 +4,11 @@ import VehicleDetails from "@/components/custom/vehicles/VehicleDetails";
 import VehiclesTab from "@/components/custom/vehicles/vehiclesTab/VehiclesTab";
 import Map from "@/components/map/Map";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
 
 export default function Vehicles() {
-  const location = useLocation();
-  const { selectedVehicle, setSelectedVehicle } = useVehiclesStore((s) => ({
+  const { selectedVehicle } = useVehiclesStore((s) => ({
     selectedVehicle: s.selectedVehicle,
-    setSelectedVehicle: s.setSelectedVehicle,
   }));
-  
-  useEffect(() => {
-    if (location.pathname === '/vehicles') {
-      setSelectedVehicle(null)
-    }
-  }, [location]);
 
   return (
     <section className="flex flex-col lg:flex-row h-full">

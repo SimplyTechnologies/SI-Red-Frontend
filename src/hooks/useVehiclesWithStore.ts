@@ -1,34 +1,44 @@
-import { useEffect } from 'react';
-import { useVehiclesStore } from '@/store/useVehiclesStore';
-import { useInfiniteVehicles } from './useInfiniteVehicles';
+import { useEffect } from "react";
+import { useVehiclesStore } from "@/store/useVehiclesStore";
+import { useInfiniteVehicles } from "./useInfiniteVehicles";
+import { useGetVehicleMapPoints } from "@/api/vehicle/vehicle";
 
 export const useVehiclesWithStore = () => {
-    const search = useVehiclesStore((s) => s.search);
-    const { setPagination, setVehicles } = useVehiclesStore();
+  const search = useVehiclesStore((s) => s.search);
+  const { setPagination, setVehicles, setVehicleMapPoints } =
+    useVehiclesStore();
 
-    const {
-        data,
-        isLoading,
-        isError,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useInfiniteVehicles(search);
+  const {
+    data,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteVehicles(search);
 
-    useEffect(() => {
-        if (data?.pages) {
-            const allVehicles = data.pages.flat();
-            setVehicles(allVehicles);
-        }
-    }, [data, setVehicles]);
+  const { data: mapPoints } = useGetVehicleMapPoints({ search }); 
 
-    useEffect(() => {
-        setPagination({
-            fetchNextPage,
-            hasNextPage: !!hasNextPage,
-            isFetchingNextPage,
-        });
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage, setPagination]);
+  useEffect(() => {
+    if (data?.pages) {
+      const allVehicles = data.pages.flat();
+      setVehicles(allVehicles);
+    }
+  }, [data, setVehicles]);
 
-    return { isLoading, isError };
+  useEffect(() => {
+    if (mapPoints) {
+      setVehicleMapPoints(mapPoints);
+    }
+  }, [mapPoints, setVehicleMapPoints]);
+
+  useEffect(() => {
+    setPagination({
+      fetchNextPage,
+      hasNextPage: !!hasNextPage,
+      isFetchingNextPage,
+    });
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, setPagination]);
+
+  return { isLoading, isError };
 };
