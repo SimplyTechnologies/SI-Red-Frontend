@@ -2,7 +2,7 @@ import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 import { AddVehicleDialog } from "@/components/custom/AddVehicleDialog";
-import { useVehicleStore } from "@/store/useVehicleStore";
+import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function Layout() {

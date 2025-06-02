@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useEffect, useState } from "react";
-import { useVehicleStore } from "../../store/useVehicleStore";
+import { useVehicleStore } from "../../store/useVehicleModalStore";
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
