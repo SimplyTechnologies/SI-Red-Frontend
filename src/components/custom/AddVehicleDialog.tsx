@@ -222,7 +222,6 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
       state,
       country,
       zipcode: zip,
-      user_id: "8fdd4bb6-e6d0-4f35-9f69-fb862c8039e3", // TODO
     };
 
     createVehicle({ data: vehicleData });
