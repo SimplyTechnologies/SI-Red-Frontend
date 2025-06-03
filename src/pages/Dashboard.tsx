@@ -3,7 +3,7 @@ import Map from "@/components/map/Map";
 import AnalyticsComponent from "@/components/custom/analyticsComponent";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { useVehicleStore } from "@/store/useVehicleStore";
+import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { VEHICLES_TABS } from "@/constants/constants";
 

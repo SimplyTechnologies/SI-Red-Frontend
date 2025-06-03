@@ -4,7 +4,7 @@ export default function EmptyFavorites() {
     return (
         <div className="h-full w-full flex space-y-2 flex-col justify-center items-center text-center px-10">
             <EmptyFavorite />
-            <p className="text-[18px] text-[#192252]">
+            <p className="text-[18px] text-heading">
                 There are no favorite vehicles
             </p>
             <p className="text-[14px]">

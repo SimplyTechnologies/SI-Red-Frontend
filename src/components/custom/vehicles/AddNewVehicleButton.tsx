@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useVehicleStore } from "@/store/useVehicleStore";
+import { useVehicleStore } from "@/store/useVehicleModalStore";
 
 export function AddNewVehicleButton() {
   const { setAddNewVehicleModalOpen } = useVehicleStore();

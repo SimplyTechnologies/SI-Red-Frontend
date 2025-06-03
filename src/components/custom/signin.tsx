@@ -67,7 +67,7 @@ function LoginPage() {
                 htmlFor="email"
                 className={
                   "block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 " +
-                  (email.length > 0 ? "text-[#192252]" : "text-[#636777]")
+                  (email.length > 0 ? "text-heading" : "text-text-muted")
                 }
               >
                 Email address
@@ -92,7 +92,7 @@ function LoginPage() {
                 htmlFor="password"
                 className={
                   "block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 " +
-                  (password.length > 0 ? "text-[#192252]" : "text-[#636777]")
+                  (password.length > 0 ? "text-heading" : "text-text-muted")
                 }
               >
                 Password
