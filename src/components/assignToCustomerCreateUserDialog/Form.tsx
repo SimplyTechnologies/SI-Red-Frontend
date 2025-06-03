@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import AssignToCustomerField from "./FormField";
+import FormField from "./FormField";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -55,7 +55,7 @@ export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
       <div className="flex flex-col sm:flex-row gap-4">
-        <AssignToCustomerField
+        <FormField
           id="firstName"
           label="First Name"
           placeholder="Enter Name"
@@ -63,7 +63,7 @@ export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
           inputRef={firstNameRef}
           error={errors.firstName}
         />
-        <AssignToCustomerField
+        <FormField
           id="lastName"
           label="Last Name"
           placeholder="Enter Last Name"
@@ -73,7 +73,7 @@ export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
         />
       </div>
 
-      <AssignToCustomerField
+      <FormField
         id="phone"
         label="Phone Number"
         placeholder="+1-XXX-XXX-XXXX"
@@ -82,7 +82,7 @@ export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
         error={errors.phone}
       />
 
-      <AssignToCustomerField
+      <FormField
         id="email"
         label="Mail"
         placeholder="Enter Mail"

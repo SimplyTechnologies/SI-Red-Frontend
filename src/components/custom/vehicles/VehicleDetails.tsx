@@ -6,8 +6,8 @@ import { formatDate } from "date-fns";
 import { useParams, useNavigate } from "react-router-dom";
 import ActionMenu from "@/components/layout/ActionMenu/ActionMenu";
 import { useEffect, useState } from "react";
-import UserFormDialog from "@/components/assignToCustomerCreateUserDialog/FormDialog";
-import UserForm from "@/components/assignToCustomerCreateUserDialog/Form";
+import CustomerFormDialog from "@/components/assignToCustomerCreateUserDialog/FormDialog";
+import CustomerForm from "@/components/assignToCustomerCreateUserDialog/Form";
 
 import Map from "@/components/map/Map";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
@@ -84,18 +84,18 @@ export default function VehicleDetails() {
               Assign to Customer
             </Button>
 
-            <UserFormDialog
+            <CustomerFormDialog
               open={open}
               onOpenChange={setOpen}
               title="Assign to Customer"
             >
-              <UserForm
+              <CustomerForm
                 onSubmit={() => {
                   setOpen(false);
                 }}
                 submitLabel="Submit"
               />
-            </UserFormDialog>
+            </CustomerFormDialog>
           </div>
         </div>
       </div>
