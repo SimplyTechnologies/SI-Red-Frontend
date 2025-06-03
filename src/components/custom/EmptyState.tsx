@@ -1,5 +1,6 @@
 import { TableRow, TableCell } from "@/components/ui/table";
 import { customersTableHeaders } from "@/constants/constants";
+import { usersTableHeaders } from "@/constants/constants";
 import type { ComponentType, SVGProps } from "react";
 
 type EmptyStateProps = {
@@ -9,10 +10,12 @@ type EmptyStateProps = {
 };
 
 export default function EmptyState({ text, info, icon: Icon }: EmptyStateProps) {
+    const headersLength = info === "users" ? usersTableHeaders : customersTableHeaders;
+    
   return (
     <TableRow>
       <TableCell
-        colSpan={customersTableHeaders.length}
+        colSpan={headersLength.length}
         className="p-0 relative"
       >
         <div className="min-h-[calc(100vh-240px)] flex flex-col items-center justify-center text-center">

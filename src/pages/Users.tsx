@@ -19,7 +19,7 @@ export default function Users() {
         <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col">
           <div className="overflow-auto flex-1">
             <Table>
-              <TableHeaderComponent />
+              <TableHeaderComponent info={'user'} />
               <TableBody>
                 {users.length ? (
                   users.map((user) => (
@@ -36,7 +36,6 @@ export default function Users() {
                           {user.status}
                         </div>
                       </TableCell>
-                      <TableCell></TableCell>
                       <TableCell>
                         <div className="flex justify-center items-center w-full cursor-pointer">
                           <Delete />

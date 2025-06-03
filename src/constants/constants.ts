@@ -11,3 +11,11 @@ export const customersTableHeaders = [
   "Assigned Date",
   "Action"
 ];
+
+export const usersTableHeaders = [
+  "Name",
+  "Email",
+  "Phone Number",
+  "Status",
+  "Action"
+];

@@ -15,7 +15,7 @@ export default function Customers() {
       <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col">
         <div className="overflow-auto flex-1">
           <Table>
-            <TableHeaderComponent />
+            <TableHeaderComponent info={'customer'} />
             <TableBody>
               {customers.length === 0 ? (
                 <EmptyState
