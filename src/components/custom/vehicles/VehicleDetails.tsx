@@ -6,7 +6,9 @@ import { formatDate } from "date-fns";
 import { useParams, useNavigate } from "react-router-dom";
 import ActionMenu from "@/components/layout/ActionMenu/ActionMenu";
 import { useEffect, useState } from "react";
-import AssignToCustomerDialog from "@/components/assignToCustomer/AssignToCustomerDialog";
+import CustomerFormDialog from "@/components/assignToCustomerCreateUserDialog/FormDialog";
+import CustomerForm from "@/components/assignToCustomerCreateUserDialog/Form";
+
 import Map from "@/components/map/Map";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
 import { VEHICLES_TABS } from "@/constants/constants";
@@ -52,33 +54,48 @@ export default function VehicleDetails() {
           </div>
           <div className="py-5 flex gap-2 w-full">
             <VehicleStatusIcon />
-    
-            {isLoading ? <VehiclesTabListSkeleton /> :
 
-            <div className="flex w-[350px]">
-              <div className="text-[14px] ml-3 w-full">
-                <p className="text-heading font-bold">{selectedVehicle?.vin}</p>
-                <p className="text-text-muted">
-                  {" "}
-                  {selectedVehicle?.model!.name}{" "}
-                  {selectedVehicle?.model!.make.name} {selectedVehicle?.year}
-                </p>
-                <p className="text-text-muted">
-                  Location:{" "}
-                  <span className="text-heading font-medium">
-                    {selectedVehicle?.city}, {selectedVehicle?.street}
-                  </span>
-                </p>
-                <p>Date Created: {dateCreated}</p>
+            {isLoading ? (
+              <VehiclesTabListSkeleton />
+            ) : (
+              <div className="flex w-[350px]">
+                <div className="text-[14px] ml-3 w-full">
+                  <p className="text-heading font-bold">
+                    {selectedVehicle?.vin}
+                  </p>
+                  <p className="text-text-muted">
+                    {" "}
+                    {selectedVehicle?.model!.name}{" "}
+                    {selectedVehicle?.model!.make.name} {selectedVehicle?.year}
+                  </p>
+                  <p className="text-text-muted">
+                    Location:{" "}
+                    <span className="text-heading font-medium">
+                      {selectedVehicle?.city}, {selectedVehicle?.street}
+                    </span>
+                  </p>
+                  <p>Date Created: {dateCreated}</p>
+                </div>
               </div>
-            </div>
-            }
+            )}
           </div>
           <div className="mt-2 w-full border-b pb-5">
             <Button className="w-full" onClick={() => setOpen(true)}>
               Assign to Customer
             </Button>
-            <AssignToCustomerDialog open={open} onOpenChange={setOpen} />
+
+            <CustomerFormDialog
+              open={open}
+              onOpenChange={setOpen}
+              title="Assign to Customer"
+            >
+              <CustomerForm
+                onSubmit={() => {
+                  setOpen(false);
+                }}
+                submitLabel="Submit"
+              />
+            </CustomerFormDialog>
           </div>
         </div>
       </div>
