@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 type AddNewUserProps = {
   title: string
@@ -24,6 +25,7 @@ export default function AddNewUserDialog({title}: AddNewUserProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <form action=""></form>
       </DialogContent>
