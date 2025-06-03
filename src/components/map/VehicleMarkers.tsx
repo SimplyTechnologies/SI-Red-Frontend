@@ -1,8 +1,12 @@
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 import { useNavigate } from "react-router-dom";
-import type { VehicleResponse } from "@/api/schemas";
+import type { VehicleMapPoint, VehicleResponse } from "@/api/schemas";
 
-export function VehicleMarkers({ vehicles }: { vehicles: VehicleResponse[] }) {
+interface Props {
+  vehicles: VehicleResponse[] | VehicleMapPoint[]
+}
+
+export function VehicleMarkers({ vehicles }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -21,7 +25,7 @@ export function VehicleMarkers({ vehicles }: { vehicles: VehicleResponse[] }) {
             >
               <img
                 src="/icons/mapCarMark.svg"
-                alt={`Car ${vehicle.vin}`}
+                alt={`Car ${vehicle.id}`}
                 width={40}
                 height={40}
               />

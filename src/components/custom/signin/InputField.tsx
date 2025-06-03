@@ -22,7 +22,7 @@ export const InputField = ({
     <Label
       htmlFor={id}
       className={`block mb-1 text-left font-medium text-[14px] leading-[1.4] font-dm-sans transition-colors duration-200 ${
-        value ? "text-[#192252]" : "text-[#636777]"
+        value ? "text-heading" : "text-text-muted"
       }`}
     >
       {label}
@@ -33,7 +33,7 @@ export const InputField = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="w-full h-[48px] md:h-[56px] rounded-[8px] border border-[#DBDDE1] bg-[#FFFFFF] focus:border-2 focus:border-[#3652E0] focus:outline-none transition-colors peer"
+      className="w-full h-[48px] md:h-[56px] rounded-[8px] border border-[#DBDDE1] bg-white focus:border-2 focus:border-[#3652E0] focus:outline-none transition-colors peer"
     />
   </div>
 );

@@ -57,15 +57,15 @@ export default function VehicleDetails() {
 
             <div className="flex w-[350px]">
               <div className="text-[14px] ml-3 w-full">
-                <p className="text-[#192252] font-bold">{selectedVehicle?.vin}</p>
-                <p className="text-[#636777]">
+                <p className="text-heading font-bold">{selectedVehicle?.vin}</p>
+                <p className="text-text-muted">
                   {" "}
                   {selectedVehicle?.model!.name}{" "}
                   {selectedVehicle?.model!.make.name} {selectedVehicle?.year}
                 </p>
-                <p className="text-[#636777]">
+                <p className="text-text-muted">
                   Location:{" "}
-                  <span className="text-[#192252] font-medium">
+                  <span className="text-heading font-medium">
                     {selectedVehicle?.city}, {selectedVehicle?.street}
                   </span>
                 </p>

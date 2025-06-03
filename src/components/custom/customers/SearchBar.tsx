@@ -16,7 +16,7 @@ export default function SearchBar({ search, setSearch }: Props) {
           onChange={(e) => setSearch(e.target.value)}
           type="search"
           placeholder="Search..."
-          className="w-full border-0 p-0 text-sm text-[#192252] placeholder:text-[#858C98] focus-visible:ring-0 focus-visible:outline-none"
+          className="w-full border-0 p-0 text-sm text-heading placeholder:text-[#858C98] focus-visible:ring-0 focus-visible:outline-none"
         />
       </div>
     </div>

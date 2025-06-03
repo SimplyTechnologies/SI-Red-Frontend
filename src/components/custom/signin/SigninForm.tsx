@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../ui/button";
-import { Checkbox } from "../../ui/checkbox";
-import { Label } from "../../ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { InputField } from "./InputField";
-import { useAuthStore } from "../../../store/authStore";
-import { useSignIn } from "../../../api/authentication/authentication";
-import type { SignInRequest } from "../../../api/schemas";
+import { useAuthStore } from "@/store/authStore";
+import { useSignIn } from "@/api/authentication/authentication";
+import type { SignInRequest } from "@/api/schemas";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function SigninForm() {

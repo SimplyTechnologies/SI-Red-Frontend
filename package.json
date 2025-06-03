@@ -33,13 +33,18 @@
     "lucide-react": "^0.510.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+<<<<<<< HEAD
     "react-hook-form": "^7.57.0",
+=======
+    "react-intersection-observer": "^9.16.0",
+>>>>>>> 761482799af3c32506cc0caf83e6df2a2eeb5244
     "react-router-dom": "^7.6.0",
     "react-toastify": "^11.0.5",
     "serve": "^14.2.4",
     "swagger-jsdoc": "^6.2.8",
     "tailwind-merge": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.4",
     "use-places-autocomplete": "^4.0.1",
     "zod": "^3.25.49",
     "zustand": "^4.5.7"

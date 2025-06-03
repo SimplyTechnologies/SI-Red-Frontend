@@ -5,24 +5,26 @@ import { useVehiclesStore } from '@/store/useVehiclesStore';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
-    vehicle: VehicleResponse;
+  vehicle: VehicleResponse;
 };
 
 export default function VehiclesListItem({ vehicle }: Props) {
-    const VehicleStatusIcon = getVehicleStatusIcon(vehicle.status);
-    const { favorites, toggleFavorite, setSelectedVehicle } = useVehiclesStore((s) => ({
-        favorites: s.favorites,
-        toggleFavorite: s.toggleFavorite,
-        setSelectedVehicle: s.setSelectedVehicle,
-    }));
-    const isFavorite = favorites.some((v) => v.id === vehicle.id);
-    const LikeButtonIcon = getLikeIcon(isFavorite ?? false);
-    const navigate = useNavigate();
+  const VehicleStatusIcon = getVehicleStatusIcon(vehicle.status);
+  const { favorites, toggleFavorite, setSelectedVehicle } = useVehiclesStore(
+    (s) => ({
+      favorites: s.favorites,
+      toggleFavorite: s.toggleFavorite,
+      setSelectedVehicle: s.setSelectedVehicle,
+    })
+  );
+  const isFavorite = favorites.some((v) => v.id === vehicle.id);
+  const LikeButtonIcon = getLikeIcon(isFavorite ?? false);
+  const navigate = useNavigate();
 
-    const showVehicleDetails = () => {
-        setSelectedVehicle(vehicle)
-        navigate(`/vehicles/${vehicle.id}`)
-    }
+  const showVehicleDetails = () => {
+    setSelectedVehicle(vehicle);
+    navigate(`/vehicles/${vehicle.id}`);
+  };
 
     return (
         <div
@@ -35,15 +37,15 @@ export default function VehiclesListItem({ vehicle }: Props) {
             >
                 <VehicleStatusIcon />
                 <div className="text-[14px] ml-3">
-                    <p className="text-[#192252] font-bold">{vehicle.vin}</p>
-                    <p className="text-[#636777]">
+                    <p className="text-heading font-bold">{vehicle.vin}</p>
+                    <p className="text-text-muted">
                         {' '}
                         {vehicle.model!.name} {vehicle?.model!.make.name}{' '}
                         {vehicle.year}
                     </p>
-                    <p className="text-[#636777]">
+                    <p className="text-text-muted">
                         Location:{' '}
-                        <span className="text-[#192252] font-medium">
+                        <span className="text-heading font-medium">
                             {vehicle.city}, {vehicle.street}
                         </span>
                     </p>
@@ -58,5 +60,5 @@ export default function VehiclesListItem({ vehicle }: Props) {
                 </div>
             </div>
         </div>
-    );
+  );
 }
