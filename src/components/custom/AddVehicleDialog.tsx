@@ -233,7 +233,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
       <DialogDescription>
         <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] bg-white rounded-[12px] px-[24px] py-[20px] shadow-md">
           <DialogHeader>
-            <DialogTitle className="text-[20px] font-bold text-center text-[#192252] font-dm-sans">
+            <DialogTitle className="text-[20px] font-bold text-center text-heading font-dm-sans">
               Add New Vehicle
             </DialogTitle>
           </DialogHeader>
@@ -247,7 +247,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
             onSubmit={handleSubmit}
             className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
           >
-            <div className="col-span-2 text-[16px] font-[700] text-[#192252] font-dm-sans mb-0.5">
+            <div className="col-span-2 text-[16px] font-[700] text-heading font-dm-sans mb-0.5">
               General
             </div>
 
@@ -349,7 +349,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
               <div key={id}>
                 <Label
                   htmlFor={id}
-                  className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+                  className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
                 >
                   {label}
                 </Label>
@@ -360,7 +360,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
             <div className="col-span-2 relative">
               <Label
                 htmlFor="location"
-                className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+                className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
               >
                 Location
               </Label>
@@ -396,7 +396,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
               <div key={id}>
                 <Label
                   htmlFor={id}
-                  className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+                  className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
                 >
                   {id.charAt(0).toUpperCase() + id.slice(1)}
                 </Label>
@@ -413,7 +413,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
             <div className="col-span-2">
               <Label
                 htmlFor="zip"
-                className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]"
+                className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
               >
                 Zip Code
               </Label>

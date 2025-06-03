@@ -25,7 +25,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
   placeholder = 'Select',
 }) => (
   <div>
-    <Label htmlFor={id} className="text-[#636777] font-dm-sans font-medium text-[13px] leading-[140%]">
+    <Label htmlFor={id} className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
       {label}
     </Label>
     <Select value={value} onValueChange={onChange}>

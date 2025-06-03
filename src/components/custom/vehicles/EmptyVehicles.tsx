@@ -4,7 +4,7 @@ export default function EmptyVehicles() {
     return (
         <div className="h-full w-full flex space-y-2 flex-col justify-center items-center text-center px-10 ">
                 <EmptyVehicle />
-                <p className="text-[18px] text-[#192252]">
+                <p className="text-[18px] text-heading">
                     There are no vehicles to display
                 </p>
                 <p className="text-[14px]">

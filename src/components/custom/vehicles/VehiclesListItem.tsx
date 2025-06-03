@@ -36,15 +36,15 @@ export default function VehiclesListItem({ vehicle }: Props) {
             >
                 <VehicleStatusIcon />
                 <div className="text-[14px] ml-3">
-                    <p className="text-[#192252] font-bold">{vehicle.vin}</p>
-                    <p className="text-[#636777]">
+                    <p className="text-heading font-bold">{vehicle.vin}</p>
+                    <p className="text-text-muted">
                         {' '}
                         {vehicle.model!.name} {vehicle?.model!.make.name}{' '}
                         {vehicle.year}
                     </p>
-                    <p className="text-[#636777]">
+                    <p className="text-text-muted">
                         Location:{' '}
-                        <span className="text-[#192252] font-medium">
+                        <span className="text-heading font-medium">
                             {vehicle.city}, {vehicle.street}
                         </span>
                     </p>
