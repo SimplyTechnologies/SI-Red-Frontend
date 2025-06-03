@@ -1,45 +1,20 @@
 import EmptyState from "@/components/custom/EmptyState";
-import SearchBar from "@/components/custom/customers/SearchBar";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import TableHeaderComponent from "@/components/custom/customers/TableHeader";
-import { useState } from "react";
 import EmptyCustomersTableIcon from "@/assets/icons/emptyUsersTable.svg?react";
 import { useUserStore } from "@/store/useUserStore";
-import UserFormDialog from "@/components/assignToCustomerCreateUserDialog/FormDialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import UserForm from "@/components/assignToCustomerCreateUserDialog/Form";
+import UsersListHeader from "@/components/custom/users/UsersListHeader";
+import Delete from "@/assets/icons/recycle.svg?react";
+import Avatar from "@/assets/icons/avatar.svg?react";
+import { getUserStatus } from "@/utils/userHelper";
 
 export default function Users() {
-  const [search, setSearch] = useState("");
-  const { users, userFormOpen, setUserFormOpen } = useUserStore();
+  const { users } = useUserStore();
 
   return (
     <>
       <div className="flex flex-col h-full px-6">
-        <div className="flex justify-between items-center">
-          <SearchBar search={search} setSearch={setSearch} />
-          <Button
-            onClick={() => setUserFormOpen(true)}
-            className="h-[40px] w-[143px] px-[18px] py-[10px] rounded-[8px] gap-[6px] my-4 mb-5 flex items-center"
-          >
-            <Plus size={16} />
-            Add New User
-          </Button>
-
-          <UserFormDialog
-            open={userFormOpen}
-            onOpenChange={setUserFormOpen}
-            title={"Add New User"}
-          >
-            <UserForm
-              onSubmit={() => {
-                setUserFormOpen(false);
-              }}
-              submitLabel="Save"
-            />
-          </UserFormDialog>
-        </div>
+        <UsersListHeader />
 
         <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col">
           <div className="overflow-auto flex-1">
@@ -49,9 +24,24 @@ export default function Users() {
                 {users.length ? (
                   users.map((user) => (
                     <TableRow key={user.id}>
-                      <TableCell>{user.userName}</TableCell>
+                      <TableCell>
+                        <div className="flex justify-start items-center gap-4 font-bold text-heading">
+                          <Avatar />{user.userName}
+                        </div>
+                      </TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.phoneNumber}</TableCell>
+                      <TableCell>
+                        <div className={`w-[80px] h-[40px] ${getUserStatus(user.status)} font-semibold flex justify-center items-center rounded-[100px]`}>
+                          {user.status}
+                        </div>
+                      </TableCell>
+                      <TableCell></TableCell>
+                      <TableCell>
+                        <div className="flex justify-center items-center w-full cursor-pointer">
+                          <Delete />
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (

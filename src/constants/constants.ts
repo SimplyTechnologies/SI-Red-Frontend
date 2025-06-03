@@ -9,4 +9,5 @@ export const customersTableHeaders = [
   "Phone Number",
   "Vehicle",
   "Assigned Date",
+  "Action"
 ];
