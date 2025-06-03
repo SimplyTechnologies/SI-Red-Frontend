@@ -4,7 +4,7 @@ export const VEHICLES_TABS = {
 } as const;
 
 export const customersTableHeaders = [
-  "Personal Info",
+  "Name",
   "Email",
   "Phone Number",
   "Vehicle",
