@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import FormField from "./FormField";
 import { Button } from "@/components/ui/button";
+import AsyncAutocompleteField from "./AsyncAutocompleteField";
 
 interface Props {
   onSubmit: (values: {
@@ -11,18 +12,21 @@ interface Props {
   }) => void;
   submitLabel?: string;
   externalErrors?: Record<string, string>;
+  emailAutocomplete?: boolean;
 }
 
 export default function Form({
   onSubmit,
   submitLabel = "Save",
   externalErrors = {},
+  emailAutocomplete = false,
 }: Props) {
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
-  const emailRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
+  const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{
     firstName?: string;
     lastName?: string;
@@ -31,7 +35,12 @@ export default function Form({
   }>({});
 
   useEffect(() => {
-    if (externalErrors) {
+    const hasExternal =
+      externalErrors && Object.keys(externalErrors).length > 0;
+    if (
+      hasExternal &&
+      JSON.stringify(errors) !== JSON.stringify(externalErrors)
+    ) {
       setErrors(externalErrors);
     }
   }, [externalErrors]);
@@ -41,13 +50,15 @@ export default function Form({
 
     const firstName = firstNameRef.current?.value.trim() || "";
     const lastName = lastNameRef.current?.value.trim() || "";
-    const email = emailRef.current?.value.trim() || "";
     const phone = phoneRef.current?.value.trim() || "";
+    const resolvedEmail = emailAutocomplete
+      ? email.trim()
+      : emailRef.current?.value.trim() || "";
 
     const newErrors: typeof errors = {};
     if (!firstName) newErrors.firstName = "Enter the first name.";
     if (!lastName) newErrors.lastName = "Enter the last name.";
-    if (!email) newErrors.email = "Enter the email address.";
+    if (!resolvedEmail) newErrors.email = "Enter the email address.";
     if (!phone) {
       newErrors.phone = "Enter the phone number.";
     } else if (!/^\+?\d[\d\s\-]{7,}$/i.test(phone)) {
@@ -60,7 +71,12 @@ export default function Form({
     }
 
     setErrors({});
-    onSubmit({ firstName, lastName, email, phone });
+    onSubmit({
+      firstName,
+      lastName,
+      email: resolvedEmail,
+      phone,
+    });
   };
 
   return (
@@ -93,14 +109,33 @@ export default function Form({
         error={errors.phone}
       />
 
-      <FormField
-        id="email"
-        label="Mail"
-        placeholder="Enter Mail"
-        type="email"
-        inputRef={emailRef}
-        error={errors.email}
-      />
+      {emailAutocomplete ? (
+        <AsyncAutocompleteField
+          id="email"
+          label="Mail"
+          placeholder="Enter Mail"
+          value={email}
+          setValue={setEmail}
+          error={errors.email}
+          onCustomerSelect={(customer) => {
+            setEmail(customer.email ?? "");
+            if (firstNameRef.current)
+              firstNameRef.current.value = customer.firstName ?? "";
+            if (lastNameRef.current)
+              lastNameRef.current.value = customer.lastName ?? "";
+            if (phoneRef.current) phoneRef.current.value = customer.phone ?? "";
+          }}
+        />
+      ) : (
+        <FormField
+          id="email"
+          label="Mail"
+          placeholder="Enter Mail"
+          type="email"
+          inputRef={emailRef}
+          error={errors.email}
+        />
+      )}
 
       <Button
         type="submit"

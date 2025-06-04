@@ -82,6 +82,7 @@ export default function AssignCustomerSection() {
             assignCustomerMutation.mutate({ id, data: values });
           }}
           externalErrors={externalErrors}
+          emailAutocomplete={true}
         />
       </CustomerFormDialog>
     </div>
