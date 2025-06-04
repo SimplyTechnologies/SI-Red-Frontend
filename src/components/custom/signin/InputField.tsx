@@ -8,6 +8,7 @@ interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label: string;
+  error: string | undefined;
 }
 
 export const InputField = ({
@@ -17,6 +18,7 @@ export const InputField = ({
   onChange,
   placeholder,
   label,
+  error,
 }: InputFieldProps) => (
   <div className="mb-2 w-full max-w-[450px]">
     <Label
@@ -33,7 +35,12 @@ export const InputField = ({
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="w-full h-[48px] md:h-[56px] rounded-[8px] border border-[#DBDDE1] bg-white focus:border-2 focus:border-[#3652E0] focus:outline-none transition-colors peer"
+      className={`w-full h-[48px] md:h-[56px] rounded-[8px] border bg-white focus:outline-none transition-colors peer
+  ${
+    error
+      ? "border-red-500 focus-visible:ring-red-500"
+      : "border-[#DBDDE1] focus:border-2 focus:border-[#3652E0]"
+  }`}
     />
   </div>
 );
