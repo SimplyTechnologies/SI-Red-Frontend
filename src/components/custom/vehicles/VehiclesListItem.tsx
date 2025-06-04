@@ -1,8 +1,8 @@
-import type { VehicleResponse } from "@/api/schemas";
-import { getVehicleStatusIcon, getLikeIcon } from "@/utils/vehicleHelpers";
-import { getVehicleStatusBadge } from "@/helpers/getVehicleStatusBadge";
-import { useVehiclesStore } from "@/store/useVehiclesStore";
-import { useNavigate } from "react-router-dom";
+import type { VehicleResponse } from '@/api/schemas';
+import { getVehicleStatusIcon, getLikeIcon } from '@/utils/vehicleHelpers';
+import { getVehicleStatusBadge } from '@/helpers/getVehicleStatusBadge';
+import { useVehiclesStore } from '@/store/useVehiclesStore';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   vehicle: VehicleResponse;

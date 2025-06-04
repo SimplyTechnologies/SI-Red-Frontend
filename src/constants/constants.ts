@@ -4,9 +4,23 @@ export const VEHICLES_TABS = {
 } as const;
 
 export const customersTableHeaders = [
-  "Personal Info",
+  "Name",
   "Email",
   "Phone Number",
   "Vehicle",
   "Assigned Date",
+  "Action"
 ];
+
+export const usersTableHeaders = [
+  "Name",
+  "Email",
+  "Phone Number",
+  "Status",
+  "Action"
+];
+
+export const TABLE_PAGES = {
+  USERS: "users",
+  CUSTOMERS: "customers",
+} as const;
