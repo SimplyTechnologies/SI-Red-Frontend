@@ -30,7 +30,6 @@ export default function Form({
     phone?: string;
   }>({});
 
-  // Обновляем ошибки, если они пришли с сервера
   useEffect(() => {
     if (externalErrors) {
       setErrors(externalErrors);
@@ -55,13 +54,11 @@ export default function Form({
       newErrors.phone = "Enter a valid phone number.";
     }
 
-    // если есть хотя бы одна ошибка — показываем их и НЕ сабмитим
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    // ошибок нет — сбрасываем локальные ошибки и сабмитим
     setErrors({});
     onSubmit({ firstName, lastName, email, phone });
   };

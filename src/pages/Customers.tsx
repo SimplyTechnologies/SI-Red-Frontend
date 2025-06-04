@@ -1,7 +1,7 @@
 import { Table, TableBody } from "@/components/ui/table";
 import EmptyState from "@/components/custom/EmptyState";
 import TableHeaderComponent from "@/components/custom/customers/TableHeader";
-import SearchBar from "@/components/custom/customers/SearchBar"; // ← переименовал
+import SearchBar from "@/components/custom/customers/SearchBar";
 import { useState } from "react";
 import EmptyCustomersTableIcon from "@/assets/icons/emptyCustomersTable.svg?react";
 import { TABLE_PAGES } from "@/constants/constants";
