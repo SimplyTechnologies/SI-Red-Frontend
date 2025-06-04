@@ -7,6 +7,7 @@ import UsersListHeader from "@/components/custom/users/UsersListHeader";
 import Delete from "@/assets/icons/recycle.svg?react";
 import Avatar from "@/assets/icons/avatar.svg?react";
 import { getUserStatus } from "@/utils/userHelper";
+import { TABLE_PAGES } from "@/constants/constants";
 
 export default function Users() {
   const { users } = useUserStore();
@@ -19,20 +20,25 @@ export default function Users() {
         <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col">
           <div className="overflow-auto flex-1">
             <Table>
-              <TableHeaderComponent info={'user'} />
+              <TableHeaderComponent tableName={TABLE_PAGES.USERS} />
               <TableBody>
                 {users.length ? (
                   users.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell>
                         <div className="flex justify-start items-center gap-4 font-bold text-heading">
-                          <Avatar />{user.userName}
+                          <Avatar />
+                          {user.userName}
                         </div>
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.phoneNumber}</TableCell>
                       <TableCell>
-                        <div className={`w-[80px] h-[40px] ${getUserStatus(user.status)} font-semibold flex justify-center items-center rounded-[100px]`}>
+                        <div
+                          className={`w-[80px] h-[40px] 
+                          ${getUserStatus(user.status)} 
+                          font-semibold flex justify-center items-center rounded-[100px]`}
+                        >
                           {user.status}
                         </div>
                       </TableCell>
@@ -48,7 +54,7 @@ export default function Users() {
                     text={
                       "At the moment, there are no users listed. However, you have the option to manually add new users."
                     }
-                    info={"users"}
+                    tableName={TABLE_PAGES.USERS}
                     icon={EmptyCustomersTableIcon}
                   />
                 )}

@@ -3,10 +3,10 @@ import { customersTableHeaders } from "@/constants/constants";
 import { usersTableHeaders } from "@/constants/constants";
 
 interface Props {
-  info: string
+  tableName: string
 }
-export default function Header({info}: Props) {
-  const headers = info === "user" ? usersTableHeaders : customersTableHeaders;
+export default function Header({tableName}: Props) {
+  const headers = tableName === "users" ? usersTableHeaders : customersTableHeaders;
 
   return (
     <TableHeader>

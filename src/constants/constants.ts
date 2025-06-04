@@ -19,3 +19,8 @@ export const usersTableHeaders = [
   "Status",
   "Action"
 ];
+
+export const TABLE_PAGES = {
+  USERS: "users",
+  CUSTOMERS: "customers",
+} as const;

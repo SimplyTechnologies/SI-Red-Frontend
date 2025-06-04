@@ -4,6 +4,7 @@ import TableHeaderComponent from "@/components/custom/customers/TableHeader";
 import SearchBar from "@/components/custom/customers/SearchBar"; // ← переименовал
 import { useState } from "react";
 import EmptyCustomersTableIcon from "@/assets/icons/emptyCustomersTable.svg?react";
+import { TABLE_PAGES } from "@/constants/constants";
 
 export default function Customers() {
   const [search, setSearch] = useState("");
@@ -15,12 +16,12 @@ export default function Customers() {
       <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col">
         <div className="overflow-auto flex-1">
           <Table>
-            <TableHeaderComponent info={'customer'} />
+            <TableHeaderComponent tableName={TABLE_PAGES.CUSTOMERS} />
             <TableBody>
               {customers.length === 0 ? (
                 <EmptyState
                   text={"All customers will be displayed here."}
-                  info={"customers"}
+                  tableName={TABLE_PAGES.CUSTOMERS}
                   icon={EmptyCustomersTableIcon}
                 />
               ) : null}
