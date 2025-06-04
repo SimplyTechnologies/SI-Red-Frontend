@@ -42,7 +42,17 @@ export const customMutator = async <T>({
   }
 
   if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+    let errorBody;
+    try {
+      errorBody = await res.json();
+    } catch (e) {
+      errorBody = { message: res.statusText };
+    }
+
+    const error = new Error(`HTTP error! status: ${res.status}`);
+    (error as any).status = res.status;
+    (error as any).data = errorBody;
+    throw error;
   }
 
   return res.json();

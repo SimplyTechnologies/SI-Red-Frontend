@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import FormField from "./FormField";
 import { Button } from "@/components/ui/button";
 
@@ -10,9 +10,14 @@ interface Props {
     phone: string;
   }) => void;
   submitLabel?: string;
+  externalErrors?: Record<string, string>;
 }
 
-export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
+export default function Form({
+  onSubmit,
+  submitLabel = "Save",
+  externalErrors = {},
+}: Props) {
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -24,6 +29,13 @@ export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
     email?: string;
     phone?: string;
   }>({});
+
+  // Обновляем ошибки, если они пришли с сервера
+  useEffect(() => {
+    if (externalErrors) {
+      setErrors(externalErrors);
+    }
+  }, [externalErrors]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,11 +55,13 @@ export default function Form({ onSubmit, submitLabel = "Save" }: Props) {
       newErrors.phone = "Enter a valid phone number.";
     }
 
+    // если есть хотя бы одна ошибка — показываем их и НЕ сабмитим
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    // ошибок нет — сбрасываем локальные ошибки и сабмитим
     setErrors({});
     onSubmit({ firstName, lastName, email, phone });
   };
