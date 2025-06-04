@@ -3,72 +3,55 @@ import { create } from "zustand";
 interface User {
   id: string;
   email: string;
-  userName: string;
-  phoneNumber: string;
-  status: string;
+  phoneNumber: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  isVerified: boolean;
 }
 
 interface UserState {
   users: User[];
   email: string;
   password: string;
-  userName: string;
+  firstName: string;
+  lastName: string;
   phoneNumber: string;
-  status: string;
+  isVerified: boolean;
   userFormOpen: boolean;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  setUserName: (userName: string) => void;
+  setFirstName: (userName: string) => void;
+  setLastName: (userName: string) => void;
   setPhoneNumber: (phone: string) => void;
-  setStatus: (status: string) => void;
+  setIsVerified: (isVerified: boolean) => void;
   setUsers: (users: User[]) => void;
-  setUserFormOpen: (isOpen: boolean) => void,
+  setUserFormOpen: (isOpen: boolean) => void;
   reset: () => void;
 }
 
 export const useUserStore = create<UserState>((set) => ({
-  users: [
-    {
-      id: '1',
-      email: 'john@example.com',
-      userName: 'John Doe',
-      phoneNumber: '+123456789',
-      status: 'Pending',
-    },
-    {
-      id: '2',
-      email: 'john@example.com',
-      userName: 'John Doe',
-      phoneNumber: '+123456789',
-      status: 'Pending',
-    },
-    {
-      id: '3',
-      email: 'john@example.com',
-      userName: 'John Doe',
-      phoneNumber: '+123456789',
-      status: 'Activated',
-    },
-  ],
+  users: [],
   email: "",
   password: "",
-  userName: "",
+  firstName: "",
+  lastName: "",
   phoneNumber: "",
-  status: "",
+  isVerified: false,
   userFormOpen: false,
   setEmail: (email) => set({ email }),
   setPassword: (password) => set({ password }),
-  setUserName: (userName) => set({ userName }),
+  setFirstName: (firstName) => set({ firstName }),
+  setLastName: (lastName) => set({ lastName }),
   setPhoneNumber: (phoneNumber) => set({ phoneNumber }),
-  setStatus: (status) => set({ status }),
+  setIsVerified: (isVerified) => set({ isVerified }),
   setUsers: (users) => set({ users }),
   setUserFormOpen: (userFormOpen) => set({ userFormOpen }),
   reset: () =>
     set({
       email: "",
       password: "",
-      userName: "",
+      firstName: "",
+      lastName: "",
       phoneNumber: "",
-      status: "",
     }),
 }));

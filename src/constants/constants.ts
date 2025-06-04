@@ -9,7 +9,7 @@ export const customersTableHeaders = [
   "Phone Number",
   "Vehicle",
   "Assigned Date",
-  "Action"
+  "Action",
 ];
 
 export const usersTableHeaders = [
@@ -17,10 +17,15 @@ export const usersTableHeaders = [
   "Email",
   "Phone Number",
   "Status",
-  "Action"
+  "Action",
 ];
 
 export const TABLE_PAGES = {
   USERS: "users",
   CUSTOMERS: "customers",
+} as const;
+
+export const USER_STATUS = {
+  ACTIVATED: "Activated",
+  PENDING: "Pending",
 } as const;
