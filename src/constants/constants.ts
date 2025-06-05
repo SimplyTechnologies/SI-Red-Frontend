@@ -6,8 +6,8 @@ export const VEHICLES_TABS = {
 export const customersTableHeaders = [
   "Name",
   "Vehicle",
-  "Email",
   "Assigned Date",
+  "Email",
   "Phone Number",
   "Actions",
 ];

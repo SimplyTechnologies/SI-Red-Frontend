@@ -47,7 +47,7 @@ export default function CustomersTableData({
             </button>
             <Avatar />
             <div>
-              <p className="font-bold">{customer.name}</p>
+              <p className="font-bold text-[#192252]">{customer.name}</p>
             </div>
           </div>
         </TableCell>
@@ -55,7 +55,7 @@ export default function CustomersTableData({
         <TableCell>
           <div className="flex items-center gap-2">
             <div>
-              <p className="text-primary font-medium">
+              <p className="text-primary font-medium text-[#192252]">
                 {customer.vehicles[0]?.vin}
               </p>
               <p className="text-sm">{customer.vehicles[0]?.model}</p>
@@ -69,8 +69,8 @@ export default function CustomersTableData({
           </div>
         </TableCell>
 
-        <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.assignDate}</TableCell>
+        <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.phone}</TableCell>
         <TableCell>
           <div
@@ -90,8 +90,8 @@ export default function CustomersTableData({
               <p className="text-primary font-medium">{vehicle.vin}</p>
               <p className="text-sm">{vehicle.model}</p>
             </TableCell>
-            <TableCell />
             <TableCell>{customer.assignDate}</TableCell>
+            <TableCell />
             <TableCell />
             <TableCell />
           </TableRow>
