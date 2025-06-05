@@ -28,7 +28,7 @@ export default function AssignCustomerSection() {
         toast({
           title: "Success",
           description: message,
-          variant: "default",
+          variant: "success",
         });
 
         setOpen(false);
