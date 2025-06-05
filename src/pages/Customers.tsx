@@ -5,25 +5,45 @@ import TableHeaderComponent from "@/components/custom/customers/TableHeader";
 import EmptyCustomersTableIcon from "@/assets/icons/emptyCustomersTable.svg?react";
 import SearchBar from "@/components/custom/customers/SearchBar";
 import CustomersTableData from "@/components/custom/customers/CustomersTableData";
-import { TABLE_PAGES } from "@/constants/constants";
-import { useCustomerStore } from "@/store/useCustomerStore";
-import { mockCustomers } from "@/constants/mockCustomers";
+import { EMPTY_TABLE_TEXT, TABLE_PAGES } from "@/constants/constants";
 import { PaginationDemo } from "@/components/custom/Pagination";
+import { useGetAllCustomers } from "@/api/customer/customer";
+import type { CustomerResponse } from "@/api/schemas";
+import { useDebounce } from "use-debounce";
+
+type CustomerWithVehicles = CustomerResponse & {
+  vehicles: {
+    vin: string;
+    year: string;
+    assignedDate?: string;
+    model?: {
+      name: string;
+      make?: {
+        name: string;
+      };
+    };
+  }[];
+};
 
 export default function Customers() {
   const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const customers = useCustomerStore((s) => s.customers);
-  const setCustomers = useCustomerStore((s) => s.setCustomers);
-
-  const totalPages = Math.ceil(customers.length / limit);
-  const paginatedCustomers = customers.slice((page - 1) * limit, page * limit);
+  const { data, isLoading } = useGetAllCustomers({
+    page,
+    limit,
+    search: debouncedSearch,
+  });
 
   useEffect(() => {
-    setCustomers(mockCustomers);
-  }, [setCustomers]);
+    setPage(1);
+  }, [debouncedSearch]);
+
+  const customers = data?.customers ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.ceil(total / limit);
 
   useEffect(() => {
     setPage(1);
@@ -38,11 +58,35 @@ export default function Customers() {
           <Table>
             <TableHeaderComponent tableName={TABLE_PAGES.CUSTOMERS} />
             <TableBody>
-              {paginatedCustomers.length > 0 ? (
+              {isLoading ? null : customers.length > 0 ? (
                 <>
-                  {paginatedCustomers.map((c) => (
-                    <CustomersTableData key={c.id} customer={c} />
-                  ))}
+                  {(customers as CustomerWithVehicles[]).map((c) => {
+                    const mappedCustomer = {
+                      id: c.id,
+                      name: `${c.firstName ?? ""} ${c.lastName ?? ""}`.trim(),
+                      username: c.email.split("@")[0],
+                      phoneNumber: c.phoneNumber ?? "—",
+                      email: c.email,
+                      assignedDate: new Date(c.createdAt).toLocaleDateString(),
+                      vehicles: (c.vehicles ?? []).map((v) => ({
+                        vin: v.vin,
+                        model: `${v.model?.make?.name ?? "Unknown"} ${
+                          v.model?.name ?? "Model"
+                        } ${v.year}`,
+                        assignedDate: new Date(
+                          v.assignedDate ?? ""
+                        ).toLocaleDateString(),
+                      })),
+                    };
+
+                    return (
+                      <CustomersTableData
+                        key={c.id}
+                        customer={mappedCustomer}
+                      />
+                    );
+                  })}
+
                   <TableRow>
                     <TableCell colSpan={6}>
                       <div className="flex justify-end pt-4">
@@ -57,7 +101,7 @@ export default function Customers() {
                 </>
               ) : (
                 <EmptyState
-                  text={"All customers will be displayed here."}
+                  text={EMPTY_TABLE_TEXT.CUSTOMERS}
                   tableName={TABLE_PAGES.CUSTOMERS}
                   icon={EmptyCustomersTableIcon}
                 />

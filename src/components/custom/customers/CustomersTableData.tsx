@@ -13,9 +13,9 @@ interface Customer {
   id: string;
   name: string;
   username: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
-  assignDate: string;
+  assignedDate: string;
   vehicles: Vehicle[];
 }
 
@@ -69,9 +69,9 @@ export default function CustomersTableData({
           </div>
         </TableCell>
 
-        <TableCell>{customer.assignDate}</TableCell>
+        <TableCell>{customer.assignedDate}</TableCell>
         <TableCell className="font-bold">{customer.email}</TableCell>
-        <TableCell>{customer.phone}</TableCell>
+        <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
           <div
             className="flex justify-center items-center w-full cursor-pointer"
@@ -84,13 +84,13 @@ export default function CustomersTableData({
 
       {expanded &&
         customer.vehicles.slice(1).map((vehicle) => (
-          <TableRow>
+          <TableRow key={vehicle.vin} className="bg-[#F9FAFB] transition-all">
             <TableCell />
             <TableCell>
               <p className="text-primary font-medium">{vehicle.vin}</p>
               <p className="text-sm">{vehicle.model}</p>
             </TableCell>
-            <TableCell>{customer.assignDate}</TableCell>
+            <TableCell>{customer.assignedDate}</TableCell>
             <TableCell />
             <TableCell />
             <TableCell />

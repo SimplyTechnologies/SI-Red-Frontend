@@ -9,7 +9,7 @@ export interface Customer {
   id: string;
   name: string;
   username: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
   assignDate: string;
   vehicles: Vehicle[];
