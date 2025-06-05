@@ -6,13 +6,13 @@ import Vehicles from "./pages/Vehicles";
 import Users from "./pages/Users";
 import Customers from "./pages/Customers";
 import Account from "./pages/Account";
-import VehicleDetails from "./components/custom/vehicles/VehicleDetails";
+import VehicleDetails from "./components/custom/vehicles/VehiclesDetails/VehicleDetails";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/signin" element={<Signin />} />
-    
+
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/vehicles" element={<Vehicles />} />
