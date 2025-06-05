@@ -29,3 +29,8 @@ export const USER_STATUS = {
   ACTIVATED: "Activated",
   PENDING: "Pending",
 } as const;
+
+export const EMPTY_TABLE_TEXT = {
+  USERS: "At the moment, there are no users listed. However, you have the option to manually add new users.",
+  CUSTOMERS: "All customers will be displayed here.",
+} as const;
