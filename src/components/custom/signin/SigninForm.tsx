@@ -12,8 +12,12 @@ import type { CheckedState } from "@radix-ui/react-checkbox";
 export default function SigninForm() {
   const { email, password, setEmail, setPassword, reset } = useAuthStore();
   const [checked, setChecked] = useState<CheckedState>(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    general?: string;
+  }>({});
 
   const { mutate: signIn, status } = useSignIn({
     mutation: {
@@ -24,19 +28,26 @@ export default function SigninForm() {
         navigate("/");
       },
       onError: (error: any) => {
-        const message =
-          error?.data?.errors?.[0]?.msg || // from express-validator
-          error?.message ||
-          "Login failed";
+        const newErrors: typeof errors = {};
 
-        setError(message);
+        if (Array.isArray(error?.data?.errors)) {
+          error.data.errors.forEach((err: any) => {
+            if (err.path === "email") newErrors.email = err.msg;
+            if (err.path === "password") newErrors.password = err.msg;
+          });
+        }
+        if (error?.message === "Incorrect email or password") {
+          newErrors.general = "Incorrect email or password";
+        }
+
+        setErrors(newErrors);
       },
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setErrors({});
 
     const payload: SignInRequest = {
       email,
@@ -51,8 +62,6 @@ export default function SigninForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
-
       <InputField
         id="email"
         type="email"
@@ -60,7 +69,13 @@ export default function SigninForm() {
         placeholder="example@mail.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        error={errors.email || errors.general}
       />
+      <div className="h-[10px]">
+        {errors.email && (
+          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">{errors.email}</div>
+        )}
+      </div>
 
       <InputField
         id="password"
@@ -69,7 +84,16 @@ export default function SigninForm() {
         placeholder="Enter Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        error={errors.password || errors.general}
       />
+      <div className="h-[10px]">
+        {errors.password && (
+          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">{errors.password}</div>
+        )}
+        {errors.general && (
+          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">{errors.general}</div>
+        )}
+      </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between text-sm gap-2">
         <div className="flex items-center gap-2">
