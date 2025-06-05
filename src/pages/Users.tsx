@@ -43,7 +43,7 @@ export default function Users() {
   };
 
   return (
-    <div className="flex flex-col h-full px-6">
+    <div className="flex flex-col h-full w-screen px-6">
       <UsersListHeader search={search} setSearch={setSearch} />
       <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col mb-2">
         <div className="overflow-auto flex-1">
