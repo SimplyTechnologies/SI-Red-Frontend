@@ -3,11 +3,14 @@ import UserFormDialog from "@/components/assignToCustomerCreateUserDialog/FormDi
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import UserForm from "@/components/assignToCustomerCreateUserDialog/Form";
-import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 
-export default function UsersListHeader () {
-    const [search, setSearch] = useState("");
+type Props = {
+  search: string;
+  setSearch: (val: string) => void;
+};
+
+export default function UsersListHeader ({search, setSearch}: Props) {
     const { userFormOpen, setUserFormOpen } = useUserStore();
 
     return (

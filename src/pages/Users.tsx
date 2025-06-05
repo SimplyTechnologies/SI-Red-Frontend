@@ -1,68 +1,87 @@
-import EmptyState from "@/components/custom/EmptyState";
+import { useEffect, useState } from "react";
+import { useUserStore } from "@/store/useUserStore";
+import { getGetUsersQueryKey, useGetUsers } from "@/api/user/user";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import EmptyState from "@/components/custom/EmptyState";
 import TableHeaderComponent from "@/components/custom/customers/TableHeader";
 import EmptyCustomersTableIcon from "@/assets/icons/emptyUsersTable.svg?react";
-import { useUserStore } from "@/store/useUserStore";
 import UsersListHeader from "@/components/custom/users/UsersListHeader";
-import Delete from "@/assets/icons/recycle.svg?react";
-import Avatar from "@/assets/icons/avatar.svg?react";
-import { getUserStatus } from "@/utils/userHelper";
-import { TABLE_PAGES } from "@/constants/constants";
+import UsersTableData from "@/components/custom/users/UsersTableData";
+import { EMPTY_TABLE_TEXT, TABLE_PAGES } from "@/constants/constants";
+import { PaginationDemo } from "@/components/custom/Pagination";
+import { useDebounce } from "use-debounce";
+import useDeleteUserWithToast from "@/hooks/useDeleteUserWithToast";
+import type { User } from "@/store/useUserStore";
 
 export default function Users() {
-  const { users } = useUserStore();
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 300);
+  const [page, setPage] = useState(1);
+  const limit = 5;
+
+  const { data } = useGetUsers(
+    { page, limit, search: debouncedSearch },
+    { query: { select: (res) => res } }
+  );
+
+  const setUsers = useUserStore((state) => state.setUsers);
+  const users = data?.users ?? [];
+  const totalPages = Math.ceil((data?.total || 0) / limit);
+
+  useEffect(() => setPage(1), [debouncedSearch]);
+  useEffect(() => setUsers(users), [users, setUsers]);
+
+  const queryKey = getGetUsersQueryKey({
+    page,
+    limit,
+    search: debouncedSearch,
+  });
+  const deleteUserMutation = useDeleteUserWithToast(queryKey);
+
+  const handleDelete = (id: string) => {
+    deleteUserMutation.mutate({ id });
+  };
 
   return (
-    <>
-      <div className="flex flex-col h-full px-6">
-        <UsersListHeader />
-
-        <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col">
-          <div className="overflow-auto flex-1">
-            <Table>
-              <TableHeaderComponent tableName={TABLE_PAGES.USERS} />
-              <TableBody>
-                {users.length ? (
-                  users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex justify-start items-center gap-4 font-bold text-heading">
-                          <Avatar />
-                          {user.userName}
-                        </div>
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.phoneNumber}</TableCell>
-                      <TableCell>
-                        <div
-                          className={`w-[80px] h-[40px] 
-                          ${getUserStatus(user.status)} 
-                          font-semibold flex justify-center items-center rounded-[100px]`}
-                        >
-                          {user.status}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex justify-center items-center w-full cursor-pointer">
-                          <Delete />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <EmptyState
-                    text={
-                      "At the moment, there are no users listed. However, you have the option to manually add new users."
-                    }
-                    tableName={TABLE_PAGES.USERS}
-                    icon={EmptyCustomersTableIcon}
-                  />
-                )}
-              </TableBody>
-            </Table>
-          </div>
+    <div className="flex flex-col h-full px-6">
+      <UsersListHeader search={search} setSearch={setSearch} />
+      <div className="flex-1 overflow-hidden bg-white shadow rounded-[16px] flex flex-col mb-2">
+        <div className="overflow-auto flex-1">
+          <Table>
+            <TableHeaderComponent tableName={TABLE_PAGES.USERS} />
+            <TableBody>
+              {users.length ? (
+                <>
+                  {users.map((user: User) => (
+                    <UsersTableData
+                      key={user.id}
+                      user={user}
+                      handleDelete={handleDelete}
+                    />
+                  ))}
+                  <TableRow>
+                    <TableCell colSpan={5}>
+                      <div className="flex justify-end pt-4">
+                        <PaginationDemo
+                          page={page}
+                          totalPages={totalPages}
+                          onPageChange={setPage}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                </>
+              ) : (
+                <EmptyState
+                  text={EMPTY_TABLE_TEXT.USERS}
+                  tableName={TABLE_PAGES.USERS}
+                  icon={EmptyCustomersTableIcon}
+                />
+              )}
+            </TableBody>
+          </Table>
         </div>
       </div>
-    </>
+    </div>
   );
 }
