@@ -5,11 +5,11 @@ export const VEHICLES_TABS = {
 
 export const customersTableHeaders = [
   "Name",
-  "Email",
-  "Phone Number",
   "Vehicle",
+  "Email",
   "Assigned Date",
-  "Action"
+  "Phone Number",
+  "Actions",
 ];
 
 export const usersTableHeaders = [
@@ -17,7 +17,7 @@ export const usersTableHeaders = [
   "Email",
   "Phone Number",
   "Status",
-  "Action"
+  "Action",
 ];
 
 export const TABLE_PAGES = {
