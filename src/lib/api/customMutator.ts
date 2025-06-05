@@ -34,15 +34,27 @@ export const customMutator = async <T>({
     signal,
   });
 
-  if (res.status === 401) {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    window.location.href = "/signin";
-    throw new Error("Unauthorized");
-  }
-
   if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+    let errorBody;
+    try {
+      errorBody = await res.json();
+    } catch {
+      errorBody = { message: res.statusText };
+    }
+
+    if (res.status === 401) {
+      const error: any = new Error("Incorrect email or password");
+      error.status = 401;
+      errorBody = error.data;
+
+      throw error;
+    }
+
+    const error: any = new Error(errorBody?.message || "Something went wrong");
+    error.status = res.status;
+    error.data = errorBody;
+
+    throw error;
   }
 
   return res.json();

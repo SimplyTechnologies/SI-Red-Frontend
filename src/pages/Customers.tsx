@@ -4,7 +4,7 @@ import TableHeaderComponent from "@/components/custom/customers/TableHeader";
 import SearchBar from "@/components/custom/customers/SearchBar";
 import { useState } from "react";
 import EmptyCustomersTableIcon from "@/assets/icons/emptyCustomersTable.svg?react";
-import { TABLE_PAGES } from "@/constants/constants";
+import { EMPTY_TABLE_TEXT, TABLE_PAGES } from "@/constants/constants";
 
 import CustomerRow from "@/components/custom/customers/CustomerRow";
 
@@ -40,7 +40,7 @@ export default function Customers() {
                 customers.map((c) => <CustomerRow key={c.id} customer={c} />)
               ) : (
                 <EmptyState
-                  text="All customers will be displayed here."
+                  text={EMPTY_TABLE_TEXT.CUSTOMERS}
                   tableName={TABLE_PAGES.CUSTOMERS}
                   icon={EmptyCustomersTableIcon}
                 />

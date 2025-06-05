@@ -1,6 +1,6 @@
 import { AddNewVehicleButton } from "@/components/custom/vehicles/AddNewVehicleButton";
 import Filter from "@/components/custom/vehicles/Filter";
-import VehicleDetails from "@/components/custom/vehicles/VehicleDetails";
+import VehicleDetails from "@/components/custom/vehicles/VehiclesDetails/VehicleDetails";
 import VehiclesTab from "@/components/custom/vehicles/vehiclesTab/VehiclesTab";
 import Map from "@/components/map/Map";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
