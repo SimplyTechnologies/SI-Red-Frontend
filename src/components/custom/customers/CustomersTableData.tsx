@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import ChevronDown from "@/assets/icons/chevron-down.svg?react";
-import Trash from "@/assets/icons/recycle.svg?react";
 import Avatar from "@/assets/icons/avatar.svg?react";
+import { Trash2 } from "lucide-react";
 
 interface Vehicle {
   vin: string;
@@ -77,7 +77,7 @@ export default function CustomersTableData({
             className="flex justify-center items-center w-full cursor-pointer"
             onClick={() => handleDelete?.(customer.id)}
           >
-            <Trash />
+            <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
           </div>
         </TableCell>
       </TableRow>
