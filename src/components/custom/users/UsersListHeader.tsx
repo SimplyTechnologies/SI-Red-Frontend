@@ -16,7 +16,7 @@ export default function UsersListHeader({ search, setSearch }: Props) {
   const createUserMutation = useCreateUserWithToast();
 
   return (
-    <div className="flex flex-wrap justify-between items-center">
+    <div className="flex justify-between items-center">
       <SearchBar search={search} setSearch={setSearch} />
       <Button
         onClick={() => setUserFormOpen(true)}
