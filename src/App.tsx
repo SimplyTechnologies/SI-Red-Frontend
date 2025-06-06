@@ -7,13 +7,34 @@ import Users from "./pages/Users";
 import Customers from "./pages/Customers";
 import Account from "./pages/Account";
 import VehicleDetails from "./components/custom/vehicles/VehiclesDetails/VehicleDetails";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore";
+import ProtectedLayout from "./components/layout/ProtectedLayout";
+import PublicOnlyRoute from "./components/layout/PublicOnlyRoute";
 
 export default function App() {
+  useEffect(() => {
+    useAuthStore.getState().loadFromStorage();
+  }, []);
+
   return (
     <Routes>
-      <Route path="/signin" element={<Signin />} />
+      <Route
+        path="/signin"
+        element={
+          <PublicOnlyRoute>
+            <Signin />
+          </PublicOnlyRoute>
+        }
+      />
 
-      <Route element={<Layout />}>
+      <Route
+        element={
+          <ProtectedLayout>
+            <Layout />
+          </ProtectedLayout>
+        }
+      >
         <Route path="/" element={<Dashboard />} />
         <Route path="/vehicles" element={<Vehicles />} />
         <Route path="/users" element={<Users />} />

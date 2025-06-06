@@ -10,7 +10,8 @@ import type { SignInRequest } from "@/api/schemas";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function SigninForm() {
-  const { email, password, setEmail, setPassword, reset } = useAuthStore();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [checked, setChecked] = useState<CheckedState>(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState<{
@@ -19,12 +20,18 @@ export default function SigninForm() {
     general?: string;
   }>({});
 
+  const { setTokens } = useAuthStore();
+
   const { mutate: signIn, status } = useSignIn({
     mutation: {
       onSuccess: (data) => {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        reset();
+        const role = data.role;
+
+        setTokens(data.accessToken, data.refreshToken, role);
+
+        setEmail("");
+        setPassword("");
+
         navigate("/");
       },
       onError: (error: any) => {
@@ -73,7 +80,9 @@ export default function SigninForm() {
       />
       <div className="h-[10px]">
         {errors.email && (
-          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">{errors.email}</div>
+          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">
+            {errors.email}
+          </div>
         )}
       </div>
 
@@ -88,10 +97,14 @@ export default function SigninForm() {
       />
       <div className="h-[10px]">
         {errors.password && (
-          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">{errors.password}</div>
+          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">
+            {errors.password}
+          </div>
         )}
         {errors.general && (
-          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">{errors.general}</div>
+          <div className="relative -top-[10px] text-red-500 text-[11px] mb-2">
+            {errors.general}
+          </div>
         )}
       </div>
 
