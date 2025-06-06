@@ -22,7 +22,7 @@ interface UserState {
   setPassword: (password: string) => void;
   setFirstName: (userName: string) => void;
   setLastName: (userName: string) => void;
-  setPhoneNumber: (phone: string) => void;
+  setPhoneNumber: (phoneNumber: string) => void;
   setIsVerified: (isVerified: boolean) => void;
   setUsers: (users: User[]) => void;
   setUserFormOpen: (isOpen: boolean) => void;

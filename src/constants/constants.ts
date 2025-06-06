@@ -5,11 +5,11 @@ export const VEHICLES_TABS = {
 
 export const customersTableHeaders = [
   "Name",
-  "Email",
-  "Phone Number",
   "Vehicle",
   "Assigned Date",
-  "Action",
+  "Email",
+  "Phone Number",
+  "Actions",
 ];
 
 export const usersTableHeaders = [
@@ -31,6 +31,7 @@ export const USER_STATUS = {
 } as const;
 
 export const EMPTY_TABLE_TEXT = {
-  USERS: "At the moment, there are no users listed. However, you have the option to manually add new users.",
+  USERS:
+    "At the moment, there are no users listed. However, you have the option to manually add new users.",
   CUSTOMERS: "All customers will be displayed here.",
 } as const;
