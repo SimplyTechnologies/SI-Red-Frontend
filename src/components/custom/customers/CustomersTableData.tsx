@@ -12,7 +12,6 @@ interface Vehicle {
 interface Customer {
   id: string;
   name: string;
-  username: string;
   phoneNumber: string;
   email: string;
   assignedDate: string;
