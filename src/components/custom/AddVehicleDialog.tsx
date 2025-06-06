@@ -169,7 +169,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
           variant: "success",
         });
 
-        onOpenChange(false); // Close the modal
+        onOpenChange(false);
       },
       onError: () => {
         toast({
