@@ -8,7 +8,7 @@ import VehicleInfo from "./VehicleInfo";
 import AssignCustomerSection from "./AssignCustomerSection";
 
 export default function VehicleDetails() {
-  const { selectedVehicle, setSelectedVehicle } = useVehiclesStore((s) => ({
+  const { setSelectedVehicle } = useVehiclesStore((s) => ({
     selectedVehicle: s.selectedVehicle,
     setSelectedVehicle: s.setSelectedVehicle,
   }));
