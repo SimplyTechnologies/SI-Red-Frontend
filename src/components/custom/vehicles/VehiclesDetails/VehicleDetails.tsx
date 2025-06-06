@@ -19,6 +19,7 @@ export default function VehicleDetails() {
 
   useEffect(() => {
     setSelectedVehicle(vehicle || null);
+    console.log(vehicle);
   }, [vehicle]);
 
   return (
@@ -27,7 +28,9 @@ export default function VehicleDetails() {
         <div className="p-5 pb-0">
           <VehicleHeader />
           <VehicleInfo isLoading={isLoading} />
-          <AssignCustomerSection />
+          {!isLoading && !selectedVehicle?.customer && (
+            <AssignCustomerSection />
+          )}
         </div>
       </div>
       <Map className="w-full h-full" />
