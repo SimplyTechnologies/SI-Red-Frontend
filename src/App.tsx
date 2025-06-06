@@ -7,11 +7,13 @@ import Users from "./pages/Users";
 import Customers from "./pages/Customers";
 import Account from "./pages/Account";
 import VehicleDetails from "./components/custom/vehicles/VehiclesDetails/VehicleDetails";
+import AccountActivation from "./pages/AccountActivation";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/signin" element={<Signin />} />
+      <Route path="/account-activation" element={<AccountActivation />} />
 
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />

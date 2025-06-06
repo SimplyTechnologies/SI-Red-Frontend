@@ -31,6 +31,36 @@ export const USER_STATUS = {
 } as const;
 
 export const EMPTY_TABLE_TEXT = {
-  USERS: "At the moment, there are no users listed. However, you have the option to manually add new users.",
+  USERS:
+    "At the moment, there are no users listed. However, you have the option to manually add new users.",
   CUSTOMERS: "All customers will be displayed here.",
+} as const;
+
+export const ACCOUNT_ACTIVATION_INPUTS = {
+  inputs: [
+    {
+      id: "email",
+      type: "email",
+      label: "Email address",
+      placeholder: "example@mail.com",
+    },
+    {
+      id: "name",
+      type: "text",
+      label: "Name",
+      placeholder: "John Doe",
+    },
+    {
+      id: "password",
+      type: "password",
+      label: "Password",
+      placeholder: "Enter Password",
+    },
+    {
+      id: "confirmPassword",
+      type: "password",
+      label: "confirm Password",
+      placeholder: "Enter Password",
+    }
+  ],
 } as const;
