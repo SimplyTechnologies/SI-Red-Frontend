@@ -2,11 +2,15 @@ import { useState } from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import ChevronDown from "@/assets/icons/chevron-down.svg?react";
 import Avatar from "@/assets/icons/avatar.svg?react";
-import { Trash2 } from "lucide-react";
+import { useDeleteCustomer } from "@/api/customer/customer";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 interface Vehicle {
   vin: string;
   model: string;
+  assignedDate?: string;
 }
 
 interface Customer {
@@ -20,13 +24,35 @@ interface Customer {
 
 export default function CustomersTableData({
   customer,
-  handleDelete,
 }: {
   customer: Customer;
-  handleDelete?: (id: string) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const extraVehicleCount = customer.vehicles.length - 1;
+
+  const queryClient = useQueryClient();
+
+  const { toast } = useToast();
+
+  const { mutate: deleteCustomer } = useDeleteCustomer({
+    mutation: {
+      onSuccess: () => {
+        toast({
+          title: "Customer deleted",
+          description: "Customer deleted.",
+          variant: "success",
+        });
+        queryClient.invalidateQueries({ queryKey: ["getAllCustomers"] });
+      },
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Failed to delete customer.",
+          variant: "destructive",
+        });
+      },
+    },
+  });
 
   return (
     <>
@@ -68,16 +94,14 @@ export default function CustomersTableData({
           </div>
         </TableCell>
 
-        <TableCell>{customer.assignedDate}</TableCell>
+        <TableCell>{customer.vehicles[0].assignedDate}</TableCell>
         <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
-          <div
-            className="flex justify-center items-center w-full cursor-pointer"
-            onClick={() => handleDelete?.(customer.id)}
-          >
-            <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
-          </div>
+          <ConfirmationDialog
+            userId={customer.id}
+            handleDelete={(id) => deleteCustomer({ id })}
+          />
         </TableCell>
       </TableRow>
 
@@ -89,7 +113,7 @@ export default function CustomersTableData({
               <p className="text-primary font-medium">{vehicle.vin}</p>
               <p className="text-sm">{vehicle.model}</p>
             </TableCell>
-            <TableCell>{customer.assignedDate}</TableCell>
+            <TableCell>{vehicle.assignedDate}</TableCell>
             <TableCell />
             <TableCell />
             <TableCell />
