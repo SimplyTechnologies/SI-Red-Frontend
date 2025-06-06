@@ -1,8 +1,8 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { USER_STATUS } from "@/constants/constants";
 import { getUserStatus } from "@/utils/userHelper";
-import { Trash2 } from "lucide-react";
 import Avatar from "@/assets/icons/avatar.svg?react";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 type Props = {
   user: any;
@@ -32,10 +32,7 @@ export default function UsersTableData({ user, handleDelete }: Props) {
         </TableCell>
         <TableCell>
           <div className="flex justify-center items-center w-full cursor-pointer">
-            <Trash2 
-                className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" 
-                onClick={() => handleDelete(user.id)}
-            />
+            <ConfirmationDialog handleDelete={handleDelete} userId={user.id} />
           </div>
         </TableCell>
       </TableRow>

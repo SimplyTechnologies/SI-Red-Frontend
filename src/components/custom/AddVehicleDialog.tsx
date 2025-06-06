@@ -166,7 +166,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
         toast({
           title: "Vehicle added",
           description: "Vehicle added successfully.",
-          variant: "default",
+          variant: "success",
         });
 
         onOpenChange(false); // Close the modal
