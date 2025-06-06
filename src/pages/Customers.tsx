@@ -10,8 +10,9 @@ import { PaginationDemo } from "@/components/custom/Pagination";
 import { useGetAllCustomers } from "@/api/customer/customer";
 import type { CustomerResponse } from "@/api/schemas";
 import { useDebounce } from "use-debounce";
+import { mapCustomerToTableData } from "@/utils/mapCustomerToTableData";
 
-type CustomerWithVehicles = CustomerResponse & {
+export type CustomerWithVehicles = CustomerResponse & {
   vehicles: {
     vin: string;
     year: string;
@@ -45,10 +46,6 @@ export default function Customers() {
   const total = data?.total ?? 0;
   const totalPages = Math.ceil(total / limit);
 
-  useEffect(() => {
-    setPage(1);
-  }, [search]);
-
   return (
     <div className="flex flex-col h-full px-6">
       <SearchBar search={search} setSearch={setSearch} />
@@ -60,32 +57,12 @@ export default function Customers() {
             <TableBody>
               {isLoading ? null : customers.length > 0 ? (
                 <>
-                  {(customers as CustomerWithVehicles[]).map((c) => {
-                    const mappedCustomer = {
-                      id: c.id,
-                      name: `${c.firstName ?? ""} ${c.lastName ?? ""}`.trim(),
-                      username: c.email.split("@")[0],
-                      phoneNumber: c.phoneNumber ?? "—",
-                      email: c.email,
-                      assignedDate: new Date(c.createdAt).toLocaleDateString(),
-                      vehicles: (c.vehicles ?? []).map((v) => ({
-                        vin: v.vin,
-                        model: `${v.model?.make?.name ?? "Unknown"} ${
-                          v.model?.name ?? "Model"
-                        } ${v.year}`,
-                        assignedDate: new Date(
-                          v.assignedDate ?? ""
-                        ).toLocaleDateString(),
-                      })),
-                    };
-
-                    return (
-                      <CustomersTableData
-                        key={c.id}
-                        customer={mappedCustomer}
-                      />
-                    );
-                  })}
+                  {(customers as CustomerWithVehicles[]).map((c) => (
+                    <CustomersTableData
+                      key={c.id}
+                      customer={mapCustomerToTableData(c)}
+                    />
+                  ))}
 
                   <TableRow>
                     <TableCell colSpan={6}>
