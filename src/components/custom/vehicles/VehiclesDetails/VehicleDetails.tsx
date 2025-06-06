@@ -19,7 +19,6 @@ export default function VehicleDetails() {
 
   useEffect(() => {
     setSelectedVehicle(vehicle || null);
-    console.log(vehicle);
   }, [vehicle]);
 
   return (
