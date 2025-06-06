@@ -10,8 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Profile from "@/assets/icons/profile.svg?react";
 import Logout from "@/assets/icons/logout.svg?react";
 import userDefaultPhoto from "@/assets/photos/userDefaultPhoto.png";
+import { useAuthStore } from "@/store/authStore";
 
 export default function HeaderUserMenu() {
+  const { logout } = useAuthStore();
   const navigate = useNavigate();
 
   return (
@@ -34,8 +36,7 @@ export default function HeaderUserMenu() {
 
         <DropdownMenuItem
           onClick={() => {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
+            logout();
             navigate("/signin");
           }}
           className="hover:bg-userMenu-hover cursor-pointer group"
