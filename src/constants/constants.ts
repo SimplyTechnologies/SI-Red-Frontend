@@ -35,3 +35,12 @@ export const EMPTY_TABLE_TEXT = {
     "At the moment, there are no users listed. However, you have the option to manually add new users.",
   CUSTOMERS: "All customers will be displayed here.",
 } as const;
+
+export const VEHICLE_STATUS = {
+  sold: "Sold",
+  "in stock": "In Stock",
+} as const;
+
+export type VehicleStatusKey = keyof typeof VEHICLE_STATUS;
+
+export type VehicleStatusKeys = "sold" | "in stock";

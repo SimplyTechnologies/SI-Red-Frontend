@@ -3,6 +3,7 @@ import { getVehicleStatusIcon, getLikeIcon } from "@/utils/vehicleHelpers";
 import { getVehicleStatusBadge } from "@/helpers/getVehicleStatusBadge";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { useNavigate } from "react-router-dom";
+import type { VehicleStatusKeys } from "@/constants/constants";
 interface propVehicle extends VehicleResponse {
   isFavorite: boolean;
 }
@@ -12,7 +13,9 @@ type Props = {
 };
 
 export default function VehiclesListItem({ vehicle }: Props) {
-  const VehicleStatusIcon = getVehicleStatusIcon(vehicle.status);
+  const VehicleStatusIcon = getVehicleStatusIcon(
+    vehicle.status as VehicleStatusKeys
+  );
   const { toggleFavorite, setSelectedVehicle } = useVehiclesStore((s) => ({
     favorites: s.favorites,
     toggleFavorite: s.toggleFavorite,
@@ -48,7 +51,7 @@ export default function VehiclesListItem({ vehicle }: Props) {
         </div>
       </div>
       <div className="flex items-start w-1/3  md:w-1/5 justify-between">
-        {getVehicleStatusBadge(vehicle.status)}
+        {getVehicleStatusBadge(vehicle.status as VehicleStatusKeys)}
         <div>
           <LikeButtonIcon
             className="cursor-pointer"
