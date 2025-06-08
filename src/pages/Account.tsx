@@ -3,15 +3,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuthStore } from "@/store/authStore";
+import { useUpdateUser } from "@/api/user/user";
 
 export default function Account() {
-  const [isEditing, setIsEditing] = useState(false);
+  const {
+    email,
+    firstName,
+    lastName,
+    phoneNumber,
+    setFirstName,
+    setLastName,
+    setPhoneNumber,
+  } = useAuthStore();
 
   const [formData, setFormData] = useState({
-    firstName: "Jacqueline",
-    lastName: "Morton",
-    phoneNumber: "+1-484-569-1202",
+    firstName,
+    lastName,
+    phoneNumber,
   });
+
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,10 +32,27 @@ export default function Account() {
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({
-      firstName: "Jacqueline",
-      lastName: "Morton",
-      phoneNumber: "+1-484-569-1202",
+      firstName,
+      lastName,
+      phoneNumber,
     });
+  };
+  const { mutate: updateUser } = useUpdateUser({
+    mutation: {
+      onSuccess: (data) => {
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setPhoneNumber(data.phoneNumber);
+        setIsEditing(false);
+      },
+      onError: (err) => {
+        console.error("Failed to update user:", err);
+      },
+    },
+  });
+
+  const handleSave = () => {
+    updateUser({ data: formData });
   };
 
   return (
@@ -36,11 +65,9 @@ export default function Account() {
 
         <div className="mb-8">
           <h3 className="text-[18px] font-bold text-medium mb-1 text-heading">
-            Jacqueline Morton
+            {formData.firstName} {formData.lastName}
           </h3>
-          <p className="text-[15px] text-muted-foreground">
-            jac.morton@gmail.com
-          </p>
+          <p className="text-[15px] text-muted-foreground">{email}</p>
         </div>
 
         <Separator className="mb-4 bg-[#F5F5F7]" />
@@ -60,7 +87,7 @@ export default function Account() {
                 </Button>
                 <Button
                   className="w-[10vw] h-[5vh] min-w-[110px]"
-                  onClick={() => setIsEditing(false)}
+                  onClick={() => handleSave()}
                 >
                   Save
                 </Button>
