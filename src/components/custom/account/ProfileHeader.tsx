@@ -1,7 +1,13 @@
 import { useAuthStore } from "@/store/authStore";
 
-export default function ProfileHeader() {
-  const { email, firstName, lastName } = useAuthStore();
+export function ProfileHeader({
+  firstName,
+  lastName,
+}: {
+  firstName: string;
+  lastName: string;
+}) {
+  const { email } = useAuthStore();
 
   return (
     <div className="mb-8">

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { useUpdateUser } from "@/api/user/user";
+import { ProfileHeader } from "@/components/custom/account/ProfileHeader";
+import { ProfileActions } from "@/components/custom/account/ProfileActions";
+import { ProfileForm } from "@/components/custom/account/ProfileForm";
 
 export default function Account() {
   const {
-    email,
     firstName,
     lastName,
     phoneNumber,
@@ -22,8 +22,10 @@ export default function Account() {
     lastName,
     phoneNumber,
   });
-
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof typeof formData, string>>
+  >({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,12 +33,10 @@ export default function Account() {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setFormData({
-      firstName,
-      lastName,
-      phoneNumber,
-    });
+    setFormData({ firstName, lastName, phoneNumber });
+    setErrors({});
   };
+
   const { mutate: updateUser } = useUpdateUser({
     mutation: {
       onSuccess: (data) => {
@@ -44,15 +44,28 @@ export default function Account() {
         setLastName(data.lastName);
         setPhoneNumber(data.phoneNumber);
         setIsEditing(false);
+        setErrors({});
       },
-      onError: (err) => {
-        console.error("Failed to update user:", err);
+      onError: (err: any) => {
+        const newErrors: typeof errors = {};
+
+        if (Array.isArray(err?.data?.errors)) {
+          err.data.errors.forEach((e: any) => {
+            if (e.path in formData) {
+              newErrors[e.path as keyof typeof formData] = e.msg;
+            }
+          });
+        }
+
+        setErrors(newErrors);
       },
     },
   });
 
   const handleSave = () => {
-    updateUser({ data: formData });
+    updateUser({
+      data: formData,
+    });
   };
 
   return (
@@ -63,101 +76,27 @@ export default function Account() {
           This information can be edited from your profile page.
         </p>
 
-        <div className="mb-8">
-          <h3 className="text-[18px] font-bold text-medium mb-1 text-heading">
-            {formData.firstName} {formData.lastName}
-          </h3>
-          <p className="text-[15px] text-muted-foreground">{email}</p>
-        </div>
+        <ProfileHeader
+          firstName={formData.firstName}
+          lastName={formData.lastName}
+        />
 
         <Separator className="mb-4 bg-[#F5F5F7]" />
         <div className="space-y-2 mb-5 w-[max]">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-heading text-[18px] font-bold">
-              Personal Information
-            </h2>
-            {isEditing ? (
-              <div className="flex gap-2">
-                <Button
-                  className="w-[10vw] h-[5vh] mr-5 min-w-[110px]"
-                  variant="outline"
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="w-[10vw] h-[5vh] min-w-[110px]"
-                  onClick={() => handleSave()}
-                >
-                  Save
-                </Button>
-              </div>
-            ) : (
-              <Button
-                className="w-[10vw] h-[5vh] min-w-[110px]"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit
-              </Button>
-            )}
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2 w-[42vw]">
-            <div>
-              <Label
-                htmlFor="firstName"
-                className="block mb-2 text-sm font-medium text-[#636777]"
-              >
-                First Name
-              </Label>
-              <Input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                readOnly={!isEditing}
-                className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <Label
-                htmlFor="lastName"
-                className="block mb-2 text-sm font-medium text-[#636777]"
-              >
-                Last Name
-              </Label>
-              <Input
-                type="text"
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                readOnly={!isEditing}
-                className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-
-          <div className="mt-3 w-[42vw]">
-            <Label
-              htmlFor="phoneNumber"
-              className="block mb-2 text-sm font-medium text-[#636777]"
-            >
-              Phone Number
-            </Label>
-            <Input
-              type="tel"
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              readOnly={!isEditing}
-              className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
+          <ProfileActions
+            isEditing={isEditing}
+            onEdit={() => setIsEditing(true)}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+          <ProfileForm
+            formData={formData}
+            isEditing={isEditing}
+            onChange={handleChange}
+            errors={errors}
+          />
         </div>
+
         <Separator className="mb-4 bg-[#F5F5F7]" />
 
         <div className="flex justify-between items-center mb-4">

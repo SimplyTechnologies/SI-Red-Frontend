@@ -1,23 +1,22 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+type FormData = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+};
+
 interface Props {
-  formData: {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-  };
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formData: FormData;
   isEditing: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors: Partial<Record<keyof FormData, string>>;
 }
 
-export default function ProfileForm({
-  formData,
-  handleChange,
-  isEditing,
-}: Props) {
+export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
   return (
-    <div className="space-y-2 mb-5 w-[max]">
+    <>
       <div className="grid gap-6 md:grid-cols-2 w-[42vw]">
         <div>
           <Label
@@ -31,11 +30,19 @@ export default function ProfileForm({
             id="firstName"
             name="firstName"
             value={formData.firstName}
-            onChange={handleChange}
+            onChange={onChange}
             readOnly={!isEditing}
-            className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg"
+            className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
+          <p
+            className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
+              errors.firstName ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {errors.firstName || "⠀"}
+          </p>
         </div>
+
         <div>
           <Label
             htmlFor="lastName"
@@ -48,12 +55,20 @@ export default function ProfileForm({
             id="lastName"
             name="lastName"
             value={formData.lastName}
-            onChange={handleChange}
+            onChange={onChange}
             readOnly={!isEditing}
-            className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg"
+            className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
           />
+          <p
+            className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
+              errors.lastName ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {errors.lastName || "⠀"}
+          </p>
         </div>
       </div>
+
       <div className="mt-3 w-[42vw]">
         <Label
           htmlFor="phoneNumber"
@@ -66,11 +81,18 @@ export default function ProfileForm({
           id="phoneNumber"
           name="phoneNumber"
           value={formData.phoneNumber}
-          onChange={handleChange}
+          onChange={onChange}
           readOnly={!isEditing}
-          className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg"
+          className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
         />
+        <p
+          className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
+            errors.phoneNumber ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {errors.phoneNumber || "⠀"}
+        </p>
       </div>
-    </div>
+    </>
   );
 }
