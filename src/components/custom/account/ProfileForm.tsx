@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ProfileFormError } from "./ProfileFormError";
 
 type FormData = {
   firstName: string;
@@ -15,6 +16,8 @@ interface Props {
 }
 
 export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
+  const inputClass =
+    "block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500";
   return (
     <>
       <div className="grid gap-6 md:grid-cols-2 w-[42vw]">
@@ -32,15 +35,9 @@ export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
             value={formData.firstName}
             onChange={onChange}
             readOnly={!isEditing}
-            className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            className={inputClass}
           />
-          <p
-            className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
-              errors.firstName ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {errors.firstName || "⠀"}
-          </p>
+          <ProfileFormError data={errors.firstName}></ProfileFormError>
         </div>
 
         <div>
@@ -57,15 +54,9 @@ export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
             value={formData.lastName}
             onChange={onChange}
             readOnly={!isEditing}
-            className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            className={inputClass}
           />
-          <p
-            className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
-              errors.lastName ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {errors.lastName || "⠀"}
-          </p>
+          <ProfileFormError data={errors.lastName}></ProfileFormError>
         </div>
       </div>
 
@@ -83,15 +74,9 @@ export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
           value={formData.phoneNumber}
           onChange={onChange}
           readOnly={!isEditing}
-          className="block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
         />
-        <p
-          className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
-            errors.phoneNumber ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          {errors.phoneNumber || "⠀"}
-        </p>
+        <ProfileFormError data={errors.phoneNumber}></ProfileFormError>
       </div>
     </>
   );
