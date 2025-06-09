@@ -11,8 +11,10 @@ import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
 import ProtectedLayout from "./components/layout/ProtectedLayout";
 import PublicOnlyRoute from "./components/layout/PublicOnlyRoute";
+import { USER_ROLE } from "./constants/constants";
 
 export default function App() {
+  const { role } = useAuthStore();
   useEffect(() => {
     useAuthStore.getState().loadFromStorage();
   }, []);
@@ -37,7 +39,10 @@ export default function App() {
       >
         <Route path="/" element={<Dashboard />} />
         <Route path="/vehicles" element={<Vehicles />} />
-        <Route path="/users" element={<Users />} />
+        <Route
+          path="/users"
+          element={role === USER_ROLE.SUPER_ADMIN ? <Users /> : <Navigate to="/" />}
+        />
         <Route path="/customers" element={<Customers />} />
         <Route path="/account" element={<Account />} />
         <Route path="/vehicles/:id" element={<VehicleDetails />} />
