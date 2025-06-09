@@ -45,13 +45,13 @@ export default function VehicleInfo({ isLoading }: Props) {
             {selectedVehicle?.customer && (
               <>
                 <p className="text-text-muted">
-                  Assigned At:{" "}
+                  Assigned at:{" "}
                   <span className="text-heading font-medium">
                     {selectedVehicle?.assignedDate}
                   </span>
                 </p>
                 <p className="text-text-muted">
-                  Assigned To:{" "}
+                  Assigned to:{" "}
                   <span className="text-heading font-medium">
                     {selectedVehicle?.customer?.firstName}{" "}
                     {selectedVehicle?.customer?.lastName}

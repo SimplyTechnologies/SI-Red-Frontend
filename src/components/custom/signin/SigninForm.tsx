@@ -10,8 +10,15 @@ import type { SignInRequest } from "@/api/schemas";
 import type { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function SigninForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    email,
+    password,
+    setEmail,
+    setPassword,
+    setFirstName,
+    setLastName,
+    setPhoneNumber,
+  } = useAuthStore();
   const [checked, setChecked] = useState<CheckedState>(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState<{
@@ -25,11 +32,17 @@ export default function SigninForm() {
   const { mutate: signIn, status } = useSignIn({
     mutation: {
       onSuccess: (data) => {
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+
+        setFirstName(data.firstName);
+        setLastName(data.lastName);
+        setPhoneNumber(data.phoneNumber);
+        setEmail(data.email);
         const role = data.role;
 
         setTokens(data.accessToken, data.refreshToken, role);
 
-        setEmail("");
         setPassword("");
 
         navigate("/");
