@@ -74,6 +74,7 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         setYear={setYear}
         fetchModels={fetchModels}
         errorModel={fieldErrors.model_id}
+        errorMake={fieldErrors.make_id}
         errorYear={fieldErrors.year}
       />
 

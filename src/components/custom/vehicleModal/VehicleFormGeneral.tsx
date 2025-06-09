@@ -22,6 +22,7 @@ interface Props {
   setYear: (year: string) => void;
   fetchModels: (id: number) => Promise<ModelResponse[]>;
   errorModel?: string;
+  errorMake?: string;
   errorYear?: string;
 }
 
@@ -36,6 +37,7 @@ export default function VehicleFormGeneral({
   setYear,
   fetchModels,
   errorModel,
+  errorMake,
   errorYear,
 }: Props) {
   return (
@@ -67,6 +69,7 @@ export default function VehicleFormGeneral({
             ))}
           </SelectContent>
         </Select>
+        <VehicleFormError data={errorMake || ""} />
       </div>
 
       {/* Model */}

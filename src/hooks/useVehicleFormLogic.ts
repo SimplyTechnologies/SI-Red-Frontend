@@ -41,10 +41,7 @@ export function useVehicleFormLogic(onSuccess: () => void) {
   const [coordinates, setCoordinates] = useState<{
     lat: number | null;
     lng: number | null;
-  }>({
-    lat: null,
-    lng: null,
-  });
+  }>({ lat: null, lng: null });
 
   const {
     ready,
@@ -61,13 +58,13 @@ export function useVehicleFormLogic(onSuccess: () => void) {
   const handleVinChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().trim();
     setVin(value);
-    setVinError("");
     const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
     if (!vinRegex.test(value)) {
       setVinError("VIN must be 17 valid alphanumeric characters.");
       return;
     }
 
+    setVinError("");
     setIsLoadingVin(true);
     try {
       const decodedData = await decodeVin(value);
@@ -127,9 +124,6 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     setValue("");
     clearSuggestions();
     setCoordinates({ lat: null, lng: null });
-    setFormError("");
-    setFieldErrors({});
-    setVinError("");
     onSuccess();
   });
 
@@ -146,7 +140,8 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     createVehicle(
       {
         data: {
-          model_id: model?.id ?? 0,
+          make_id: make?.id,
+          model_id: model!?.id,
           year,
           vin,
           location: locationString,
@@ -159,14 +154,21 @@ export function useVehicleFormLogic(onSuccess: () => void) {
       },
       {
         onError: (error: any) => {
-          if (error?.response?.data?.errors) {
+          const backendErrors = error?.data?.errors;
+
+          if (Array.isArray(backendErrors)) {
             const parsed: Record<string, string> = {};
-            for (const err of error.response.data.errors) {
-              parsed[err.param] = err.msg;
+
+            for (const err of backendErrors) {
+              const field = err.path || err.param;
+              if (field && !parsed[field]) {
+                parsed[field] = err.msg;
+              }
             }
+
             setFieldErrors(parsed);
           } else {
-            setFormError("Something went wrong.");
+            setFormError(error?.message || "Something went wrong.");
           }
         },
       }

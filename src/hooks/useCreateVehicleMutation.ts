@@ -17,12 +17,17 @@ export const useCreateVehicleMutation = (onSuccessClose: () => void) => {
         queryClient.invalidateQueries({ queryKey: ["vehicles"] });
         onSuccessClose();
       },
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Failed to add vehicle. Please try again.",
-          variant: "destructive",
-        });
+      onError: (error: any) => {
+        if (error.status !== 400) {
+          toast({
+            title: "Error",
+            description:
+              error.status === 409
+                ? "VIN already exists"
+                : "Failed to add vehicle. Please try again.",
+            variant: "destructive",
+          });
+        }
       },
     },
   });
