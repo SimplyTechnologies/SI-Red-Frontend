@@ -9,7 +9,7 @@ export const useVehiclesWithStore = () => {
     useVehiclesStore();
 
   const {
-    data,
+    data: vehicles,
     isLoading,
     isError,
     fetchNextPage,
@@ -20,11 +20,11 @@ export const useVehiclesWithStore = () => {
   const { data: mapPoints } = useGetVehicleMapPoints({ search }); 
 
   useEffect(() => {
-    if (data?.pages) {
-      const allVehicles = data.pages.flat();
+    if (vehicles?.pages) {
+      const allVehicles = vehicles.pages.flat();
       setVehicles(allVehicles);
     }
-  }, [data, setVehicles]);
+  }, [vehicles, setVehicles]);
 
   useEffect(() => {
     if (mapPoints) {
