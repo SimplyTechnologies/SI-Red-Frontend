@@ -72,7 +72,7 @@ export default function AnalyticsComponent() {
                 <figcaption>{item.label}</figcaption>
               </figure>
               <div className="pt-4 text-left">
-                <CountUp end={item.value} duration={1.5} separator="," className="font-bold" />
+                <CountUp end={item.value} duration={2.5} separator="," className="font-bold" />
               </div>
             </article>
           ))}
