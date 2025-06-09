@@ -21,9 +21,7 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-
-import { useCreateVehicle } from "@/api/vehicle/vehicle";
-import { useToast } from "@/hooks/use-toast";
+import { useCreateVehicleMutation } from "@/hooks/useCreateVehicleMutation";
 
 interface Props {
   open: boolean;
@@ -78,11 +76,32 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     clearSuggestions,
   } = usePlacesAutocomplete({ debounce: 300 });
 
-  const { toast } = useToast();
 
   useEffect(() => {
     fetchMakes();
   }, [fetchMakes]);
+
+  useEffect(() => {
+    if (!open) {
+      setVinError("");
+      setFormError("");
+      setIsLoadingVin(false);
+      setCoordinates({ lat: null, lng: null });
+      setValue("");
+      clearSuggestions();
+
+      setMake(null);
+      setModel(null);
+      setYear("");
+      setVin("");
+      setLocation("");
+      setStreet("");
+      setCity("");
+      setState("");
+      setCountry("");
+      setZip("");
+    }
+  }, [open]);
 
   const handleVinChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().trim();
@@ -160,26 +179,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     }
   };
 
-  const { mutate: createVehicle } = useCreateVehicle({
-    mutation: {
-      onSuccess: () => {
-        toast({
-          title: "Vehicle added",
-          description: "Vehicle added successfully.",
-          variant: "success",
-        });
-
-        onOpenChange(false);
-      },
-      onError: () => {
-        toast({
-          title: "Error",
-          description: "Failed to add vehicle. Please try again.",
-          variant: "destructive",
-        });
-      },
-    },
-  });
+  const { mutate: createVehicle } = useCreateVehicleMutation(() => onOpenChange(false));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,7 +201,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
       return;
     }
 
-    const zipCodeRegex = /^\d{4}$/;
+    const zipCodeRegex = /^\d{4,5}$/;
     if (!zipCodeRegex.test(zip)) {
       setFormError("Zip code must contain exactly 4 digits.");
       return;
