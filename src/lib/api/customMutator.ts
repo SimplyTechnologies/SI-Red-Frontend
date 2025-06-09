@@ -87,14 +87,13 @@ export const customMutator = async <T>({
       refreshPromise = null;
 
       res = await makeRequest(newAccessToken!);
-      // return res.json();
     } catch (err) {
       isRefreshing = false;
       refreshPromise = null;
       useAuthStore.getState().logout();
       throw new Error("Session expired. Please sign in again.");
     }
-  }  
+  }
 
   if (!res.ok) {
     let errorBody;
