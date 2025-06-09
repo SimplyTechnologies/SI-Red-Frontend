@@ -55,6 +55,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
     fetchMakes,
     fetchModels,
     decodeVin,
+    resetVehicleForm,
   } = useVehicleStore();
 
   const [vinError, setVinError] = useState("");
@@ -90,16 +91,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
       setValue("");
       clearSuggestions();
 
-      setMake(null);
-      setModel(null);
-      setYear("");
-      setVin("");
-      setLocation("");
-      setStreet("");
-      setCity("");
-      setState("");
-      setCountry("");
-      setZip("");
+      resetVehicleForm();
     }
   }, [open]);
 
