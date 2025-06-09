@@ -43,7 +43,6 @@ export default function SigninForm() {
 
         setTokens(data.accessToken, data.refreshToken, role);
 
-        setEmail("");
         setPassword("");
 
         navigate("/");
