@@ -43,7 +43,7 @@ export default function SigninForm() {
             if (err.path === "password") newErrors.password = err.msg;
           });
         }
-        if (error?.message === "Incorrect email or password") {
+        if (error?.message === "Session expired. Please sign in again.") {
           newErrors.general = "Incorrect email or password";
         }
 
