@@ -25,7 +25,7 @@ export function AddVehicleDialog({ open, onOpenChange }: Props) {
       }}
     >
       <DialogDescription>
-        <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] bg-white rounded-[12px] px-[24px] py-[20px] shadow-md">
+        <DialogContent className="h-[95vh] overflow-y-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] bg-white rounded-[12px] px-[24px] py-[20px] shadow-md">
           <DialogHeader>
             <DialogTitle className="text-[20px] font-bold text-center text-heading font-dm-sans">
               Add New Vehicle
