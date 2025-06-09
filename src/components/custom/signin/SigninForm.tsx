@@ -27,6 +27,8 @@ export default function SigninForm() {
     general?: string;
   }>({});
 
+  const { setTokens } = useAuthStore();
+
   const { mutate: signIn, status } = useSignIn({
     mutation: {
       onSuccess: (data) => {
@@ -37,6 +39,12 @@ export default function SigninForm() {
         setLastName(data.lastName);
         setPhoneNumber(data.phoneNumber);
         setEmail(data.email);
+        const role = data.role;
+
+        setTokens(data.accessToken, data.refreshToken, role);
+
+        setEmail("");
+        setPassword("");
 
         navigate("/");
       },
@@ -49,7 +57,7 @@ export default function SigninForm() {
             if (err.path === "password") newErrors.password = err.msg;
           });
         }
-        if (error?.message === "Incorrect email or password") {
+        if (error?.message === "Session expired. Please sign in again.") {
           newErrors.general = "Incorrect email or password";
         }
 
