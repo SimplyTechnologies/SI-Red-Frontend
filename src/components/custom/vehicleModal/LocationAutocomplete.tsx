@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VehicleFormError } from "./VehicleFormError";
@@ -23,6 +24,8 @@ export default function LocationAutocomplete({
   onSelect,
   error,
 }: Props) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div className="col-span-2 relative">
       <Label
@@ -42,11 +45,15 @@ export default function LocationAutocomplete({
             setLocation("");
           }
         }}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => {
+          setTimeout(() => setIsFocused(false), 150);
+        }}
         disabled={!ready}
         placeholder="Set location"
         className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
       />
-      {status === "OK" && (
+      {status === "OK" && isFocused && (
         <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-40 overflow-y-auto">
           {data.map(({ place_id, description }) => (
             <li
