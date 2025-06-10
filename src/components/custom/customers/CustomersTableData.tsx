@@ -6,6 +6,7 @@ import { useDeleteCustomer } from "@/api/customer/customer";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationDialog from "../ConfirmationDialog";
+import { DELETE_TITLE } from "@/constants/constants";
 
 interface Vehicle {
   vin: string;
@@ -101,6 +102,7 @@ export default function CustomersTableData({
           <ConfirmationDialog
             userId={customer.id}
             handleDelete={(id) => deleteCustomer({ id })}
+            title={DELETE_TITLE.CUSTOMER}
           />
         </TableCell>
       </TableRow>

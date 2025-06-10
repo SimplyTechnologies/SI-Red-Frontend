@@ -14,9 +14,10 @@ import { Trash2, Info } from "lucide-react"
 type Props = {
   userId: string;
   handleDelete: (id: string) => void;
+  title: string;
 };
 
-export default function ConfirmationDialog ({handleDelete, userId}: Props) {
+export default function ConfirmationDialog ({handleDelete, userId, title}: Props) {
     return (
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -31,9 +32,9 @@ export default function ConfirmationDialog ({handleDelete, userId}: Props) {
                 <Info className="w-[28px] h-[28px] text-[#FA5087]" />
             </div>
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete User</AlertDialogTitle>
+              <AlertDialogTitle>Delete {title}</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure that you would like to delete this user? This action cannot be undone.
+                Are you sure that you would like to delete this {title.toLowerCase()}? This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

@@ -1,5 +1,5 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { USER_STATUS } from "@/constants/constants";
+import { DELETE_TITLE, USER_STATUS } from "@/constants/constants";
 import { getUserStatus } from "@/utils/userHelper";
 import Avatar from "@/assets/icons/avatar.svg?react";
 import ConfirmationDialog from "../ConfirmationDialog";
@@ -32,7 +32,7 @@ export default function UsersTableData({ user, handleDelete }: Props) {
         </TableCell>
         <TableCell>
           <div className="flex justify-center items-center w-full cursor-pointer">
-            <ConfirmationDialog handleDelete={handleDelete} userId={user.id} />
+            <ConfirmationDialog handleDelete={handleDelete} userId={user.id} title={DELETE_TITLE.USER} />
           </div>
         </TableCell>
       </TableRow>

@@ -44,3 +44,9 @@ export const VEHICLE_STATUS = {
 export type VehicleStatusKey = keyof typeof VEHICLE_STATUS;
 
 export type VehicleStatusKeys = "sold" | "in stock";
+
+export const DELETE_TITLE = {
+  USER: "User",
+  CUSTOMER: "Customer",
+  VEHICLE: "Vehicle"
+}
