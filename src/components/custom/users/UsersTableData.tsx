@@ -3,6 +3,7 @@ import { DELETE_TITLE, USER_STATUS } from "@/constants/constants";
 import { getUserStatus } from "@/utils/userHelper";
 import Avatar from "@/assets/icons/avatar.svg?react";
 import ConfirmationDialog from "../ConfirmationDialog";
+import { useState } from "react";
 
 type Props = {
   user: any;
@@ -10,6 +11,8 @@ type Props = {
 };
 
 export default function UsersTableData({ user, handleDelete }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <TableRow key={user.id}>
@@ -32,7 +35,13 @@ export default function UsersTableData({ user, handleDelete }: Props) {
         </TableCell>
         <TableCell>
           <div className="flex justify-center items-center w-full cursor-pointer">
-            <ConfirmationDialog handleDelete={handleDelete} userId={user.id} title={DELETE_TITLE.USER} />
+            <ConfirmationDialog
+              handleDelete={handleDelete}
+              itemId={user.id}
+              title={DELETE_TITLE.USER}
+              open={isOpen}
+              onOpenChange={setIsOpen}
+            />
           </div>
         </TableCell>
       </TableRow>
