@@ -5,6 +5,7 @@ import CustomerFormDialog from "@/components/assignToCustomerCreateUserDialog/Fo
 import CustomerForm from "@/components/assignToCustomerCreateUserDialog/Form";
 import { useAssignCustomerWithData } from "@/api/vehicle/vehicle";
 import { toast } from "@/hooks/use-toast";
+import { useVehiclesStore } from "@/store/useVehiclesStore";
 
 export default function AssignCustomerSection() {
   const [open, setOpen] = useState(false);
@@ -12,6 +13,8 @@ export default function AssignCustomerSection() {
     {}
   );
   const { id = "" } = useParams<{ id: string }>();
+
+  const setSelectedVehicle = useVehiclesStore((s) => s.setSelectedVehicle);
 
   useEffect(() => {
     if (open) {
@@ -21,7 +24,7 @@ export default function AssignCustomerSection() {
 
   const assignCustomerMutation = useAssignCustomerWithData({
     mutation: {
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         const message =
           data?.message || "Vehicle has been assigned successfully.";
 
@@ -32,7 +35,9 @@ export default function AssignCustomerSection() {
         });
 
         setOpen(false);
+        await setSelectedVehicle(data.vehicle);
       },
+
       onError: (error: any) => {
         const response = error?.data;
         const rawFieldErrors = response?.errors;
