@@ -5,23 +5,24 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 
 import Profile from "@/assets/icons/profile.svg?react";
 import Logout from "@/assets/icons/logout.svg?react";
-import userDefaultPhoto from "@/assets/photos/userDefaultPhoto.png";
 import { useAuthStore } from "@/store/authStore";
+import { getFirstLttersAvatar } from "@/utils/getFirstLttersAvatar";
 
 export default function HeaderUserMenu() {
-  const { logout } = useAuthStore();
+  const { logout, firstName, lastName } = useAuthStore();
   const navigate = useNavigate();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="cursor-pointer">
-          <AvatarImage src={userDefaultPhoto} alt="User" />
-          <AvatarFallback>U</AvatarFallback>
+        <Avatar className="cursor-pointer bg-[#3E368E] text-white font-bold font-sans rounded-full w-9 h-9 text-sm">
+          <div className="flex justify-center items-center w-full rounded-full">
+            {getFirstLttersAvatar(firstName, lastName)}
+          </div>
         </Avatar>
       </DropdownMenuTrigger>
 
