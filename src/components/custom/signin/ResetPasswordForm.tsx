@@ -77,14 +77,12 @@ export default function ResetPasswordForm() {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
-      {/* Password field with rules and error */}
       <PasswordInput
         formData={formData}
         inputProps={passwordInputProps}
         hasTriedSubmit={hasTriedSubmit}
       />
 
-      {/* Confirm Password */}
       <div className="w-full max-w-[450px]">
         <Label
           htmlFor="confirmPassword"
