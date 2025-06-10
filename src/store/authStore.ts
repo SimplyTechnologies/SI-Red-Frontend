@@ -7,6 +7,7 @@ interface AuthState {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  showForgotPassword: boolean;
 
   accessToken: string | null;
   refreshToken: string | null;
@@ -19,6 +20,7 @@ interface AuthState {
   setFirstName: (firstName: string) => void;
   setLastName: (lastName: string) => void;
   setPhoneNumber: (phoneNumber: string) => void;
+  setShowForgotPassword: (value: boolean) => void;
   resetCredentials: () => void;
 
   setTokens: (accessToken: string, refreshToken: string, role: string) => void;
@@ -34,6 +36,7 @@ export const useAuthStore = create<AuthState>()(
       firstName: "",
       lastName: "",
       phoneNumber: "",
+      showForgotPassword: false,
 
       accessToken: null,
       refreshToken: null,
@@ -46,6 +49,7 @@ export const useAuthStore = create<AuthState>()(
       setFirstName: (firstName) => set({ firstName }),
       setLastName: (lastName) => set({ lastName }),
       setPhoneNumber: (phoneNumber) => set({ phoneNumber }),
+      setShowForgotPassword: (value) => set({ showForgotPassword: value }),
 
       resetCredentials: () => set({ email: "", password: "" }),
 
@@ -96,6 +100,7 @@ export const useAuthStore = create<AuthState>()(
         firstName: state.firstName,
         lastName: state.lastName,
         phoneNumber: state.phoneNumber,
+        showForgotPassword: state.showForgotPassword,
       }),
     }
   )

@@ -8,7 +8,7 @@ interface InputFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   label: string;
-  error: string | undefined;
+  error?: string | undefined;
 }
 
 export const InputField = ({

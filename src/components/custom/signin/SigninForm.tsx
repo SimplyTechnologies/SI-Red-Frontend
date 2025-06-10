@@ -18,6 +18,7 @@ export default function SigninForm() {
     setFirstName,
     setLastName,
     setPhoneNumber,
+    setShowForgotPassword,
   } = useAuthStore();
   const [checked, setChecked] = useState<CheckedState>(false);
   const navigate = useNavigate();
@@ -132,8 +133,8 @@ export default function SigninForm() {
           <Label htmlFor="remember">Remember me</Label>
         </div>
         <a
-          href="#"
-          className="font-medium text-[14px] leading-[1.4] text-[#403C89] underline"
+          onClick={() => setShowForgotPassword(true)}
+          className="font-medium text-[14px] leading-[1.4] text-[#403C89] underline cursor-pointer"
         >
           Forgot password
         </a>
