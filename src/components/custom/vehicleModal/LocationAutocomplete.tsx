@@ -34,14 +34,20 @@ export default function LocationAutocomplete({
       <Input
         id="location"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          const newVal = e.target.value;
+          setValue(newVal);
+          setLocation(newVal);
+          if (newVal === "") {
+            setLocation("");
+          }
+        }}
         disabled={!ready}
         placeholder="Set location"
         className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
       />
-      <VehicleFormError data={error || ""} />
       {status === "OK" && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-40 overflow-y-auto">
+        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-40 overflow-y-auto">
           {data.map(({ place_id, description }) => (
             <li
               key={place_id}
@@ -56,6 +62,7 @@ export default function LocationAutocomplete({
           ))}
         </ul>
       )}
+      <VehicleFormError data={error || ""} />
     </div>
   );
 }

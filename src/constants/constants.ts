@@ -6,7 +6,7 @@ export const VEHICLES_TABS = {
 export const customersTableHeaders = [
   "Name",
   "Vehicle",
-  "Assigned Date",
+  "Assign Date",
   "Email",
   "Phone Number",
   "Actions",
@@ -51,8 +51,8 @@ export const DELETE_TITLE = {
   VEHICLE: "Vehicle"
 }
 export const USER_ROLE = {
-  SUPER_ADMIN: 'SUPER_ADMIN',
-  USER: 'USER',
+  SUPER_ADMIN: "SUPER_ADMIN",
+  USER: "USER",
 } as const;
 
-export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE]; 
+export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];

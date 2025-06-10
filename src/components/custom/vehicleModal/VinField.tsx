@@ -25,9 +25,7 @@ export default function VinField({ vin, isLoading, error, onChange }: Props) {
         onChange={onChange}
         placeholder="Enter VIN"
         disabled={isLoading}
-        className={`w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md ${
-          error ? "border-red-500" : ""
-        }`}
+        className={`w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md`}
       />
       <VehicleFormError data={error || ""} />
     </div>

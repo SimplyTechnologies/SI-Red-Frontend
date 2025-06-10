@@ -32,7 +32,6 @@ export default function VehicleFormLocation({
 }: Props) {
   return (
     <>
-      {/* Street */}
       <div>
         <FormField
           id="street"
@@ -44,7 +43,6 @@ export default function VehicleFormLocation({
         <VehicleFormError data={errors.street || ""} />
       </div>
 
-      {/* City */}
       <div>
         <FormField
           id="city"
@@ -56,7 +54,6 @@ export default function VehicleFormLocation({
         <VehicleFormError data={errors.city || ""} />
       </div>
 
-      {/* State */}
       <div>
         <FormField
           id="state"
@@ -68,7 +65,6 @@ export default function VehicleFormLocation({
         <VehicleFormError data={errors.state || ""} />
       </div>
 
-      {/* Country */}
       <div>
         <FormField
           id="country"
@@ -80,7 +76,6 @@ export default function VehicleFormLocation({
         <VehicleFormError data={errors.country || ""} />
       </div>
 
-      {/* Zip */}
       <div className="col-span-2">
         <FormField
           id="zip"

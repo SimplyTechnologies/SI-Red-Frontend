@@ -23,6 +23,21 @@ interface Customer {
   vehicles: Vehicle[];
 }
 
+function formatDateTime(dateString: string | undefined) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
 export default function CustomersTableData({
   customer,
 }: {
@@ -95,7 +110,9 @@ export default function CustomersTableData({
           </div>
         </TableCell>
 
-        <TableCell>{customer.vehicles[0].assignedDate}</TableCell>
+        <TableCell>
+          {formatDateTime(customer.vehicles[0].assignedDate)}
+        </TableCell>
         <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
@@ -115,7 +132,7 @@ export default function CustomersTableData({
               <p className="text-primary font-medium">{vehicle.vin}</p>
               <p className="text-sm">{vehicle.model}</p>
             </TableCell>
-            <TableCell>{vehicle.assignedDate}</TableCell>
+            <TableCell>{formatDateTime(vehicle.assignedDate)}</TableCell>
             <TableCell />
             <TableCell />
             <TableCell />

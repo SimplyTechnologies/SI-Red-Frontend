@@ -134,6 +134,11 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     setFormError("");
     setFieldErrors({});
 
+    if (location === "") {
+      coordinates.lat = null;
+      coordinates.lng = null;
+    }
+
     const locationString =
       coordinates.lat && coordinates.lng
         ? `${coordinates.lat},${coordinates.lng}`
