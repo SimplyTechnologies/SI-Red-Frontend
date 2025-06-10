@@ -18,6 +18,10 @@ export default function VehicleInfo({ isLoading }: Props) {
     ? formatDate(new Date(selectedVehicle.createdAt), "dd.MM.yyyy")
     : "";
 
+  const AssignedAt = selectedVehicle?.assignedDate
+    ? formatDate(new Date(selectedVehicle.assignedDate), "dd.MM.yyyy")
+    : "";
+
   return (
     <div className="py-5 flex gap-2 w-full">
       <VehicleStatusIcon />
@@ -46,9 +50,7 @@ export default function VehicleInfo({ isLoading }: Props) {
               <>
                 <p className="text-text-muted">
                   Assigned at:{" "}
-                  <span className="text-heading font-medium">
-                    {selectedVehicle?.assignedDate}
-                  </span>
+                  <span className="text-heading font-medium">{AssignedAt}</span>
                 </p>
                 <p className="text-text-muted">
                   Assigned to:{" "}

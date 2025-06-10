@@ -8,6 +8,8 @@ import Users from "@/assets/icons/users.svg?react";
 import Customers from "@/assets/icons/customers.svg?react";
 
 import Tooltip from "@/components/tooltip";
+import { useAuthStore } from "@/store/authStore";
+import { USER_ROLE } from "@/constants/constants";
 
 const navItems = [
   { label: "Dashboard", icon: Dashboard, to: "/" },
@@ -20,9 +22,17 @@ export default function SidebarContent() {
   const { isExpanded, closeMobileSidebar, isMobileSidebarOpen } =
     useSidebarStore();
 
+  const { role } = useAuthStore();
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.label === "Users" && role !== USER_ROLE.SUPER_ADMIN) {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <nav className="flex flex-col space-y-1 mt-4">
-      {navItems.map(({ label, icon: Icon, to }) => (
+      {filteredNavItems.map(({ label, icon: Icon, to }) => (
         <NavLink
           key={label}
           to={to}

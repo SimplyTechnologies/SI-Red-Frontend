@@ -50,3 +50,9 @@ export const DELETE_TITLE = {
   CUSTOMER: "Customer",
   VEHICLE: "Vehicle"
 }
+export const USER_ROLE = {
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  USER: 'USER',
+} as const;
+
+export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE]; 
