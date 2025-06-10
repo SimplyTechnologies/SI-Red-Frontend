@@ -25,14 +25,9 @@ export default function ResetPasswordForm() {
       [id]: value,
     }));
 
-    // Сброс ошибок при вводе
     if (errors[id as keyof FormData]) {
       setErrors((prev) => ({ ...prev, [id]: undefined }));
     }
-  };
-
-  const validatePasswordRules = (password: string) => {
-    return passwordRules.filter((rule) => !rule.test(password));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
