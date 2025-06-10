@@ -8,7 +8,7 @@ interface Props {
     firstName: string;
     lastName: string;
     email: string;
-    phone: string;
+    phoneNumber: string;
   }) => void;
   submitLabel?: string;
   externalErrors?: Record<string, string>;
@@ -31,7 +31,7 @@ export default function Form({
     firstName?: string;
     lastName?: string;
     email?: string;
-    phone?: string;
+    phoneNumber?: string;
   }>({});
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Form({
 
     const firstName = firstNameRef.current?.value.trim() || "";
     const lastName = lastNameRef.current?.value.trim() || "";
-    const phone = phoneRef.current?.value.trim() || "";
+    const phoneNumber = phoneRef.current?.value.trim() || "";
     const resolvedEmail = emailAutocomplete
       ? email.trim()
       : emailRef.current?.value.trim() || "";
@@ -59,10 +59,10 @@ export default function Form({
     if (!firstName) newErrors.firstName = "Enter the first name.";
     if (!lastName) newErrors.lastName = "Enter the last name.";
     if (!resolvedEmail) newErrors.email = "Enter the email address.";
-    if (!phone) {
-      newErrors.phone = "Enter the phone number.";
-    } else if (!/^\+?\d[\d\s\-]{7,}$/i.test(phone)) {
-      newErrors.phone = "Enter a valid phone number.";
+    if (!phoneNumber) {
+      newErrors.phoneNumber = "Enter the phone number.";
+    } else if (!/^\+?\d[\d\s\-]{7,}$/i.test(phoneNumber)) {
+      newErrors.phoneNumber = "Enter a valid phone number.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -75,7 +75,7 @@ export default function Form({
       firstName,
       lastName,
       email: resolvedEmail,
-      phone,
+      phoneNumber,
     });
   };
 
@@ -101,12 +101,12 @@ export default function Form({
       </div>
 
       <FormField
-        id="phone"
+        id="phoneNumber"
         label="Phone Number"
         placeholder="+1-XXX-XXX-XXXX"
         type="tel"
         inputRef={phoneRef}
-        error={errors.phone}
+        error={errors.phoneNumber}
       />
 
       {emailAutocomplete ? (

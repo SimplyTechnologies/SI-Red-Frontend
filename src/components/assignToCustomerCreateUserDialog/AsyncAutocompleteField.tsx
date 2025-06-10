@@ -47,7 +47,7 @@ export default function AsyncAutocompleteField({
     <div className="flex flex-col gap-[1px]">
       <Label
         htmlFor={id}
-        className="text-xs text-heading text-text-muted mb-[5px]"
+        className="text-xs text-heading mb-[5px]"
       >
         {label}
       </Label>

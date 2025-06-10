@@ -2,6 +2,7 @@ import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { getVehicleStatusIcon } from "@/utils/vehicleHelpers";
 import { formatDate } from "date-fns";
 import VehiclesTabListSkeleton from "../vehiclesTab/VehiclesTabListSkeleton";
+import type { VehicleStatusKeys } from "@/constants/constants";
 
 interface Props {
   isLoading: boolean;
@@ -10,7 +11,9 @@ interface Props {
 export default function VehicleInfo({ isLoading }: Props) {
   const selectedVehicle = useVehiclesStore((s) => s.selectedVehicle);
 
-  const VehicleStatusIcon = getVehicleStatusIcon(selectedVehicle?.status ?? "");
+  const VehicleStatusIcon = getVehicleStatusIcon(
+    selectedVehicle?.status as VehicleStatusKeys
+  );
   const dateCreated = selectedVehicle?.createdAt
     ? formatDate(new Date(selectedVehicle.createdAt), "dd.MM.yyyy")
     : "";
@@ -35,7 +38,27 @@ export default function VehicleInfo({ isLoading }: Props) {
                 {selectedVehicle?.city}, {selectedVehicle?.street}
               </span>
             </p>
-            <p>Date Created: {dateCreated}</p>
+            <p className="text-text-muted">
+              Date Created:{" "}
+              <span className="text-heading font-medium">{dateCreated}</span>
+            </p>
+            {selectedVehicle?.customer && (
+              <>
+                <p className="text-text-muted">
+                  Assigned at:{" "}
+                  <span className="text-heading font-medium">
+                    {selectedVehicle?.assignedDate}
+                  </span>
+                </p>
+                <p className="text-text-muted">
+                  Assigned to:{" "}
+                  <span className="text-heading font-medium">
+                    {selectedVehicle?.customer?.firstName}{" "}
+                    {selectedVehicle?.customer?.lastName}
+                  </span>
+                </p>
+              </>
+            )}
           </div>
         </div>
       )}
