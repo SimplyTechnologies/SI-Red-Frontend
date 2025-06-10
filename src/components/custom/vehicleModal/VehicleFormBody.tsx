@@ -16,7 +16,6 @@ export default function VehicleFormBody({ onSuccess }: Props) {
     model,
     year,
     vin,
-    location,
     makes,
     models,
     setMake,
@@ -57,12 +56,10 @@ export default function VehicleFormBody({ onSuccess }: Props) {
       onSubmit={handleSubmit}
       className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
     >
-      {/* Form title section */}
       <div className="col-span-2 text-[16px] font-[700] text-heading font-dm-sans mb-0.5">
         General
       </div>
 
-      {/* Make / Model / Year */}
       <VehicleFormGeneral
         make={make}
         model={model}
@@ -78,7 +75,6 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         errorYear={fieldErrors.year}
       />
 
-      {/* VIN */}
       <VinField
         vin={vin}
         isLoading={isLoadingVin}
@@ -87,7 +83,6 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         setVin={setVin}
       />
 
-      {/* Location autocomplete */}
       <LocationAutocomplete
         value={value}
         ready={ready}
@@ -99,7 +94,6 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         error={fieldErrors.location}
       />
 
-      {/* Street / City / State / Country / Zip */}
       <VehicleFormLocation
         street={street}
         city={city}
@@ -120,7 +114,6 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         }}
       />
 
-      {/* Submit Button */}
       <div className="col-span-2">
         <Button
           type="submit"
@@ -130,7 +123,6 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         </Button>
       </div>
 
-      {/* Fallback error message */}
       {formError && (
         <p className="col-span-2 text-red-500 text-sm text-center mt-2">
           {formError}

@@ -42,7 +42,6 @@ export default function VehicleFormGeneral({
 }: Props) {
   return (
     <>
-      {/* Make */}
       <div>
         <Label className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
           Make
@@ -72,7 +71,6 @@ export default function VehicleFormGeneral({
         <VehicleFormError data={errorMake || ""} />
       </div>
 
-      {/* Model */}
       <div>
         <Label className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
           Model
@@ -98,7 +96,6 @@ export default function VehicleFormGeneral({
         <VehicleFormError data={errorModel || ""} />
       </div>
 
-      {/* Year */}
       <div>
         <Label className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
           Year
