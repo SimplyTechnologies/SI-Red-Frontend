@@ -34,7 +34,14 @@ export default function LocationAutocomplete({
       <Input
         id="location"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          const newVal = e.target.value;
+          setValue(newVal);
+          setLocation(newVal);
+          if (newVal === "") {
+            setLocation("");
+          }
+        }}
         disabled={!ready}
         placeholder="Set location"
         className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"

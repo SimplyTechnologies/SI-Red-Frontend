@@ -97,16 +97,27 @@ export default function VehicleFormGeneral({
       </div>
 
       <div>
-        <Label className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
+        <Label
+          htmlFor="year"
+          className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
+        >
           Year
         </Label>
-        <Input
-          id="year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          placeholder="Select year"
-          className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
-        />
+        <Select value={year} onValueChange={setYear}>
+          <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+            <SelectValue placeholder="Select year" />
+          </SelectTrigger>
+          <SelectContent>
+            {Array.from({ length: 26 }, (_, i) => {
+              const y = String(new Date().getFullYear() - i);
+              return (
+                <SelectItem key={y} value={y}>
+                  {y}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
         <VehicleFormError data={errorYear || ""} />
       </div>
     </>
