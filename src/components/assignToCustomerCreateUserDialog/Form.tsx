@@ -55,21 +55,6 @@ export default function Form({
       ? email.trim()
       : emailRef.current?.value.trim() || "";
 
-    const newErrors: typeof errors = {};
-    if (!firstName) newErrors.firstName = "Enter the first name.";
-    if (!lastName) newErrors.lastName = "Enter the last name.";
-    if (!resolvedEmail) newErrors.email = "Enter the email address.";
-    if (!phoneNumber) {
-      newErrors.phoneNumber = "Enter the phone number.";
-    } else if (!/^\+?\d[\d\s\-]{7,}$/i.test(phoneNumber)) {
-      newErrors.phoneNumber = "Enter a valid phone number.";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
     setErrors({});
     onSubmit({
       firstName,
