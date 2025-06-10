@@ -141,7 +141,7 @@ export default function SigninForm() {
 
       <Button
         type="submit"
-        className="w-full bg-[#3E368E] hover:bg-[#2F2B6A]"
+        className="w-full h-[56px] text-[18px] bg-[#3E368E] hover:bg-[#2F2B6A]"
         disabled={isLoading}
       >
         {isLoading ? "Signing in..." : "Sign in"}

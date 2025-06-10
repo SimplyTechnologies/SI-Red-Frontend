@@ -7,6 +7,7 @@ import Users from "./pages/Users";
 import Customers from "./pages/Customers";
 import Account from "./pages/Account";
 import VehicleDetails from "./components/custom/vehicles/VehiclesDetails/VehicleDetails";
+import AccountActivation from "./pages/AccountActivation";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
 import ProtectedLayout from "./components/layout/ProtectedLayout";
@@ -21,6 +22,7 @@ export default function App() {
 
   return (
     <Routes>
+      <Route path="/activate" element={<AccountActivation />} />
       <Route
         path="/signin"
         element={
