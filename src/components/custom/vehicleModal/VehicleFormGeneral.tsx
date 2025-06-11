@@ -63,16 +63,13 @@ export default function VehicleFormGeneral({
   useEffect(() => {
     const initialize = async () => {
       if (!vehicle) return;
-console.log(vehicle);
 
       if (vehicle.model?.make) {
         setMake(vehicle.model.make);
         const fetchedModels = await fetchModels(vehicle.model.make.id);
 
         // After models fetched, safely set model
-        const foundModel = fetchedModels.find(
-          (m) => m.id === vehicle.model_id
-        );
+        const foundModel = fetchedModels.find((m) => m.id === vehicle.model_id);
         if (foundModel) {
           setModel(foundModel);
         }
@@ -85,7 +82,7 @@ console.log(vehicle);
       if (vehicle.state) setState(vehicle.state);
       if (vehicle.country) setCountry(vehicle.country);
       if (vehicle.zipcode) setZip(vehicle.zipcode);
-      if (vehicle.location) setLocation(vehicle.location);  
+      if (vehicle.location) setLocation(vehicle.location);
     };
 
     initialize();

@@ -5,7 +5,6 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { useCreateVehicleMutation } from "@/hooks/useCreateVehicleMutation";
-import { useUpdateVehicle } from "@/api/vehicle/vehicle";
 import { useUpdateVehicleMutation } from "./useUpdateVehicleMutation";
 
 export function useVehicleFormLogic(onSuccess: () => void) {
@@ -112,7 +111,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         results[0].address_components.find((c) => c.types.includes(type))
           ?.long_name || "";
 
-      setStreet(getComponent("route"));
+      const getSubPromise = getComponent("subpremise") ? (getComponent("subpremise") + "/") : "";
+      const getStreetNumber = getComponent("street_number") + " ";
+      setStreet(getSubPromise + getStreetNumber + getComponent("route"));
       setCity(getComponent("locality"));
       setState(getComponent("administrative_area_level_1"));
       setCountry(getComponent("country"));
