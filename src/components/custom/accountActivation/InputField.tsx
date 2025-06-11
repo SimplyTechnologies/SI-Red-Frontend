@@ -17,7 +17,18 @@ interface InputFieldProps {
 
 export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   (
-    { id, type, value, onChange, onFocus, onBlur, placeholder, label, error, disabled = false },
+    {
+      id,
+      type,
+      value,
+      onChange,
+      onFocus,
+      onBlur,
+      placeholder,
+      label,
+      error,
+      disabled = false,
+    },
     ref
   ) => {
     return (

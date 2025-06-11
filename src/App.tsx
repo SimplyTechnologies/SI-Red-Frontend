@@ -27,7 +27,15 @@ export default function App() {
         path="/signin"
         element={
           <PublicOnlyRoute>
-            <Signin />
+            <Signin variant="signin" />
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/reset"
+        element={
+          <PublicOnlyRoute>
+            <Signin variant="reset" />
           </PublicOnlyRoute>
         }
       />
@@ -43,7 +51,9 @@ export default function App() {
         <Route path="/vehicles" element={<Vehicles />} />
         <Route
           path="/users"
-          element={role === USER_ROLE.SUPER_ADMIN ? <Users /> : <Navigate to="/" />}
+          element={
+            role === USER_ROLE.SUPER_ADMIN ? <Users /> : <Navigate to="/" />
+          }
         />
         <Route path="/customers" element={<Customers />} />
         <Route path="/account" element={<Account />} />

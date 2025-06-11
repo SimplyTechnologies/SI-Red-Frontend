@@ -19,7 +19,6 @@ export default function AccountActivationForm() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
-
   const [formData, setFormData] = useState<FormData>({
     email: "",
     name: "",
@@ -47,7 +46,6 @@ export default function AccountActivationForm() {
     }
   }, [data]);
 
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
@@ -55,9 +53,9 @@ export default function AccountActivationForm() {
       [id]: value,
     }));
   };
-  
+
   const activateMutation = useActivateAccount();
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setHasTriedSubmit(true);
@@ -100,7 +98,12 @@ export default function AccountActivationForm() {
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       {ACCOUNT_ACTIVATION_INPUTS.inputs.map((input) => {
-        const inputProps = makeActivationInputProps(input, formData, handleChange, errors);
+        const inputProps = makeActivationInputProps(
+          input,
+          formData,
+          handleChange,
+          errors
+        );
 
         return input.id === "password" ? (
           <PasswordInput
