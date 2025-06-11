@@ -5,6 +5,7 @@ import { AddVehicleDialog } from "@/components/custom/AddVehicleDialog";
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { Toaster } from "@/components/ui/toaster";
 import { useVehiclesWithStore } from "@/hooks/useVehiclesWithStore";
+import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 
 export default function Layout() {
   useVehiclesWithStore();
@@ -21,6 +22,7 @@ export default function Layout() {
       </div>
 
       <AddVehicleDialog
+        title={VEHICLE_DIALOG_TITLE.ADD}
         open={isAddNewVehicleModalOpened}
         onOpenChange={setAddNewVehicleModalOpen} //TODO: we can use store instead of using props here
       ></AddVehicleDialog>
