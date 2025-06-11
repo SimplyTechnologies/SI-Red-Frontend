@@ -1,5 +1,5 @@
 export function getFirstLttersAvatar(firstName?: string, lastName?: string): string {
   const first = firstName?.trim()?.[0] ?? "";
   const last = lastName?.trim()?.[0] ?? "";
-  return (first + " " + last).toUpperCase();
+  return (first + "" + last).toUpperCase();
 }

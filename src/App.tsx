@@ -23,6 +23,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/activate" element={<AccountActivation />} />
+      <Route path="/reset-password" element={<></>} />
       <Route
         path="/signin"
         element={
@@ -43,7 +44,9 @@ export default function App() {
         <Route path="/vehicles" element={<Vehicles />} />
         <Route
           path="/users"
-          element={role === USER_ROLE.SUPER_ADMIN ? <Users /> : <Navigate to="/" />}
+          element={
+            role === USER_ROLE.SUPER_ADMIN ? <Users /> : <Navigate to="/" />
+          }
         />
         <Route path="/customers" element={<Customers />} />
         <Route path="/account" element={<Account />} />
