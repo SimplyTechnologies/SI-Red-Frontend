@@ -12,10 +12,10 @@ import type { FormData } from "./AccountActivationForm";
 import type { makeActivationInputProps } from "@/utils/makeActivationInputProps";
 
 type Props = {
-    formData: FormData;
-    inputProps: ReturnType<typeof makeActivationInputProps>;
-    hasTriedSubmit: boolean;
-  };
+  formData: FormData;
+  inputProps: ReturnType<typeof makeActivationInputProps>;
+  hasTriedSubmit: boolean;
+};
 
 const PasswordInput = ({ inputProps, formData, hasTriedSubmit }: Props) => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);

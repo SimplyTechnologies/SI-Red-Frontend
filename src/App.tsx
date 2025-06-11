@@ -28,7 +28,15 @@ export default function App() {
         path="/signin"
         element={
           <PublicOnlyRoute>
-            <Signin />
+            <Signin variant="signin" />
+          </PublicOnlyRoute>
+        }
+      />
+      <Route
+        path="/reset"
+        element={
+          <PublicOnlyRoute>
+            <Signin variant="reset" />
           </PublicOnlyRoute>
         }
       />

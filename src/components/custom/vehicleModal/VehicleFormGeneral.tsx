@@ -6,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { VehicleFormError } from "./VehicleFormError";
 import type { MakeInfo } from "@/api/schemas/makeInfo";
 import type { ModelResponse } from "@/api/schemas";
@@ -108,7 +107,7 @@ export default function VehicleFormGeneral({
             <SelectValue placeholder="Select year" />
           </SelectTrigger>
           <SelectContent>
-            {Array.from({ length: 26 }, (_, i) => {
+            {Array.from({ length: 40 }, (_, i) => {
               const y = String(new Date().getFullYear() - i);
               return (
                 <SelectItem key={y} value={y}>
