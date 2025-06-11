@@ -1,3 +1,4 @@
+import { getGetAnalyticsDataQueryKey } from "@/api/analytics/analytics";
 import { useCreateVehicle } from "@/api/vehicle/vehicle";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,6 +16,8 @@ export const useCreateVehicleMutation = (onSuccessClose: () => void) => {
           variant: "success",
         });
         queryClient.invalidateQueries({ queryKey: ["vehicles"] });
+        queryClient.invalidateQueries({ queryKey: getGetAnalyticsDataQueryKey() });
+
         onSuccessClose();
       },
       onError: (error: any) => {
