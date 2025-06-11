@@ -5,7 +5,8 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { useCreateVehicleMutation } from "@/hooks/useCreateVehicleMutation";
-import { updateVehicle } from "@/api/vehicle/vehicle";
+import { useUpdateVehicle } from "@/api/vehicle/vehicle";
+import { useUpdateVehicleMutation } from "./useUpdateVehicleMutation";
 
 export function useVehicleFormLogic(onSuccess: () => void) {
   const {
@@ -130,6 +131,14 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     onSuccess();
   });
 
+  const { mutate: updateVehicleMutation } = useUpdateVehicleMutation(() => {
+    setValue("");
+    clearSuggestions();
+    setCoordinates({ lat: null, lng: null });
+    resetVehicleForm();
+    onSuccess();
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
@@ -183,7 +192,7 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     );
   };
 
-  const handleUpdate = (e: React.FormEvent) => {
+  const handleUpdate = (e: React.FormEvent, vehicleId: string) => {
     e.preventDefault();
     setFormError("");
     setFieldErrors({});
@@ -193,39 +202,40 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         ? `${coordinates.lat},${coordinates.lng}`
         : "";
 
-    // updateVehicle(
-    //   {
-    //     data: {
-    //       make_id: make?.id,
-    //       model_id: model!?.id,
-    //       year,
-    //       vin,
-    //       location: locationString,
-    //       street,
-    //       city,
-    //       state,
-    //       country,
-    //       zipcode: zip,
-    //     },
-    //   },
-    //   {
-    //     onError: (error: any) => {
-    //       const backendErrors = error?.data?.errors;
-    //       if (Array.isArray(backendErrors)) {
-    //         const parsed: Record<string, string> = {};
-    //         for (const err of backendErrors) {
-    //           const field = err.path || err.param;
-    //           if (field && !parsed[field]) {
-    //             parsed[field] = err.msg;
-    //           }
-    //         }
-    //         setFieldErrors(parsed);
-    //       } else {
-    //         setFormError(error?.message || "Something went wrong.");
-    //       }
-    //     },
-    //   }
-    // );
+    updateVehicleMutation(
+      {
+        id: vehicleId,
+        data: {
+          make_id: make?.id,
+          model_id: model?.id,
+          year,
+          vin,
+          location: locationString,
+          street,
+          city,
+          state,
+          country,
+          zipcode: zip,
+        },
+      },
+      {
+        onError: (error: any) => {
+          const backendErrors = error?.data?.errors;
+          if (Array.isArray(backendErrors)) {
+            const parsed: Record<string, string> = {};
+            for (const err of backendErrors) {
+              const field = err.path || err.param;
+              if (field && !parsed[field]) {
+                parsed[field] = err.msg;
+              }
+            }
+            setFieldErrors(parsed);
+          } else {
+            setFormError(error?.message || "Something went wrong.");
+          }
+        },
+      }
+    );
   };
 
   return {
