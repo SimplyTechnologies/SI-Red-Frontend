@@ -26,7 +26,7 @@ export const TABLE_PAGES = {
 } as const;
 
 export const USER_STATUS = {
-  ACTIVATED: "Activated",
+  ACTIVATED: "Active",
   PENDING: "Pending",
 } as const;
 
