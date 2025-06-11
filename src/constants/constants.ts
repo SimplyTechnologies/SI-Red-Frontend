@@ -50,6 +50,12 @@ export const DELETE_TITLE = {
   CUSTOMER: "Customer",
   VEHICLE: "Vehicle"
 }
+
+export const VEHICLE_DIALOG_TITLE = {
+  ADD: "Add New",
+  EDIT: "Edit"
+}
+
 export const USER_ROLE = {
   SUPER_ADMIN: "SUPER_ADMIN",
   USER: "USER",

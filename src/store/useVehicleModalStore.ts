@@ -3,12 +3,12 @@ import { getAllMakes } from "../api/make/make";
 import { getAllModelsByMakeId } from "../api/model/model";
 import { decodeVin as decodeVinApi } from "../api/vin/vin";
 import type { MakeInfo } from "../api/schemas/makeInfo";
-import type { ModelResponse } from "../api/schemas";
+import type { ModelInfo, ModelResponse } from "../api/schemas";
 import type { VinResponse } from "../api/schemas";
 
 interface VehicleState {
   make: MakeInfo | null;
-  model: ModelResponse | null;
+  model: ModelResponse | ModelInfo | null;
   year: string;
   vin: string;
   location: string;
@@ -30,7 +30,7 @@ interface VehicleState {
 
   // Setters
   setMake: (make: MakeInfo | null) => void;
-  setModel: (model: ModelResponse | null) => void;
+  setModel: (model: ModelResponse | ModelInfo | null) => void;
   setYear: (year: string) => void;
   setVin: (vin: string) => void;
   setLocation: (location: string) => void;

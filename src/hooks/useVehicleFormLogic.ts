@@ -5,6 +5,7 @@ import usePlacesAutocomplete, {
 } from "use-places-autocomplete";
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { useCreateVehicleMutation } from "@/hooks/useCreateVehicleMutation";
+import { updateVehicle } from "@/api/vehicle/vehicle";
 
 export function useVehicleFormLogic(onSuccess: () => void) {
   const {
@@ -182,6 +183,51 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     );
   };
 
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError("");
+    setFieldErrors({});
+
+    const locationString =
+      coordinates.lat && coordinates.lng
+        ? `${coordinates.lat},${coordinates.lng}`
+        : "";
+
+    // updateVehicle(
+    //   {
+    //     data: {
+    //       make_id: make?.id,
+    //       model_id: model!?.id,
+    //       year,
+    //       vin,
+    //       location: locationString,
+    //       street,
+    //       city,
+    //       state,
+    //       country,
+    //       zipcode: zip,
+    //     },
+    //   },
+    //   {
+    //     onError: (error: any) => {
+    //       const backendErrors = error?.data?.errors;
+    //       if (Array.isArray(backendErrors)) {
+    //         const parsed: Record<string, string> = {};
+    //         for (const err of backendErrors) {
+    //           const field = err.path || err.param;
+    //           if (field && !parsed[field]) {
+    //             parsed[field] = err.msg;
+    //           }
+    //         }
+    //         setFieldErrors(parsed);
+    //       } else {
+    //         setFormError(error?.message || "Something went wrong.");
+    //       }
+    //     },
+    //   }
+    // );
+  };
+
   return {
     vinError,
     formError,
@@ -190,6 +236,7 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     handleVinChange,
     handleLocationSelect,
     handleSubmit,
+    handleUpdate,
     value,
     ready,
     status,

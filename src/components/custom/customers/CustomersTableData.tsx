@@ -129,6 +129,7 @@ export default function CustomersTableData({
             title={DELETE_TITLE.CUSTOMER}
             open={isOpen}
             onOpenChange={setIsOpen}
+            showTrigger={true}
           />
         </TableCell>
       </TableRow>

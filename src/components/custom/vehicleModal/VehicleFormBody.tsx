@@ -5,12 +5,14 @@ import VehicleFormGeneral from "./VehicleFormGeneral";
 import VehicleFormLocation from "./VehicleFormLocation";
 import VinField from "./VinField";
 import LocationAutocomplete from "./LocationAutocomplete";
+import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 
 interface Props {
   onSuccess: () => void;
+  title: string;
 }
 
-export default function VehicleFormBody({ onSuccess }: Props) {
+export default function VehicleFormBody({ onSuccess, title }: Props) {
   const {
     make,
     model,
@@ -44,6 +46,7 @@ export default function VehicleFormBody({ onSuccess }: Props) {
     handleVinChange,
     handleLocationSelect,
     handleSubmit,
+    handleUpdate,
     value,
     ready,
     status,
@@ -53,7 +56,7 @@ export default function VehicleFormBody({ onSuccess }: Props) {
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={title===VEHICLE_DIALOG_TITLE.EDIT ? handleUpdate : handleSubmit}
       className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
     >
       <div className="col-span-2 text-[16px] font-[700] text-heading font-dm-sans mb-0.5">
@@ -69,6 +72,13 @@ export default function VehicleFormBody({ onSuccess }: Props) {
         setMake={setMake}
         setModel={setModel}
         setYear={setYear}
+        setVin={setVin}
+        setStreet={setStreet}
+        setCity={setCity}
+        setState={setState}
+        setCountry={setCountry}
+        setZip={setZip}
+        setLocation={setLocation}
         fetchModels={fetchModels}
         errorModel={fieldErrors.model_id}
         errorMake={fieldErrors.make_id}

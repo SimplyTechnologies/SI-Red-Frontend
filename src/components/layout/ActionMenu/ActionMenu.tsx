@@ -8,18 +8,20 @@ import Points from "@/assets/icons/points.svg?react";
 import { Pencil } from "lucide-react";
 import { Trash } from "lucide-react";
 import ConfirmationDialog from "@/components/custom/ConfirmationDialog";
-import { DELETE_TITLE } from "@/constants/constants";
+import { DELETE_TITLE, VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import useDeleteVehicleWithToast from "@/hooks/useDeleteVehicleWithToast";
+import { AddVehicleDialog } from "@/components/custom/AddVehicleDialog";
 
 export default function ActionMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [open, onOpenChange] = useState(false);
   const params = useParams();
   const vehicle_id = params.id;
 
   const handleEdit = () => {
-    console.log("edit");
+    onOpenChange(true);
   };
 
   const deleteVehicleMutation = useDeleteVehicleWithToast();
@@ -31,6 +33,8 @@ export default function ActionMenu() {
 
   return (
     <>
+      <AddVehicleDialog open={open} onOpenChange={onOpenChange} title={VEHICLE_DIALOG_TITLE.EDIT} />
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Points />

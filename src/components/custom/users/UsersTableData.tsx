@@ -41,6 +41,7 @@ export default function UsersTableData({ user, handleDelete }: Props) {
               title={DELETE_TITLE.USER}
               open={isOpen}
               onOpenChange={setIsOpen}
+              showTrigger={true}
             />
           </div>
         </TableCell>

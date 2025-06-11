@@ -6,20 +6,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { VehicleFormError } from "./VehicleFormError";
 import type { MakeInfo } from "@/api/schemas/makeInfo";
-import type { ModelResponse } from "@/api/schemas";
+import type { ModelInfo, ModelResponse } from "@/api/schemas";
+import { useParams } from "react-router-dom";
+import { useGetVehicle } from "@/api/vehicle/vehicle";
+import { useEffect } from "react";
 
 interface Props {
   make: MakeInfo | null;
-  model: ModelResponse | null;
+  model: ModelResponse | ModelInfo | null;
   year: string;
   makes: MakeInfo[];
   models: ModelResponse[];
   setMake: (make: MakeInfo | null) => void;
-  setModel: (model: ModelResponse | null) => void;
+  setModel: (model: ModelResponse | ModelInfo | null) => void;
   setYear: (year: string) => void;
+  setVin: (vin: string) => void;
+  setStreet: (street: string) => void;
+  setCity: (city: string) => void;
+  setState: (state: string) => void;
+  setCountry: (country: string) => void;
+  setZip: (zip: string) => void;
+  setLocation: (location: string) => void;
   fetchModels: (id: number) => Promise<ModelResponse[]>;
   errorModel?: string;
   errorMake?: string;
@@ -32,14 +41,68 @@ export default function VehicleFormGeneral({
   year,
   makes,
   models,
+  setVin,
+  setStreet,
+  setCity,
+  setState,
+  setCountry,
+  setZip,
   setMake,
   setModel,
   setYear,
+  setLocation,
   fetchModels,
   errorModel,
   errorMake,
   errorYear,
 }: Props) {
+  const params = useParams<{ id: string }>();
+  const id = params.id || "";
+  const { data: vehicle } = useGetVehicle(id);
+
+  useEffect(() => {
+    const initialize = async () => {
+      if (!vehicle) return;
+console.log(vehicle);
+
+      if (vehicle.model?.make) {
+        setMake(vehicle.model.make);
+        const fetchedModels = await fetchModels(vehicle.model.make.id);
+
+        // After models fetched, safely set model
+        const foundModel = fetchedModels.find(
+          (m) => m.id === vehicle.model_id
+        );
+        if (foundModel) {
+          setModel(foundModel);
+        }
+      }
+
+      if (vehicle.year) setYear(vehicle.year);
+      if (vehicle.vin) setVin(vehicle.vin);
+      if (vehicle.street) setStreet(vehicle.street);
+      if (vehicle.city) setCity(vehicle.city);
+      if (vehicle.state) setState(vehicle.state);
+      if (vehicle.country) setCountry(vehicle.country);
+      if (vehicle.zipcode) setZip(vehicle.zipcode);
+      if (vehicle.location) setLocation(vehicle.location);  
+    };
+
+    initialize();
+  }, [
+    vehicle,
+    fetchModels,
+    setMake,
+    setModel,
+    setYear,
+    setVin,
+    setStreet,
+    setCity,
+    setState,
+    setCountry,
+    setZip,
+  ]);
+
   return (
     <>
       <div>
@@ -47,7 +110,7 @@ export default function VehicleFormGeneral({
           Make
         </Label>
         <Select
-          value={make?.id.toString() || ""}
+          value={make ? String(make.id) : ""}
           onValueChange={async (val) => {
             const selected = makes.find((m) => m.id === +val);
             if (selected) {
@@ -76,7 +139,8 @@ export default function VehicleFormGeneral({
           Model
         </Label>
         <Select
-          value={model?.id.toString() || ""}
+          value={model ? String(model.id) : ""}
+          disabled={!make}
           onValueChange={(val) => {
             const selected = models.find((m) => m.id === +val);
             if (selected) setModel(selected);
