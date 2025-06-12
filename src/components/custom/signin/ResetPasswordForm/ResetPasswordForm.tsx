@@ -7,7 +7,7 @@ import ChangePasswordIcon from "@/assets/icons/change-password-icon.svg?react";
 import ConfirmPasswordField from "./ConfirmPasswordField";
 import useResetPasswordForm from "./useResetPasswordForm";
 import ExpiredLinkScreen from "./ExpiredLinkScreen";
-import { useVerifyResetToken } from "@/api/authentication/authentication"; // путь зависит от генерации orval
+import { useVerifyResetToken } from "@/api/authentication/authentication";
 
 export default function ResetPasswordForm() {
   const [searchParams] = useSearchParams();
