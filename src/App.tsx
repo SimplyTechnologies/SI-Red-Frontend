@@ -23,7 +23,6 @@ export default function App() {
   return (
     <Routes>
       <Route path="/activate" element={<AccountActivation />} />
-      <Route path="/reset-password" element={<></>} />
       <Route
         path="/signin"
         element={
@@ -33,7 +32,7 @@ export default function App() {
         }
       />
       <Route
-        path="/reset"
+        path="/reset-password"
         element={
           <PublicOnlyRoute>
             <Signin variant="reset" />

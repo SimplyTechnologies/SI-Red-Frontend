@@ -9,52 +9,80 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Info } from "lucide-react";
+import { Info } from "lucide-react";
+import type { ReactNode } from "react";
 
 type Props = {
-  itemId: string;
-  handleDelete: (id: string) => void;
   title: string;
+  description: string;
+  onConfirm: (...args: any[]) => void;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  showTrigger?: boolean; // optional: whether to show the default trash icon trigger
+  confirmLabel?: string;
+  cancelLabel?: string;
+  showTrigger?: boolean;
+  triggerContent?: ReactNode;
+  icon?: ReactNode;
+  confirmClassName?: string;
+  cancelClassName?: string;
 };
 
 export default function ConfirmationDialog({
-  handleDelete,
-  itemId,
   title,
+  description,
+  onConfirm,
   open,
   onOpenChange,
-  showTrigger,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  showTrigger = false,
+  triggerContent,
+  icon,
+  confirmClassName,
+  cancelClassName,
 }: Props) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {showTrigger && (
-        <div className="flex justify-center items-center w-full cursor-pointer">
-          <AlertDialogTrigger asChild>
-            <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
-          </AlertDialogTrigger>
-        </div>
+        <AlertDialogTrigger asChild>
+          <div className="cursor-pointer w-full h-full flex justify-center items-center">
+            {triggerContent || (
+              <span className="text-[#403C89] underline font-medium text-sm">
+                Open
+              </span>
+            )}
+          </div>
+        </AlertDialogTrigger>
       )}
 
-      <AlertDialogContent>
-        <div className="w-[48px] h-[48px] flex items-center justify-center rounded-full bg-[#FFE0EA] p-1 mx-auto">
-          <Info className="w-[28px] h-[28px] text-[#FA5087]" />
-        </div>
+      <AlertDialogContent className="sm:h-[280px] text-center">
+        {icon !== null && (
+          <div className="w-[48px] h-[48px] flex items-center justify-center rounded-full bg-[#E9E6FF] p-1 mx-auto">
+            {icon ?? <Info className="w-[28px] h-[28px] text-[#403C89]" />}
+          </div>
+        )}
+
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete {title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to delete this {title.toLowerCase()}? This action cannot be undone.
+          <AlertDialogTitle className="text-[20px] mt-4">
+            {title}
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-[14px] mt-2 text-muted-foreground">
+            {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel className="flex-1">Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            className="flex-1"
-            onClick={() => handleDelete(itemId)}
+
+        <AlertDialogFooter className="flex flex-row gap-4">
+          <AlertDialogCancel
+            className={`flex-1 h-[56px] rounded-md font-medium text-[16px] ${cancelClassName}`}
           >
-            Delete
+            {cancelLabel || "Cancel"}
+          </AlertDialogCancel>
+
+          <AlertDialogAction
+            className={`flex-1 h-[56px] rounded-md font-medium text-[16px] ${confirmClassName}`}
+            onClick={onConfirm}
+          >
+            {confirmLabel || "Confirm"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
