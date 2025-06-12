@@ -37,7 +37,7 @@ export default function ActionMenu() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Points />
+          <Points className="cursor-pointer" />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
