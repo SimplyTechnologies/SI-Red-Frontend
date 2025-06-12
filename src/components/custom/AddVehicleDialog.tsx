@@ -5,7 +5,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { useVehicleStore } from "../../store/useVehicleModalStore";
 import VehicleFormBody from "./vehicleModal/VehicleFormBody";
 
 interface Props {
@@ -15,14 +14,12 @@ interface Props {
 }
 
 export function AddVehicleDialog({ open, onOpenChange, title }: Props) {
-  const { resetVehicleForm } = useVehicleStore();
 
   return (
     <Dialog
       open={open}
       onOpenChange={(val) => {
         onOpenChange(val);
-        if (!val) resetVehicleForm();
       }}
     >
       <DialogDescription>
