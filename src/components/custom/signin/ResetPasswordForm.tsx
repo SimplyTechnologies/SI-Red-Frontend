@@ -9,9 +9,12 @@ import { passwordRules } from "@/constants/constants";
 import { useSearchParams } from "react-router-dom";
 import { useResetPassword } from "@/api/authentication/authentication";
 import ConfirmationDialog from "../ConfirmationDialog";
+import { useAuthStore } from "@/store/authStore";
+import ChangePasswordIcon from "@/assets/icons/change-password-icon.svg?react";
 
 export default function ResetPasswordForm() {
   const [searchParams] = useSearchParams();
+  const { setShowForgotPassword } = useAuthStore();
 
   const [formData, setFormData] = useState<FormData>({
     email: "",
@@ -28,9 +31,18 @@ export default function ResetPasswordForm() {
     mutation: {
       onSuccess: () => {
         console.log("Password reset successful");
+        setShowForgotPassword(false);
         window.location.href = "/signin";
       },
       onError: (error: any) => {
+        if (error.status === 400) {
+          setErrors((prev) => ({
+            ...prev,
+            password:
+              "New password must be different from the current password",
+          }));
+          return;
+        }
         console.error(
           "Password reset failed:",
           error?.response?.data?.message || error.message
@@ -117,6 +129,9 @@ export default function ResetPasswordForm() {
 
   return (
     <>
+      <h2 className="font-bold text-2xl md:text-[36px] leading-[1.2] font-dm-sans text-[#192252]">
+        Reset Password
+      </h2>
       <form className="space-y-6" onSubmit={handleValidateAndOpenDialog}>
         <PasswordInput
           formData={formData}
@@ -149,9 +164,9 @@ export default function ResetPasswordForm() {
             }`}
           />
 
-          <div className="h-[16px] mt-1 transition-opacity duration-200">
+          <div className="h-[16px] mt-1">
             <p
-              className={`text-xs text-red-500 ${
+              className={`text-xs text-red-500 transition-opacity duration-200 ${
                 hasTriedSubmit && errors.confirmPassword
                   ? "opacity-100"
                   : "opacity-0"
@@ -175,11 +190,13 @@ export default function ResetPasswordForm() {
         description="Are you sure that you would like to reset password? You will be logged out from all devices!"
         confirmLabel="Reset"
         cancelLabel="Cancel"
-        confirmClassName="border border-[#403C89] bg-[#403C89] hover:bg-[#474396] text-white"
-        cancelClassName="border border-[#403C89] text-[#403C89] hover:bg-[#ebeaf7]"
         open={showDialog}
         onOpenChange={setShowDialog}
         onConfirm={handleResetConfirmed}
+        icon={ChangePasswordIcon}
+        iconClassName="text-[#403C89] bg-[#E0DFFA]"
+        confirmClassName="border border-[#403C89] bg-[#403C89] hover:bg-[#474396] text-white"
+        cancelClassName="border border-[#403C89] text-[#403C89] hover:bg-[#ebeaf7]"
       />
     </>
   );

@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Info } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, ComponentType } from "react";
 
 type Props = {
   title: string;
@@ -22,9 +22,10 @@ type Props = {
   cancelLabel?: string;
   showTrigger?: boolean;
   triggerContent?: ReactNode;
-  icon?: ReactNode;
+  icon?: ComponentType;
   confirmClassName?: string;
   cancelClassName?: string;
+  iconClassName?: string;
 };
 
 export default function ConfirmationDialog({
@@ -37,9 +38,10 @@ export default function ConfirmationDialog({
   cancelLabel = "Cancel",
   showTrigger = false,
   triggerContent,
-  icon,
+  icon: Icon,
   confirmClassName,
   cancelClassName,
+  iconClassName,
 }: Props) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -56,11 +58,11 @@ export default function ConfirmationDialog({
       )}
 
       <AlertDialogContent className="sm:h-[280px] text-center">
-        {icon !== null && (
-          <div className="w-[48px] h-[48px] flex items-center justify-center rounded-full bg-[#E9E6FF] p-1 mx-auto">
-            {icon ?? <Info className="w-[28px] h-[28px] text-[#403C89]" />}
-          </div>
-        )}
+        <div
+          className={`w-[48px] h-[48px] flex items-center justify-center rounded-full p-1 mx-auto ${iconClassName}`}
+        >
+          {Icon ? <Icon /> : <Info />}
+        </div>
 
         <AlertDialogHeader>
           <AlertDialogTitle className="text-[20px] mt-4">
@@ -75,14 +77,14 @@ export default function ConfirmationDialog({
           <AlertDialogCancel
             className={`flex-1 h-[56px] rounded-md font-medium text-[16px] ${cancelClassName}`}
           >
-            {cancelLabel || "Cancel"}
+            {cancelLabel}
           </AlertDialogCancel>
 
           <AlertDialogAction
             className={`flex-1 h-[56px] rounded-md font-medium text-[16px] ${confirmClassName}`}
             onClick={onConfirm}
           >
-            {confirmLabel || "Confirm"}
+            {confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
