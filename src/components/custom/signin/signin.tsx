@@ -1,7 +1,7 @@
 import SigninImage from "./SigninImage";
 import SigninForm from "./SigninForm";
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import ResetPasswordForm from "./ResetPasswordForm";
+import ResetPasswordForm from "./ResetPasswordForm/ResetPasswordForm";
 import { useAuthStore } from "@/store/authStore";
 
 interface Props {
