@@ -47,6 +47,7 @@ export default function UsersTableData({ user, handleDelete }: Props) {
               triggerContent={
                 <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
               }
+              onConfirmArgs={[user.id]}
             />
           </div>
         </TableCell>

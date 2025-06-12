@@ -15,8 +15,9 @@ import type { ReactNode, ComponentType } from "react";
 type Props = {
   title: string;
   description: string;
-  onConfirm: (...args: any[]) => void;
   open?: boolean;
+  onConfirm: (...args: any[]) => void;
+  onConfirmArgs?: any[];
   onOpenChange?: (open: boolean) => void;
   confirmLabel?: string;
   cancelLabel?: string;
@@ -32,6 +33,7 @@ export default function ConfirmationDialog({
   title,
   description,
   onConfirm,
+  onConfirmArgs = [],
   open,
   onOpenChange,
   confirmLabel = "Confirm",
@@ -82,7 +84,7 @@ export default function ConfirmationDialog({
 
           <AlertDialogAction
             className={`flex-1 h-[56px] rounded-md font-medium text-[16px] ${confirmClassName}`}
-            onClick={onConfirm}
+            onClick={() => onConfirm(...onConfirmArgs)}
           >
             {confirmLabel}
           </AlertDialogAction>
