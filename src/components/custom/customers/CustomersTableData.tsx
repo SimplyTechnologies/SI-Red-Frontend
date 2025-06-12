@@ -101,25 +101,26 @@ export default function CustomersTableData({
         </TableCell>
 
         <TableCell>
-          <div className="flex items-center gap-2">
-            <div>
-              <p className="text-primary font-medium text-[#192252]">
-                {customer.vehicles[0]?.vin}
-              </p>
-              <p className="text-sm">{customer.vehicles[0]?.model}</p>
-            </div>
-
-            {extraVehicleCount > 0 && (
-              <div className="rounded-full bg-[#E8F0FE] text-[#1A73E8] px-2 py-0.5 text-xs font-semibold select-none">
-                +{extraVehicleCount}
-              </div>
-            )}
+        <div className="flex items-center gap-2">
+          <div>
+            <p className="text-primary font-medium text-[#192252]">
+              {customer.vehicles[0]?.vin ?? 'No Vehicle'}
+            </p>
+            <p className="text-sm">{customer.vehicles[0]?.model ?? 'N/A'}</p>
           </div>
-        </TableCell>
 
-        <TableCell>
-          {formatDateTime(customer.vehicles[0].assignedDate)}
-        </TableCell>
+          {extraVehicleCount > 0 && (
+            <div className="rounded-full bg-[#E8F0FE] text-[#1A73E8] px-2 py-0.5 text-xs font-semibold select-none">
+              +{extraVehicleCount}
+            </div>
+          )}
+        </div>
+      </TableCell>
+
+      <TableCell>
+        {customer.vehicles[0] ? formatDateTime(customer.vehicles[0].assignedDate) : 'N/A'}
+      </TableCell>
+
         <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
