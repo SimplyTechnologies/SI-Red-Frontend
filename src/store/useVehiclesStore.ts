@@ -4,8 +4,10 @@ import type { VehicleMapPoint } from "@/api/schemas";
 import { addToFavorites, removeFromFavorites } from "@/api/favorite/favorite";
 import { VEHICLES_TABS } from "@/constants/constants";
 import { getVehicle } from "@/api/vehicle/vehicle";
+import { customMutator } from "@/lib/api/customMutator";
 
 type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
+type DownloadType = 'vehicles' | 'favorites';
 
 type VehiclesStore = {
   vehicles: VehicleResponse[];
@@ -14,6 +16,7 @@ type VehiclesStore = {
   activeTab: VehiclesTab;
   search: string;
   selectedVehicle: VehicleResponse | null;
+  isDownloadingCsv: boolean;
   setSelectedVehicle: (vehicle: VehicleResponse | null) => void;
   setSearch: (search: string) => void;
   setVehicles: (vehicles: VehicleResponse[]) => void;
@@ -21,6 +24,7 @@ type VehiclesStore = {
   setFavorites: (vehicles: VehicleResponse[]) => void;
   setActiveTab: (tab: VehiclesTab) => void;
   toggleFavorite: (vehicle: VehicleResponse) => void;
+  downloadVehiclesCsv: (search?: string) => Promise<void>;
   fetchNextPage: () => void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
@@ -38,6 +42,7 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
   activeTab: VEHICLES_TABS.VEHICLES,
   search: "",
   selectedVehicle: null,
+  isDownloadingCsv: false,
 
   setSearch: (search) => set({ search }),
 
@@ -87,6 +92,46 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
       console.error("Failed to get vehicle:", error);
     }
   },
+
+  downloadVehiclesCsv: async (search?: string) => {
+    set({ isDownloadingCsv: true });
+    try {
+      const type: DownloadType = get().activeTab === VEHICLES_TABS.FAVORITES 
+        ? 'favorites' 
+        : 'vehicles';
+
+      const blob = await customMutator<Blob>({
+        url: '/vehicles/download-csv',
+        method: 'GET',
+        params: {
+          ...(search && { search }),
+          type
+        },
+        responseType: 'stream',
+        headers: {
+          'Accept': 'text/csv'
+        }
+      });
+
+      const prefix = type === 'favorites' ? 'favorite-vehicles' : 'vehicles';
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${prefix}_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download CSV:", error);
+      throw error;
+    } finally {
+      set({ isDownloadingCsv: false });
+    }
+  },
+
   fetchNextPage: () => {},
   hasNextPage: false,
   isFetchingNextPage: false,
