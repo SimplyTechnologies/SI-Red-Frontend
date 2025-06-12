@@ -121,7 +121,6 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
       document.body.appendChild(link);
       link.click();
       
-      // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
