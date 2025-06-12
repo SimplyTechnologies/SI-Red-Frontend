@@ -73,7 +73,7 @@ export default function ForgotPasswordForm() {
       <div className="mb-4">
         <InputField
           id="email"
-          type="email"
+          type="text"
           label="Your Email"
           placeholder="example@mail.com"
           value={email}

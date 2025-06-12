@@ -40,7 +40,7 @@ export const ACCOUNT_ACTIVATION_INPUTS = {
   inputs: [
     {
       id: "email",
-      type: "email",
+      type: "text",
       label: "Email address",
       placeholder: "example@mail.com",
     },
@@ -99,13 +99,13 @@ export type VehicleStatusKeys = "sold" | "in stock";
 export const DELETE_TITLE = {
   USER: "User",
   CUSTOMER: "Customer",
-  VEHICLE: "Vehicle"
-}
+  VEHICLE: "Vehicle",
+};
 
 export const VEHICLE_DIALOG_TITLE = {
   ADD: "Add New",
-  EDIT: "Edit"
-}
+  EDIT: "Edit",
+};
 
 export const USER_ROLE = {
   SUPER_ADMIN: "SUPER_ADMIN",
