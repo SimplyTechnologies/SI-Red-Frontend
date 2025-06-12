@@ -6,6 +6,18 @@ import { useUpdateUser } from "@/api/user/user";
 import { ProfileHeader } from "@/components/custom/account/ProfileHeader";
 import { ProfileActions } from "@/components/custom/account/ProfileActions";
 import { ProfileForm } from "@/components/custom/account/ProfileForm";
+import { useRequestPasswordReset } from "@/api/authentication/authentication";
+import ChangePasswordIcon from "@/assets/icons/change-password-icon.svg?react";
+
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 export default function Account() {
   const {
@@ -16,6 +28,8 @@ export default function Account() {
     setLastName,
     setPhoneNumber,
   } = useAuthStore();
+
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName,
@@ -68,6 +82,17 @@ export default function Account() {
     });
   };
 
+  const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset({
+    mutation: {
+      onSuccess: () => {
+        setShowResetDialog(true);
+      },
+      onError: (err) => {
+        console.error("Failed to request password reset:", err);
+      },
+    },
+  });
+
   return (
     <div className="p-5 h-[max] w-[max] bg-[#F8F9F9] bg-red">
       <div className="bg-white rounded-[16px] p-7 shadow-sm">
@@ -107,9 +132,39 @@ export default function Account() {
             </p>
           </h3>
 
-          <Button className="w-[10vw] h-[5vh] min-w-[110px]">
+          <Button
+            className="w-[10vw] h-[5vh] min-w-[110px]"
+            onClick={() => requestPasswordReset()}
+            disabled={isPending}
+          >
             Reset Password
           </Button>
+
+          <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>
+            <AlertDialogContent className="min-h-[300px]">
+              <div
+                className={`w-[48px] h-[48px] flex items-center justify-center rounded-full p-1 mx-auto text-[#403C89] bg-[#E0DFFA]`}
+              >
+                <ChangePasswordIcon />
+              </div>
+
+              <AlertDialogHeader>
+                <AlertDialogTitle className="mb-[10px] text-[18px] text-black font-bold">
+                  Password Reset Email Sent
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-[16px] font-normal">
+                  A password reset link has been sent to your email address.
+                  Please check your inbox and follow the instructions to reset
+                  your password.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="w-full border-[#403C89] text-[#403C89]">
+                  OK
+                </AlertDialogCancel>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>

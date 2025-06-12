@@ -44,7 +44,7 @@ export default function ResetPasswordForm() {
   const isLoading = status === "pending";
 
   if (isTokenValid === null || isLoading) {
-    return <p>Loading...</p>; // или заменить на спиннер
+    return <p>Loading...</p>;
   }
 
   if (!isTokenValid) {

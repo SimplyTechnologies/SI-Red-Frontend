@@ -20,6 +20,12 @@ export default function App() {
     useAuthStore.getState().loadFromStorage();
   }, []);
 
+  useEffect(() => {
+    if (location.pathname === "/reset-password") {
+      useAuthStore.getState().logout();
+    }
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/activate" element={<AccountActivation />} />
