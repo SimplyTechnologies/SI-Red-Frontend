@@ -8,10 +8,12 @@ import Roles from "@/lib/roles";
 export default function VehicleHeader() {
   const navigate = useNavigate();
   const role = Roles();
-  const { setSelectedVehicle, setActiveTab } = useVehiclesStore((s) => ({
-    setSelectedVehicle: s.setSelectedVehicle,
-    setActiveTab: s.setActiveTab,
-  }));
+  const { selectedVehicle, setSelectedVehicle, setActiveTab } =
+    useVehiclesStore((s) => ({
+      selectedVehicle: s.selectedVehicle,
+      setSelectedVehicle: s.setSelectedVehicle,
+      setActiveTab: s.setActiveTab,
+    }));
 
   const backToVehicles = () => {
     navigate("/vehicles");
@@ -22,7 +24,11 @@ export default function VehicleHeader() {
   return (
     <div className="flex justify-between">
       <BackIcon onClick={backToVehicles} className="cursor-pointer" />
-      {role === USER_ROLE.SUPER_ADMIN ? <ActionMenu /> : ''}
+      {role === USER_ROLE.SUPER_ADMIN && selectedVehicle?.status !== "sold" ? (
+        <ActionMenu />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
