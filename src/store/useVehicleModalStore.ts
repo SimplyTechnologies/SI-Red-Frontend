@@ -82,8 +82,21 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   setState: (state) => set({ state }),
   setCountry: (country) => set({ country }),
   setZip: (zip) => set({ zip }),
-  setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) =>
-    set({ isAddNewVehicleModalOpened }),
+  setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) => {
+    set({
+      make: null,
+      model: null,
+      year: "",
+      vin: "",
+      location: "",
+      street: "",
+      city: "",
+      state: "",
+      country: "",
+      zip: "",
+    })
+    set({ isAddNewVehicleModalOpened })
+  },
   resetVehicleForm: () =>
     set({
       make: null,
