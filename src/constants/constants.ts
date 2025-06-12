@@ -96,6 +96,17 @@ export type VehicleStatusKey = keyof typeof VEHICLE_STATUS;
 
 export type VehicleStatusKeys = "sold" | "in stock";
 
+export const DELETE_TITLE = {
+  USER: "User",
+  CUSTOMER: "Customer",
+  VEHICLE: "Vehicle"
+}
+
+export const VEHICLE_DIALOG_TITLE = {
+  ADD: "Add New",
+  EDIT: "Edit"
+}
+
 export const USER_ROLE = {
   SUPER_ADMIN: "SUPER_ADMIN",
   USER: "USER",

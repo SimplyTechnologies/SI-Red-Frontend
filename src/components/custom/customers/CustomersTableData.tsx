@@ -2,10 +2,14 @@ import { useState } from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import ChevronDown from "@/assets/icons/chevron-down.svg?react";
 import Avatar from "@/assets/icons/avatar.svg?react";
-import { useDeleteCustomer } from "@/api/customer/customer";
+import {
+  getGetAllCustomersQueryKey,
+  useDeleteCustomer,
+} from "@/api/customer/customer";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationDialog from "../ConfirmationDialog";
+import { DELETE_TITLE } from "@/constants/constants";
 
 interface Vehicle {
   vin: string;
@@ -42,6 +46,8 @@ export default function CustomersTableData({
 }: {
   customer: Customer;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const [expanded, setExpanded] = useState(false);
   const extraVehicleCount = customer.vehicles.length - 1;
 
@@ -57,7 +63,9 @@ export default function CustomersTableData({
           description: "Customer deleted.",
           variant: "success",
         });
-        queryClient.invalidateQueries({ queryKey: ["getAllCustomers"] });
+        queryClient.invalidateQueries({
+          queryKey: getGetAllCustomersQueryKey(),
+        });
       },
       onError: () => {
         toast({
@@ -116,8 +124,12 @@ export default function CustomersTableData({
         <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
           <ConfirmationDialog
-            userId={customer.id}
+            itemId={customer.id}
             handleDelete={(id) => deleteCustomer({ id })}
+            title={DELETE_TITLE.CUSTOMER}
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            showTrigger={true}
           />
         </TableCell>
       </TableRow>

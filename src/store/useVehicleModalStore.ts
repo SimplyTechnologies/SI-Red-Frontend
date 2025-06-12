@@ -3,12 +3,12 @@ import { getAllMakes } from "../api/make/make";
 import { getAllModelsByMakeId } from "../api/model/model";
 import { decodeVin as decodeVinApi } from "../api/vin/vin";
 import type { MakeInfo } from "../api/schemas/makeInfo";
-import type { ModelResponse } from "../api/schemas";
+import type { ModelInfo, ModelResponse } from "../api/schemas";
 import type { VinResponse } from "../api/schemas";
 
 interface VehicleState {
   make: MakeInfo | null;
-  model: ModelResponse | null;
+  model: ModelResponse | ModelInfo | null;
   year: string;
   vin: string;
   location: string;
@@ -30,7 +30,7 @@ interface VehicleState {
 
   // Setters
   setMake: (make: MakeInfo | null) => void;
-  setModel: (model: ModelResponse | null) => void;
+  setModel: (model: ModelResponse | ModelInfo | null) => void;
   setYear: (year: string) => void;
   setVin: (vin: string) => void;
   setLocation: (location: string) => void;
@@ -40,7 +40,6 @@ interface VehicleState {
   setCountry: (country: string) => void;
   setZip: (zip: string) => void;
   setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened: boolean) => void;
-  resetVehicleForm: () => void;
 
   // Async actions
   fetchMakes: () => Promise<void>;
@@ -82,9 +81,7 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   setState: (state) => set({ state }),
   setCountry: (country) => set({ country }),
   setZip: (zip) => set({ zip }),
-  setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) =>
-    set({ isAddNewVehicleModalOpened }),
-  resetVehicleForm: () =>
+  setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) => {
     set({
       make: null,
       model: null,
@@ -96,7 +93,9 @@ export const useVehicleStore = create<VehicleState>((set) => ({
       state: "",
       country: "",
       zip: "",
-    }),
+    })
+    set({ isAddNewVehicleModalOpened })
+  },
 
   // Fetch list of makes
   fetchMakes: async () => {
