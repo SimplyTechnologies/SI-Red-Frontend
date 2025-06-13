@@ -1,15 +1,19 @@
 import BackIcon from "@/assets/icons/back.svg?react";
 import ActionMenu from "@/components/layout/ActionMenu/ActionMenu";
-import { VEHICLES_TABS } from "@/constants/constants";
+import { USER_ROLE, VEHICLES_TABS } from "@/constants/constants";
 import { useNavigate } from "react-router-dom";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
+import Roles from "@/lib/roles";
 
 export default function VehicleHeader() {
   const navigate = useNavigate();
-  const { setSelectedVehicle, setActiveTab } = useVehiclesStore((s) => ({
-    setSelectedVehicle: s.setSelectedVehicle,
-    setActiveTab: s.setActiveTab,
-  }));
+  const role = Roles();
+  const { selectedVehicle, setSelectedVehicle, setActiveTab } =
+    useVehiclesStore((s) => ({
+      selectedVehicle: s.selectedVehicle,
+      setSelectedVehicle: s.setSelectedVehicle,
+      setActiveTab: s.setActiveTab,
+    }));
 
   const backToVehicles = () => {
     navigate("/vehicles");
@@ -20,7 +24,11 @@ export default function VehicleHeader() {
   return (
     <div className="flex justify-between">
       <BackIcon onClick={backToVehicles} className="cursor-pointer" />
-      <ActionMenu />
+      {role === USER_ROLE.SUPER_ADMIN && selectedVehicle?.status !== "sold" ? (
+        <ActionMenu />
+      ) : (
+        ""
+      )}
     </div>
   );
 }

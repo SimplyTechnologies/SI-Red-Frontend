@@ -122,13 +122,11 @@ export function useVehicleFormLogic(onSuccess: () => void) {
       console.error("Location fetch failed", err);
     }
   };
-  const { resetVehicleForm } = useVehicleStore();
 
   const { mutate: createVehicle } = useCreateVehicleMutation(() => {
     setValue("");
     clearSuggestions();
     setCoordinates({ lat: null, lng: null });
-    resetVehicleForm();
     onSuccess();
   });
 
@@ -136,7 +134,6 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     setValue("");
     clearSuggestions();
     setCoordinates({ lat: null, lng: null });
-    resetVehicleForm();
     onSuccess();
   });
 

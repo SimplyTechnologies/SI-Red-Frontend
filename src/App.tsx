@@ -8,17 +8,13 @@ import Customers from "./pages/Customers";
 import Account from "./pages/Account";
 import VehicleDetails from "./components/custom/vehicles/VehiclesDetails/VehicleDetails";
 import AccountActivation from "./pages/AccountActivation";
-import { useEffect } from "react";
-import { useAuthStore } from "./store/authStore";
 import ProtectedLayout from "./components/layout/ProtectedLayout";
 import PublicOnlyRoute from "./components/layout/PublicOnlyRoute";
 import { USER_ROLE } from "./constants/constants";
+import Roles from "./lib/roles";
 
 export default function App() {
-  const { role } = useAuthStore();
-  useEffect(() => {
-    useAuthStore.getState().loadFromStorage();
-  }, []);
+  const role = Roles();
 
   useEffect(() => {
     if (location.pathname === "/reset-password") {

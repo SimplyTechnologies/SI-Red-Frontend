@@ -20,7 +20,6 @@ export default function LocationAutocomplete({
   status,
   data,
   setValue,
-  setLocation,
   onSelect,
   error,
 }: Props) {
@@ -28,27 +27,15 @@ export default function LocationAutocomplete({
 
   return (
     <div className="col-span-2 relative">
-      <Label
-        htmlFor="location"
-        className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
-      >
+      <Label htmlFor="location" className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
         Location
       </Label>
       <Input
         id="location"
         value={value}
-        onChange={(e) => {
-          const newVal = e.target.value;
-          setValue(newVal);
-          setLocation(newVal);
-          if (newVal === "") {
-            setLocation("");
-          }
-        }}
+        onChange={(e) => setValue(e.target.value)}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => {
-          setTimeout(() => setIsFocused(false), 150);
-        }}
+        onBlur={() => setIsFocused(false)}
         disabled={!ready}
         placeholder="Set location"
         className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
@@ -59,10 +46,7 @@ export default function LocationAutocomplete({
             <li
               key={place_id}
               className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-              onClick={() => {
-                setLocation(description);
-                onSelect(description);
-              }}
+              onMouseDown={() => onSelect(description)}
             >
               {description}
             </li>

@@ -40,7 +40,6 @@ interface VehicleState {
   setCountry: (country: string) => void;
   setZip: (zip: string) => void;
   setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened: boolean) => void;
-  resetVehicleForm: () => void;
 
   // Async actions
   fetchMakes: () => Promise<void>;
@@ -82,9 +81,7 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   setState: (state) => set({ state }),
   setCountry: (country) => set({ country }),
   setZip: (zip) => set({ zip }),
-  setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) =>
-    set({ isAddNewVehicleModalOpened }),
-  resetVehicleForm: () =>
+  setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) => {
     set({
       make: null,
       model: null,
@@ -96,7 +93,9 @@ export const useVehicleStore = create<VehicleState>((set) => ({
       state: "",
       country: "",
       zip: "",
-    }),
+    })
+    set({ isAddNewVehicleModalOpened })
+  },
 
   // Fetch list of makes
   fetchMakes: async () => {

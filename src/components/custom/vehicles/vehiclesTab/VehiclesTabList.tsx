@@ -2,10 +2,24 @@ import { TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DownloadIcon from '@/assets/icons/download.svg?react';
 import { VEHICLES_TABS } from '@/constants/constants';
 import { useVehiclesStore } from '@/store/useVehiclesStore';
+import { useToast } from '@/hooks/use-toast';
 
 export default function VehiclesTabList() {
-    const setActiveTab = useVehiclesStore((s) => s.setActiveTab);
-    const search = useVehiclesStore((s) => s.search);
+    const { setActiveTab, search, downloadVehiclesCsv, isDownloadingCsv, activeTab } = useVehiclesStore();
+    const { toast } = useToast();
+
+    const handleDownload = async () => {
+        try {
+            await downloadVehiclesCsv(search);
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Download failed",
+                description: "Could not download vehicles data. Please try again."
+            });
+        }
+    };
+
 
     return (
         <>
@@ -26,7 +40,18 @@ export default function VehiclesTabList() {
                         ))}
                     </div>
 
-                    <DownloadIcon className="mr-14" />
+
+                                <button 
+                                    onClick={handleDownload} 
+                                    disabled={isDownloadingCsv}
+                                    className="mr-14"
+                                >
+                                    <DownloadIcon 
+                                        className={`cursor-pointer hover:opacity-80 ${
+                                            isDownloadingCsv ? 'opacity-50' : ''
+                                        }`}
+                                    />
+                                </button>
                 </TabsList>
             )}
         </>
