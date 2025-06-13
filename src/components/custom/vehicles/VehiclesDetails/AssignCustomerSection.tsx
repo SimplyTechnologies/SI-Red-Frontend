@@ -83,6 +83,7 @@ export default function AssignCustomerSection() {
         title="Assign to Customer"
       >
         <CustomerForm
+          submitLabel="Assign"
           onSubmit={(values) => {
             assignCustomerMutation.mutate({ id, data: values });
           }}

@@ -12,9 +12,9 @@ export default function useDeleteVehicleWithToast() {
         toast({
           title: "Vehicle deleted",
           description: "Vehicle deleted successfully.",
-          variant: "destructive",
+          variant: "success",
         });
-        navigate('/vehicles')
+        navigate("/vehicles");
       },
       onError: () => {
         toast({

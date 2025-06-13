@@ -88,7 +88,7 @@ export default function Form({
       <FormField
         id="phoneNumber"
         label="Phone Number"
-        placeholder="+1-XXX-XXX-XXXX"
+        placeholder="+1XXXXXXXXXX"
         type="tel"
         inputRef={phoneRef}
         error={errors.phoneNumber}
