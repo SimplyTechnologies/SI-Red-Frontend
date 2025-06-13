@@ -12,6 +12,8 @@ import ProtectedLayout from "./components/layout/ProtectedLayout";
 import PublicOnlyRoute from "./components/layout/PublicOnlyRoute";
 import { USER_ROLE } from "./constants/constants";
 import Roles from "./lib/roles";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore";
 
 export default function App() {
   const role = Roles();

@@ -4,7 +4,7 @@ import { makeActivationInputProps } from "@/utils/makeActivationInputProps";
 import { passwordRules } from "@/constants/constants";
 import { useResetPassword } from "@/api/authentication/authentication";
 import { useAuthStore } from "@/store/authStore";
-import type { FormData } from "../../accountActivation/AccountActivationForm";
+import type { FormData } from "../components/custom/accountActivation/AccountActivationForm";
 
 export default function useResetPasswordForm() {
   const [searchParams] = useSearchParams();

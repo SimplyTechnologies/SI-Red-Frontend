@@ -5,7 +5,7 @@ import PasswordInput from "../../accountActivation/PasswordInput";
 import ConfirmationDialog from "../../ConfirmationDialog";
 import ChangePasswordIcon from "@/assets/icons/change-password-icon.svg?react";
 import ConfirmPasswordField from "./ConfirmPasswordField";
-import useResetPasswordForm from "./useResetPasswordForm";
+import useResetPasswordForm from "@/hooks/useResetPasswordForm";
 import ExpiredLinkScreen from "./ExpiredLinkScreen";
 import { useVerifyResetToken } from "@/api/authentication/authentication";
 
