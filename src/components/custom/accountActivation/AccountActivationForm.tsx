@@ -15,13 +15,20 @@ export type FormData = {
   confirmPassword: string;
 };
 
-export default function AccountActivationForm() {
+type Props = {
+  userInfo: {
+    email: string;
+    name: string;
+  };
+};
+
+export default function AccountActivationForm({ userInfo }: Props) {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
   const [formData, setFormData] = useState<FormData>({
-    email: "",
-    name: "",
+    email: userInfo.email,
+    name: userInfo.name,
     password: "",
     confirmPassword: "",
   });
@@ -40,8 +47,8 @@ export default function AccountActivationForm() {
     if (data) {
       setFormData((prev) => ({
         ...prev,
-        email: data.email,
-        name: data.name,
+        email: data.email ?? "",
+        name: data.name ?? "",
       }));
     }
   }, [data]);

@@ -90,6 +90,18 @@ export const customMutator = async <T>({
   let res = await makeRequest(accessToken || undefined);
 
   if (res.status === 401) {
+    let errorBody;
+    try {
+      errorBody = await res.json();
+    } catch {
+      errorBody = { message: res.statusText };
+    }
+    if (errorBody.message === "Force logout required") {
+      useAuthStore.getState().logout();
+      window.location.href = "/signin";
+      throw new Error("You have been forcefully logged out");
+    }
+
     try {
       if (!isRefreshing) {
         isRefreshing = true;

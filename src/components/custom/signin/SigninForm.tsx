@@ -85,7 +85,7 @@ export default function SigninForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <InputField
         id="email"
-        type="email"
+        type="text"
         label="Email address"
         placeholder="example@mail.com"
         value={email}

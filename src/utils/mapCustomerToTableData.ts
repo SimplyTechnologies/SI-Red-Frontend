@@ -13,7 +13,7 @@ export function mapCustomerToTableData(c: CustomerWithVehicles) {
       model: `${v.model?.make?.name ?? "Unknown"} ${v.model?.name ?? "Model"} ${
         v.year
       }`,
-      assignedDate: new Date(v.assignedDate ?? "").toLocaleDateString(),
+      assignedDate: v.assignedDate,
     })),
   };
 }

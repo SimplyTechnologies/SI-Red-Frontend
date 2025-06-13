@@ -108,7 +108,8 @@ export default function Form({
               firstNameRef.current.value = customer.firstName ?? "";
             if (lastNameRef.current)
               lastNameRef.current.value = customer.lastName ?? "";
-            if (phoneRef.current) phoneRef.current.value = customer.phoneNumber ?? "";
+            if (phoneRef.current)
+              phoneRef.current.value = customer.phoneNumber ?? "";
           }}
         />
       ) : (
@@ -116,7 +117,7 @@ export default function Form({
           id="email"
           label="Mail"
           placeholder="Enter Mail"
-          type="email"
+          type="text"
           inputRef={emailRef}
           error={errors.email}
         />
