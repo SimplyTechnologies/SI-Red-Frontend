@@ -14,11 +14,13 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     year,
     vin,
     location,
+    locationDescription,
     street,
     city,
     state,
     country,
     zip,
+    makes,
     setMake,
     setModel,
     setYear,
@@ -29,7 +31,6 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     setState,
     setCountry,
     setZip,
-    makes,
     fetchMakes,
     fetchModels,
     decodeVin,
@@ -111,7 +112,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         results[0].address_components.find((c) => c.types.includes(type))
           ?.long_name || "";
 
-      const getSubPromise = getComponent("subpremise") ? (getComponent("subpremise") + "/") : "";
+      const getSubPromise = getComponent("subpremise")
+        ? getComponent("subpremise") + "/"
+        : "";
       const getStreetNumber = getComponent("street_number") + " ";
       setStreet(getSubPromise + getStreetNumber + getComponent("route"));
       setCity(getComponent("locality"));
@@ -137,20 +140,33 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     onSuccess();
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
     setFieldErrors({});
 
-    if (location === "") {
-      coordinates.lat = null;
-      coordinates.lng = null;
+    let lat = coordinates.lat;
+    let lng = coordinates.lng;
+
+    if (!location.trim()) {
+      const addressParts = [street, city, state, country, zip].filter(Boolean);
+      const fallbackAddress = addressParts.join(", ");
+      try {
+        const results = await getGeocode({ address: fallbackAddress });
+        const coords = await getLatLng(results[0]);
+        lat = coords.lat;
+        lng = coords.lng;
+        setCoordinates({ lat, lng });
+      } catch (error) {
+        console.error("Fallback geocoding failed", error);
+        setFormError(
+          "Couldn't auto-locate the address. Please check the data."
+        );
+        return;
+      }
     }
 
-    const locationString =
-      coordinates.lat && coordinates.lng
-        ? `${coordinates.lat},${coordinates.lng}`
-        : "";
+    const locationString = lat && lng ? `${lat},${lng}` : "";
 
     createVehicle(
       {
@@ -190,15 +206,41 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     );
   };
 
-  const handleUpdate = (e: React.FormEvent, vehicleId: string) => {
+  const handleUpdate = async (e: React.FormEvent, vehicleId: string) => {
     e.preventDefault();
     setFormError("");
     setFieldErrors({});
 
-    const locationString =
-      coordinates.lat && coordinates.lng
-        ? `${coordinates.lat},${coordinates.lng}`
-        : "";
+    let lat = coordinates.lat;
+    let lng = coordinates.lng;
+    if (!lat || !lng) {
+      try {
+        let targetAddress = location.trim();
+
+        if (!locationDescription) {
+          const addressParts = [street, city, state, country, zip].filter(
+            Boolean
+          );
+          targetAddress = addressParts.join(", ");
+        }
+
+        if (targetAddress) {
+          const results = await getGeocode({ address: targetAddress });
+          const coords = await getLatLng(results[0]);
+          lat = coords.lat;
+          lng = coords.lng;
+          setCoordinates({ lat, lng });
+        } else {
+          console.warn("No address provided for geocoding");
+        }
+      } catch (error) {
+        console.error("Geocoding failed", error);
+        setFormError("Couldn't resolve coordinates from address.");
+        return;
+      }
+    }
+
+    const locationString = lat && lng ? `${lat},${lng}` : "";
 
     updateVehicleMutation(
       {
