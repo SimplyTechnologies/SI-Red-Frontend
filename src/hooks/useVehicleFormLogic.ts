@@ -15,6 +15,7 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     vin,
     location,
     locationDescription,
+    setLocationDescription,
     street,
     city,
     state,
@@ -140,6 +141,45 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     onSuccess();
   });
 
+  function handleErrorResponse(error: any) {
+    setLocationDescription("");
+    const backendErrors = error?.data?.errors;
+    if (Array.isArray(backendErrors)) {
+      const parsed: Record<string, string> = {};
+      for (const err of backendErrors) {
+        const field = err.path || err.param;
+        if (field && !parsed[field]) {
+          parsed[field] = err.msg;
+        }
+      }
+      setFieldErrors(parsed);
+    } else {
+      setFormError(error?.message || "Something went wrong.");
+    }
+  }
+
+  async function resolveCoordinates(): Promise<{
+    lat: number;
+    lng: number;
+  } | null> {
+    try {
+      let address = locationDescription.trim();
+      if (!address) {
+        address = [street, city, state, country, zip]
+          .filter(Boolean)
+          .join(", ");
+      }
+
+      if (!address) return null;
+
+      const results = await getGeocode({ address });
+      return await getLatLng(results[0]);
+    } catch (error) {
+      console.error("Geocoding failed", error);
+      return null;
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
@@ -149,21 +189,16 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     let lng = coordinates.lng;
 
     if (!location.trim()) {
-      const addressParts = [street, city, state, country, zip].filter(Boolean);
-      const fallbackAddress = addressParts.join(", ");
-      try {
-        const results = await getGeocode({ address: fallbackAddress });
-        const coords = await getLatLng(results[0]);
-        lat = coords.lat;
-        lng = coords.lng;
-        setCoordinates({ lat, lng });
-      } catch (error) {
-        console.error("Fallback geocoding failed", error);
+      const coords = await resolveCoordinates();
+      if (!coords) {
         setFormError(
           "Couldn't auto-locate the address. Please check the data."
         );
         return;
       }
+      lat = coords.lat;
+      lng = coords.lng;
+      setCoordinates(coords);
     }
 
     const locationString = lat && lng ? `${lat},${lng}` : "";
@@ -184,23 +219,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         },
       },
       {
-        onError: (error: any) => {
-          const backendErrors = error?.data?.errors;
-
-          if (Array.isArray(backendErrors)) {
-            const parsed: Record<string, string> = {};
-
-            for (const err of backendErrors) {
-              const field = err.path || err.param;
-              if (field && !parsed[field]) {
-                parsed[field] = err.msg;
-              }
-            }
-
-            setFieldErrors(parsed);
-          } else {
-            setFormError(error?.message || "Something went wrong.");
-          }
+        onError: handleErrorResponse,
+        onSuccess: () => {
+          setLocationDescription("");
         },
       }
     );
@@ -213,31 +234,16 @@ export function useVehicleFormLogic(onSuccess: () => void) {
 
     let lat = coordinates.lat;
     let lng = coordinates.lng;
+
     if (!lat || !lng) {
-      try {
-        let targetAddress = location.trim();
-
-        if (!locationDescription) {
-          const addressParts = [street, city, state, country, zip].filter(
-            Boolean
-          );
-          targetAddress = addressParts.join(", ");
-        }
-
-        if (targetAddress) {
-          const results = await getGeocode({ address: targetAddress });
-          const coords = await getLatLng(results[0]);
-          lat = coords.lat;
-          lng = coords.lng;
-          setCoordinates({ lat, lng });
-        } else {
-          console.warn("No address provided for geocoding");
-        }
-      } catch (error) {
-        console.error("Geocoding failed", error);
+      const coords = await resolveCoordinates();
+      if (!coords) {
         setFormError("Couldn't resolve coordinates from address.");
         return;
       }
+      lat = coords.lat;
+      lng = coords.lng;
+      setCoordinates(coords);
     }
 
     const locationString = lat && lng ? `${lat},${lng}` : "";
@@ -259,20 +265,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         },
       },
       {
-        onError: (error: any) => {
-          const backendErrors = error?.data?.errors;
-          if (Array.isArray(backendErrors)) {
-            const parsed: Record<string, string> = {};
-            for (const err of backendErrors) {
-              const field = err.path || err.param;
-              if (field && !parsed[field]) {
-                parsed[field] = err.msg;
-              }
-            }
-            setFieldErrors(parsed);
-          } else {
-            setFormError(error?.message || "Something went wrong.");
-          }
+        onError: handleErrorResponse,
+        onSuccess: () => {
+          setLocationDescription("");
         },
       }
     );
