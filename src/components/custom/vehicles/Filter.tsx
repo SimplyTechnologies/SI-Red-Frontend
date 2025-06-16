@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import SearchIcon from "@/assets/icons/search.svg?react";
-import FilterIcon from "@/assets/icons/filter.svg?react";
+import { ListFilter, ListFilterPlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { useDebounce } from "use-debounce";
@@ -14,7 +14,8 @@ export default function Filter() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch] = useDebounce(searchTerm, 300);
   const navigate = useNavigate();
-  const { resetFilters } = useVehicleFilters();
+  const { resetFilters, make, model, availability } = useVehicleFilters();
+  const hasFilters = make || model || availability;
 
   useEffect(() => {
     setSearch(debouncedSearch);
@@ -42,10 +43,17 @@ export default function Filter() {
           className="w-full border-0 p-0 text-sm focus-visible:ring-0"
         />
       </div>
-      <FilterIcon
-        className="w-5 h-5 cursor-pointer"
-        onClick={showFiltersPage}
-      />
+      {hasFilters?.length ? (
+        <ListFilterPlus
+          className="w-5 h-5 cursor-pointer text-heading"
+          onClick={showFiltersPage}
+        />
+      ) : (
+        <ListFilter
+          className="w-5 h-5 cursor-pointer text-[#AFAFAF]"
+          onClick={showFiltersPage}
+        />
+      )}
     </div>
   );
 }
