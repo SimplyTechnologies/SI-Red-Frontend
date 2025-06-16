@@ -8,7 +8,7 @@ import { useInfiniteVehicles } from '@/hooks/useInfiniteVehicles';
 import { useVehiclesStore } from '@/store/useVehiclesStore';
 import { useEffect, useMemo } from 'react';
 import { useVehicleFilters } from '@/store/useVehicleFilters';
-import FiltersInitializer from '../FiltersInitializer';
+import FiltersInitializer from '../../../../hooks/FiltersInitializer';
 
 export default function VehiclesTabContent() {
     const search = useVehiclesStore((s) => s.search);

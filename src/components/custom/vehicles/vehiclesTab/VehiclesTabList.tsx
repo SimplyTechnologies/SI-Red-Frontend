@@ -3,9 +3,11 @@ import DownloadIcon from '@/assets/icons/download.svg?react';
 import { VEHICLES_TABS } from '@/constants/constants';
 import { useVehiclesStore } from '@/store/useVehiclesStore';
 import { useToast } from '@/hooks/use-toast';
+import { useVehicleFilters } from '@/store/useVehicleFilters';
 
 export default function VehiclesTabList() {
-    const { setActiveTab, search, downloadVehiclesCsv, isDownloadingCsv, activeTab } = useVehiclesStore();
+    const { setActiveTab, search, downloadVehiclesCsv, isDownloadingCsv } = useVehiclesStore();
+    const { make, model, availability } = useVehicleFilters();
     const { toast } = useToast();
 
     const handleDownload = async () => {
@@ -23,7 +25,7 @@ export default function VehiclesTabList() {
 
     return (
         <>
-            {search ? (
+            {search || make || model || availability ? (
                 <></>
             ) : (
                 <TabsList className="w-full md:w-2/3 p-0 bg-background justify-between border-b rounded-none">

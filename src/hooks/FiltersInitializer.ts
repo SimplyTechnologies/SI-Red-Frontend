@@ -10,11 +10,12 @@ const FiltersInitializer = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-
-    const make = searchParams.get("make");
-    const availability = searchParams.get("availability");
-    const models = searchParams.getAll("model");
-    const search = searchParams.get("search");
+    const { make, availability, search, models } = {
+      make: searchParams.get("make"),
+      availability: searchParams.get("availability"),
+      search: searchParams.get("search"),
+      models: searchParams.getAll("model"),
+    };
 
     if (!make && !availability && models.length === 0) {
       useVehicleFilters.getState().resetFilters();
