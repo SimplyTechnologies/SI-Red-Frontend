@@ -12,7 +12,7 @@ export default function useDeleteUserWithToast(queryKey: any) {
         toast({
           title: "User deleted",
           description: "User deleted successfully.",
-          variant: "destructive",
+          variant: "success",
         });
         queryClient.invalidateQueries({ queryKey });
       },

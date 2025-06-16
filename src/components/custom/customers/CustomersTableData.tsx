@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationDialog from "../ConfirmationDialog";
 import { DELETE_TITLE } from "@/constants/constants";
+import { Trash2 } from "lucide-react";
 
 interface Vehicle {
   vin: string;
@@ -104,9 +105,9 @@ export default function CustomersTableData({
           <div className="flex items-center gap-2">
             <div>
               <p className="text-primary font-medium text-[#192252]">
-                {customer.vehicles[0]?.vin}
+                {customer.vehicles[0]?.vin ?? "No Vehicle"}
               </p>
-              <p className="text-sm">{customer.vehicles[0]?.model}</p>
+              <p className="text-sm">{customer.vehicles[0]?.model ?? "N/A"}</p>
             </div>
 
             {extraVehicleCount > 0 && (
@@ -118,18 +119,26 @@ export default function CustomersTableData({
         </TableCell>
 
         <TableCell>
-          {formatDateTime(customer.vehicles[0].assignedDate)}
+          {customer.vehicles[0]
+            ? formatDateTime(customer.vehicles[0].assignedDate)
+            : "N/A"}
         </TableCell>
+
         <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
           <ConfirmationDialog
-            itemId={customer.id}
-            handleDelete={(id) => deleteCustomer({ id })}
-            title={DELETE_TITLE.CUSTOMER}
+            onConfirm={(id) => deleteCustomer({ id })}
+            title={`Delete ${DELETE_TITLE.CUSTOMER}`}
+            description="Are you sure that you would like to delete this customer? This action cannot be undone."
             open={isOpen}
             onOpenChange={setIsOpen}
             showTrigger={true}
+            iconClassName="text-[#FA5087] bg-[#FFE0EA]"
+            triggerContent={
+              <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
+            }
+            onConfirmArgs={[customer.id]}
           />
         </TableCell>
       </TableRow>

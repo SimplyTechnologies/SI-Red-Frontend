@@ -33,7 +33,11 @@ export default function ActionMenu() {
 
   return (
     <>
-      <AddVehicleDialog open={open} onOpenChange={onOpenChange} title={VEHICLE_DIALOG_TITLE.EDIT} />
+      <AddVehicleDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        title={VEHICLE_DIALOG_TITLE.EDIT}
+      />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -67,11 +71,15 @@ export default function ActionMenu() {
       </DropdownMenu>
       {vehicle_id && (
         <ConfirmationDialog
-          handleDelete={handleDelete}
-          itemId={vehicle_id}
           title={DELETE_TITLE.VEHICLE}
+          description="Are you sure that you would like to delete this vehicle? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
           open={isOpen}
           onOpenChange={setIsOpen}
+          onConfirm={handleDelete}
+          onConfirmArgs={[vehicle_id]}
+          iconClassName="text-[#FA5087] bg-[#FFE0EA]"
         />
       )}
     </>

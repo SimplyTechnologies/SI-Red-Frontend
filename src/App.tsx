@@ -13,15 +13,21 @@ import PublicOnlyRoute from "./components/layout/PublicOnlyRoute";
 import { USER_ROLE } from "./constants/constants";
 import Roles from "./lib/roles";
 import VehicleFilters from "./pages/VehicleFilters";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore";
 
 export default function App() {
   const role = Roles();
 
+  useEffect(() => {
+    if (location.pathname === "/reset-password") {
+      useAuthStore.getState().logout();
+    }
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/activate" element={<AccountActivation />} />
-      <Route path="/reset-password" element={<></>} />
       <Route
         path="/signin"
         element={
@@ -31,7 +37,7 @@ export default function App() {
         }
       />
       <Route
-        path="/reset"
+        path="/reset-password"
         element={
           <PublicOnlyRoute>
             <Signin variant="reset" />

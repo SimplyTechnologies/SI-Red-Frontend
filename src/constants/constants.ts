@@ -40,7 +40,7 @@ export const ACCOUNT_ACTIVATION_INPUTS = {
   inputs: [
     {
       id: "email",
-      type: "email",
+      type: "text",
       label: "Email address",
       placeholder: "example@mail.com",
     },

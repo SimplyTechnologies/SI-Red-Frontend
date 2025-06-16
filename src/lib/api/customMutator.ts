@@ -1,6 +1,24 @@
 import { BASE_URL } from "@/config/apiConfig";
 import { useAuthStore } from "@/store/authStore";
 
+type ResponseType = 'json' | 'blob' | 'stream';
+
+interface MutatorConfig<T = any> {
+  url: string;
+  method: string;
+  data?: T;
+  params?: Record<string, any>;
+  signal?: AbortSignal;
+  responseType?: ResponseType;
+  headers?: Record<string, string>;
+}
+
+interface ErrorResponse {
+  message: string;
+  status?: number;
+  data?: any;
+}
+
 let isRefreshing = false;
 let refreshPromise: Promise<string> | null = null;
 
@@ -41,13 +59,9 @@ export const customMutator = async <T>({
   data,
   params,
   signal,
-}: {
-  url: string;
-  method: string;
-  data?: any;
-  params?: Record<string, any>;
-  signal?: AbortSignal;
-}): Promise<T> => {
+  responseType = 'json',
+  headers = {}
+}: MutatorConfig): Promise<T> => {
   const makeRequest = async (accessToken?: string): Promise<Response> => {
     const queryString = params
       ? "?" +
@@ -66,34 +80,51 @@ export const customMutator = async <T>({
         })()
       : "";
 
+    const defaultHeaders: Record<string, string> = {
+      ...(method !== 'GET' && { "Content-Type": "application/json" }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+      ...headers
+    };
+
     return fetch(`${BASE_URL}${url}${queryString}`, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-      },
-      body: data ? JSON.stringify(data) : undefined,
+      headers: defaultHeaders,
+      ...(data && { body: JSON.stringify(data) }),
       signal,
     });
   };
 
-  let accessToken = localStorage.getItem("accessToken");
-  let res = await makeRequest(accessToken!);
+  const accessToken = localStorage.getItem("accessToken");
+  let res = await makeRequest(accessToken || undefined);
 
   if (res.status === 401) {
+    let errorBody;
+    try {
+      errorBody = await res.json();
+    } catch {
+      errorBody = { message: res.statusText };
+    }
+    if (errorBody.message === "Force logout required") {
+      useAuthStore.getState().logout();
+      window.location.href = "/signin";
+      throw new Error("You have been forcefully logged out");
+    }
+
     try {
       if (!isRefreshing) {
         isRefreshing = true;
         refreshPromise = refreshAccessToken();
-      } else {
-        console.log("Waiting for token refresh...");
       }
 
       const newAccessToken = await refreshPromise;
       isRefreshing = false;
       refreshPromise = null;
 
-      res = await makeRequest(newAccessToken!);
+      if (!newAccessToken) {
+        throw new Error("Failed to refresh token");
+      }
+
+      res = await makeRequest(newAccessToken);
     } catch (err) {
       isRefreshing = false;
       refreshPromise = null;
@@ -103,19 +134,27 @@ export const customMutator = async <T>({
   }
 
   if (!res.ok) {
-    let errorBody;
+    let errorBody: ErrorResponse;
     try {
       errorBody = await res.json();
     } catch {
       errorBody = { message: res.statusText };
     }
-
-    const error: any = new Error(errorBody?.message || "Something went wrong");
+    const error = new Error(errorBody.message || "Something went wrong") as Error & ErrorResponse;
     error.status = res.status;
     error.data = errorBody;
-
     throw error;
   }
 
-  return res.json();
+  // Handle different response types appropriately
+  switch (responseType) {
+    case 'blob':
+      return await res.blob() as T;
+    case 'stream':
+      const blob = await res.blob();
+      return new Blob([blob], { type: 'text/csv' }) as unknown as T;
+    case 'json':
+    default:
+      return await res.json();
+  }
 };

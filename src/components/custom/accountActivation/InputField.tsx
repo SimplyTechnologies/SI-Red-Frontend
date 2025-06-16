@@ -63,7 +63,15 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           `}
         />
 
-        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        <div className="h-[16px] mt-1">
+          <p
+            className={`text-red-500 text-xs transition-opacity duration-200 ${
+              error ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {error || "⠀"}
+          </p>
+        </div>
       </div>
     );
   }

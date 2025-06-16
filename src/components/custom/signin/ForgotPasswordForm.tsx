@@ -2,19 +2,46 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { InputField } from "./InputField";
+import { useForgotPassword } from "@/api/authentication/authentication";
+import type { ForgotPasswordBody } from "@/api/schemas";
 
 export default function ForgotPasswordForm() {
   const { email, setEmail, setShowForgotPassword } = useAuthStore();
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const forgotPasswordMutation = useForgotPassword({
+    mutation: {
+      onSuccess: () => {
+        setSubmitted(true);
+      },
+      onError: (err: any) => {
+        const message =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Something went wrong. Please try again.";
+        setError(message);
+      },
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setError(null);
+
+    if (!email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    forgotPasswordMutation.mutate({
+      data: { email } satisfies ForgotPasswordBody,
+    });
   };
 
   if (submitted) {
     return (
-      <div className="space-y-6 ">
+      <div className="space-y-6">
         <h2 className="font-bold text-2xl md:text-[36px] leading-[1.2] font-dm-sans text-[#192252]">
           Forgot Password
         </h2>
@@ -46,12 +73,12 @@ export default function ForgotPasswordForm() {
       <div className="mb-4">
         <InputField
           id="email"
-          type="email"
+          type="text"
           label="Your Email"
           placeholder="example@mail.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          error={""}
+          error={error || ""}
         />
       </div>
 

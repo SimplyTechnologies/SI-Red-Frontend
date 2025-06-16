@@ -49,7 +49,7 @@ const PasswordInput = ({ inputProps, formData, hasTriedSubmit }: Props) => {
           ) : showRed ? (
             <X className="w-4 h-4 text-red-400" />
           ) : (
-            <Circle className="w-4 h-4 text-white" />
+            <Circle fill="white" className="w-4 h-4 text-white" />
           );
 
           return (

@@ -45,17 +45,14 @@ export default function AsyncAutocompleteField({
 
   return (
     <div className="flex flex-col gap-[1px]">
-      <Label
-        htmlFor={id}
-        className="text-xs text-heading mb-[5px]"
-      >
+      <Label htmlFor={id} className="text-xs text-heading mb-[5px]">
         {label}
       </Label>
 
       <div className="relative">
         <Input
           id={id}
-          type="email"
+          type="text"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setIsFocused(true)}

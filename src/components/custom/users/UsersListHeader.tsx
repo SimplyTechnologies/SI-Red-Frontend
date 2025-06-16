@@ -43,6 +43,7 @@ export default function UsersListHeader({ search, setSearch }: Props) {
         title={"Add New User"}
       >
         <UserForm
+          submitLabel="Save"
           onSubmit={(data) => {
             createUserMutation.mutate(
               { data },
@@ -67,7 +68,8 @@ export default function UsersListHeader({ search, setSearch }: Props) {
 
                   toast({
                     title: "User creation failed",
-                    description: response?.message || "Something went wrong",
+                    description:
+                      response?.error.message || "Something went wrong",
                     variant: "destructive",
                   });
                 },
@@ -75,7 +77,6 @@ export default function UsersListHeader({ search, setSearch }: Props) {
             );
           }}
           externalErrors={externalErrors}
-          submitLabel="Save"
         />
       </UserFormDialog>
     </div>
