@@ -117,7 +117,7 @@ export function MultiSelectWithTags({
         </PopoverTrigger>
 
         <PopoverContent className="w-[300px] p-0 rounded-md shadow-lg bg-white">
-          <Command className="max-h-[300px] overflow-y-auto">
+          <Command>
             <CommandInput
               placeholder="Search..."
               className="border-b p-2"
