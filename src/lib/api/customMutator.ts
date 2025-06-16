@@ -51,12 +51,19 @@ export const customMutator = async <T>({
   const makeRequest = async (accessToken?: string): Promise<Response> => {
     const queryString = params
       ? "?" +
-        new URLSearchParams(
-          Object.entries(params).reduce((acc, [key, val]) => {
-            acc[key] = String(val);
-            return acc;
-          }, {} as Record<string, string>)
-        ).toString()
+        (() => {
+          const usp = new URLSearchParams();
+
+          Object.entries(params).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+              val.forEach((v) => usp.append(key, String(v)));
+            } else if (val !== undefined && val !== null) {
+              usp.append(key, String(val));
+            }
+          });
+
+          return usp.toString();
+        })()
       : "";
 
     return fetch(`${BASE_URL}${url}${queryString}`, {

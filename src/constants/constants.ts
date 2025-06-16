@@ -99,13 +99,13 @@ export type VehicleStatusKeys = "sold" | "in stock";
 export const DELETE_TITLE = {
   USER: "User",
   CUSTOMER: "Customer",
-  VEHICLE: "Vehicle"
-}
+  VEHICLE: "Vehicle",
+};
 
 export const VEHICLE_DIALOG_TITLE = {
   ADD: "Add New",
-  EDIT: "Edit"
-}
+  EDIT: "Edit",
+};
 
 export const USER_ROLE = {
   SUPER_ADMIN: "SUPER_ADMIN",
@@ -113,3 +113,9 @@ export const USER_ROLE = {
 } as const;
 
 export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
+
+export const availabilityOptions = [
+  { id: " ", name: "Select vehicle status" },
+  { id: "in stock", name: VEHICLE_STATUS["in stock"] },
+  { id: "sold", name: VEHICLE_STATUS["sold"] },
+];

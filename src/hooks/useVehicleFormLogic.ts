@@ -113,7 +113,8 @@ export function useVehicleFormLogic(onSuccess: () => void) {
 
       const getSubPromise = getComponent("subpremise") ? (getComponent("subpremise") + "/") : "";
       const getStreetNumber = getComponent("street_number") + " ";
-      setStreet(getSubPromise + getStreetNumber + getComponent("route"));
+      const getPolitical = getComponent("political") + " ";
+      setStreet(getPolitical + getSubPromise + getStreetNumber + getComponent("route"));
       setCity(getComponent("locality"));
       setState(getComponent("administrative_area_level_1"));
       setCountry(getComponent("country"));
