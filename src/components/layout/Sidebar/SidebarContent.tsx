@@ -3,6 +3,8 @@ import { useSidebarStore } from "@/store/useSidebarStore";
 import { cn } from "@/lib/utils";
 
 import Dashboard from "@/assets/icons/dashboard.svg?react";
+import DashboardActive from "@/assets/icons/dashboardActive.svg?react";
+import DashboardActiveExpanded from "@/assets/icons/dashboardActiveExpanded.svg?react";
 import Vehicles from "@/assets/icons/vehicles.svg?react";
 import Users from "@/assets/icons/users.svg?react";
 import Customers from "@/assets/icons/customers.svg?react";
@@ -41,8 +43,8 @@ export default function SidebarContent() {
             cn(
               "group relative flex items-center rounded-2xl transition-all",
               isExpanded
-                ? "gap-3 px-[1vw] py-[1vh]  w-[16vw] h-[46px] hover:bg-sidebar-active-expanded"
-                : "justify-center h-[46px]  w-[5vw] mx-auto hover:bg-sidebar-active-collapsed",
+                ? "gap-3 px-[1vw] py-[1vh] w-[16vw] h-[46px] hover:bg-sidebar-active-expanded"
+                : "justify-center h-[46px] w-[5vw] mx-auto hover:bg-sidebar-active-collapsed",
               isActive && isExpanded ? "bg-sidebar-active-expanded" : "",
               isActive && !isExpanded ? "bg-sidebar-active-collapsed" : "",
               isActive ? "text-primary font-medium" : "",
@@ -50,16 +52,33 @@ export default function SidebarContent() {
             )
           }
         >
-          <Icon
-            className={cn(
-              "w-[24px] h-[24px] stroke-current",
-              isExpanded ? "text-sidebar-collapsed" : "text-white"
-            )}
-          />
-          {isExpanded && (
-            <span className="text-sm text-text-muted">{label}</span>
+          {({ isActive }) => (
+            <>
+              {label === "Dashboard" && isActive ? (
+                isExpanded ? (
+                  <DashboardActiveExpanded />
+                ) : (
+                  <DashboardActive />
+                )
+              ) : (
+                <Icon
+                  className={cn(
+                    "w-[24px] h-[24px] text-white ",
+                    isActive && !isExpanded ? "fill-white " : "",
+                    !isActive && isExpanded ? "text-[#403c89]" : "",
+                    isActive && isExpanded
+                      ? "fill-[#403c89] text-[#403c89]"
+                      : ""
+                  )}
+                />
+              )}
+
+              {isExpanded && (
+                <span className="text-sm text-text-muted">{label}</span>
+              )}
+              {!isExpanded && <Tooltip label={label} />}
+            </>
           )}
-          {!isExpanded && <Tooltip label={label} />}
         </NavLink>
       ))}
     </nav>
