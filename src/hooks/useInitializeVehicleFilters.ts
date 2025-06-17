@@ -1,12 +1,10 @@
-import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { useVehicleFilters } from "@/store/useVehicleFilters";
-import { useVehiclesStore } from "@/store/useVehiclesStore";
 
-const FiltersInitializer = () => {
+export const useInitializeVehicleFilters = () => {
   const location = useLocation();
   const { setMake, setModel, setAvailability, setHasAppliedFilters } = useVehicleFilters();
-  const { setSearch } = useVehiclesStore();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -26,8 +24,4 @@ const FiltersInitializer = () => {
       if (models.length > 0) setModel(models);
     }
   }, [location.search]);
-
-  return null;
 };
-
-export default FiltersInitializer;

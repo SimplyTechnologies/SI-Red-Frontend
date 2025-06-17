@@ -15,10 +15,6 @@ export default function Filter() {
   const [debouncedSearch] = useDebounce(searchTerm, 300);
   const navigate = useNavigate();
   const { hasAppliedFilters } = useVehicleFilters();
-  // const hasFilters =
-  // (make && make.length > 0) ||
-  // (model && model.length > 0) ||
-  // (availability && availability.length > 0);
 
   useEffect(() => {
     setSearch(debouncedSearch);

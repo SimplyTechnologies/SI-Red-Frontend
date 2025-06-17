@@ -8,9 +8,10 @@ import { useInfiniteVehicles } from '@/hooks/useInfiniteVehicles';
 import { useVehiclesStore } from '@/store/useVehiclesStore';
 import { useEffect, useMemo } from 'react';
 import { useVehicleFilters } from '@/store/useVehicleFilters';
-import FiltersInitializer from '../../../../hooks/FiltersInitializer';
+import { useInitializeVehicleFilters } from '../../../../hooks/useInitializeVehicleFilters';
 
 export default function VehiclesTabContent() {
+    useInitializeVehicleFilters();
     const search = useVehiclesStore((s) => s.search);
     const { make, model, availability } = useVehicleFilters();
     const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -38,7 +39,6 @@ export default function VehiclesTabContent() {
 
     return (
         <>
-            <FiltersInitializer />
             {isLoading ? (
                 <VehiclesTabListSkeleton />
             ) : (
