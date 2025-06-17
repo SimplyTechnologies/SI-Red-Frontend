@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 import Dashboard from "@/assets/icons/dashboard.svg?react";
 import DashboardActive from "@/assets/icons/dashboardActive.svg?react";
+import DashboardActiveExpanded from "@/assets/icons/dashboardActiveExpanded.svg?react";
 import Vehicles from "@/assets/icons/vehicles.svg?react";
 import Users from "@/assets/icons/users.svg?react";
 import Customers from "@/assets/icons/customers.svg?react";
@@ -54,12 +55,20 @@ export default function SidebarContent() {
           {({ isActive }) => (
             <>
               {label === "Dashboard" && isActive ? (
-                <DashboardActive />
+                isExpanded ? (
+                  <DashboardActiveExpanded />
+                ) : (
+                  <DashboardActive />
+                )
               ) : (
                 <Icon
                   className={cn(
                     "w-[24px] h-[24px] text-white ",
-                    isActive ? "fill-white " : ""
+                    isActive && !isExpanded ? "fill-white " : "",
+                    !isActive && isExpanded ? "text-[#403c89]" : "",
+                    isActive && isExpanded
+                      ? "fill-[#403c89] text-[#403c89]"
+                      : ""
                   )}
                 />
               )}
