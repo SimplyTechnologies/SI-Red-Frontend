@@ -14,11 +14,14 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     year,
     vin,
     location,
+    locationDescription,
+    setLocationDescription,
     street,
     city,
     state,
     country,
     zip,
+    makes,
     setMake,
     setModel,
     setYear,
@@ -29,7 +32,6 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     setState,
     setCountry,
     setZip,
-    makes,
     fetchMakes,
     fetchModels,
     decodeVin,
@@ -111,7 +113,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         results[0].address_components.find((c) => c.types.includes(type))
           ?.long_name || "";
 
-      const getSubPromise = getComponent("subpremise") ? (getComponent("subpremise") + "/") : "";
+      const getSubPromise = getComponent("subpremise")
+        ? getComponent("subpremise") + "/"
+        : "";
       const getStreetNumber = getComponent("street_number") + " ";
       setStreet(getSubPromise + getStreetNumber + getComponent("route"));
       setCity(getComponent("locality"));
@@ -137,20 +141,67 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     onSuccess();
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  function handleErrorResponse(error: any) {
+    setLocationDescription("");
+    const backendErrors = error?.data?.errors;
+    if (Array.isArray(backendErrors)) {
+      const parsed: Record<string, string> = {};
+      for (const err of backendErrors) {
+        const field = err.path || err.param;
+        if (field && !parsed[field]) {
+          parsed[field] = err.msg;
+        }
+      }
+      setFieldErrors(parsed);
+    } else {
+      setFormError(error?.message || "Something went wrong.");
+    }
+  }
+
+  async function resolveCoordinates(): Promise<{
+    lat: number;
+    lng: number;
+  } | null> {
+    try {
+      let address = locationDescription.trim();
+      if (!address) {
+        address = [street, city, state, country, zip]
+          .filter(Boolean)
+          .join(", ");
+      }
+
+      if (!address) return null;
+
+      const results = await getGeocode({ address });
+      return await getLatLng(results[0]);
+    } catch (error) {
+      console.error("Geocoding failed", error);
+      return null;
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError("");
     setFieldErrors({});
 
-    if (location === "") {
-      coordinates.lat = null;
-      coordinates.lng = null;
+    let lat = coordinates.lat;
+    let lng = coordinates.lng;
+
+    if (!location.trim()) {
+      const coords = await resolveCoordinates();
+      if (!coords) {
+        setFormError(
+          "Couldn't auto-locate the address. Please check the data."
+        );
+        return;
+      }
+      lat = coords.lat;
+      lng = coords.lng;
+      setCoordinates(coords);
     }
 
-    const locationString =
-      coordinates.lat && coordinates.lng
-        ? `${coordinates.lat},${coordinates.lng}`
-        : "";
+    const locationString = lat && lng ? `${lat},${lng}` : "";
 
     createVehicle(
       {
@@ -168,37 +219,34 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         },
       },
       {
-        onError: (error: any) => {
-          const backendErrors = error?.data?.errors;
-
-          if (Array.isArray(backendErrors)) {
-            const parsed: Record<string, string> = {};
-
-            for (const err of backendErrors) {
-              const field = err.path || err.param;
-              if (field && !parsed[field]) {
-                parsed[field] = err.msg;
-              }
-            }
-
-            setFieldErrors(parsed);
-          } else {
-            setFormError(error?.message || "Something went wrong.");
-          }
+        onError: handleErrorResponse,
+        onSuccess: () => {
+          setLocationDescription("");
         },
       }
     );
   };
 
-  const handleUpdate = (e: React.FormEvent, vehicleId: string) => {
+  const handleUpdate = async (e: React.FormEvent, vehicleId: string) => {
     e.preventDefault();
     setFormError("");
     setFieldErrors({});
 
-    const locationString =
-      coordinates.lat && coordinates.lng
-        ? `${coordinates.lat},${coordinates.lng}`
-        : "";
+    let lat = coordinates.lat;
+    let lng = coordinates.lng;
+
+    if (!lat || !lng) {
+      const coords = await resolveCoordinates();
+      if (!coords) {
+        setFormError("Couldn't resolve coordinates from address.");
+        return;
+      }
+      lat = coords.lat;
+      lng = coords.lng;
+      setCoordinates(coords);
+    }
+
+    const locationString = lat && lng ? `${lat},${lng}` : "";
 
     updateVehicleMutation(
       {
@@ -217,20 +265,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         },
       },
       {
-        onError: (error: any) => {
-          const backendErrors = error?.data?.errors;
-          if (Array.isArray(backendErrors)) {
-            const parsed: Record<string, string> = {};
-            for (const err of backendErrors) {
-              const field = err.path || err.param;
-              if (field && !parsed[field]) {
-                parsed[field] = err.msg;
-              }
-            }
-            setFieldErrors(parsed);
-          } else {
-            setFormError(error?.message || "Something went wrong.");
-          }
+        onError: handleErrorResponse,
+        onSuccess: () => {
+          setLocationDescription("");
         },
       }
     );

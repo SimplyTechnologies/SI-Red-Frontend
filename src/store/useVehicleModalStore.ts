@@ -12,6 +12,7 @@ interface VehicleState {
   year: string;
   vin: string;
   location: string;
+  locationDescription: string;
   street: string;
   city: string;
   state: string;
@@ -34,6 +35,7 @@ interface VehicleState {
   setYear: (year: string) => void;
   setVin: (vin: string) => void;
   setLocation: (location: string) => void;
+  setLocationDescription: (locationDescription: string) => void;
   setStreet: (street: string) => void;
   setCity: (city: string) => void;
   setState: (state: string) => void;
@@ -54,6 +56,7 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   year: "",
   vin: "",
   location: "",
+  locationDescription: "",
   street: "",
   city: "",
   state: "",
@@ -76,6 +79,7 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   setYear: (year) => set({ year }),
   setVin: (vin) => set({ vin }),
   setLocation: (location) => set({ location }),
+  setLocationDescription: (locationDescription) => set({ locationDescription }),
   setStreet: (street) => set({ street }),
   setCity: (city) => set({ city }),
   setState: (state) => set({ state }),
@@ -93,8 +97,8 @@ export const useVehicleStore = create<VehicleState>((set) => ({
       state: "",
       country: "",
       zip: "",
-    })
-    set({ isAddNewVehicleModalOpened })
+    });
+    set({ isAddNewVehicleModalOpened });
   },
 
   // Fetch list of makes

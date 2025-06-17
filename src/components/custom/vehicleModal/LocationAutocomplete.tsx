@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VehicleFormError } from "./VehicleFormError";
+import { useVehicleStore } from "@/store/useVehicleModalStore";
 
 interface Props {
   value: string;
@@ -23,17 +24,25 @@ export default function LocationAutocomplete({
   onSelect,
   error,
 }: Props) {
+  const { setLocationDescription } = useVehicleStore();
+
   const [isFocused, setIsFocused] = useState(false);
 
   return (
     <div className="col-span-2 relative">
-      <Label htmlFor="location" className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]">
+      <Label
+        htmlFor="location"
+        className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
+      >
         Location
       </Label>
       <Input
         id="location"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setLocationDescription(e.target.value);
+          setValue(e.target.value);
+        }}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         disabled={!ready}
