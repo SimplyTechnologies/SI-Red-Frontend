@@ -27,7 +27,7 @@ export default function VehicleDetails() {
         <div className="p-5 pb-0">
           <VehicleHeader />
           <VehicleInfo isLoading={isLoading} />
-          {!isLoading && !selectedVehicle?.customer && (
+          {!isLoading && !selectedVehicle?.customer && selectedVehicle?.model && (
             <AssignCustomerSection />
           )}
         </div>
