@@ -113,3 +113,9 @@ export const USER_ROLE = {
 } as const;
 
 export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
+
+export const availabilityOptions = [
+  { id: " ", name: "Select vehicle status" },
+  { id: "in stock", name: VEHICLE_STATUS["in stock"] },
+  { id: "sold", name: VEHICLE_STATUS["sold"] },
+];

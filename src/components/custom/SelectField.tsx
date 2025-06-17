@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { Label } from '../ui/label';
 import {
   Select,
@@ -34,7 +35,7 @@ export const SelectField: React.FC<SelectFieldProps> = ({
       </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
-          <SelectItem key={option.id} value={String(option.id)}>
+          <SelectItem key={option.id} value={String(option.id)} className={cn(option.id === " " && "text-muted-foreground")}>
             {option.name}
           </SelectItem>
         ))}
