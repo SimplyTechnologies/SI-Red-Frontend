@@ -28,9 +28,9 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
             tabIndex={-1}
           >
             {showPassword ? (
-              <EyeOff className="h-5 w-5" />
+              <EyeOff className="h-5 w-5 mr-3" />
             ) : (
-              <Eye className="h-5 w-5" />
+              <Eye className="h-5 w-5 mr-3" />
             )}
           </button>
         </div>
