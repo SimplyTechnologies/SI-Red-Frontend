@@ -61,6 +61,9 @@ export default function Customers() {
                     <CustomersTableData
                       key={c.id}
                       customer={mapCustomerToTableData(c)}
+                      page={page}
+                      setPage={setPage}
+                      totalCustomers={customers.length}
                     />
                   ))}
 

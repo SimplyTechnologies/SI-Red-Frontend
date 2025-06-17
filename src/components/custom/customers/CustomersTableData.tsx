@@ -44,8 +44,14 @@ function formatDateTime(dateString: string | undefined) {
 
 export default function CustomersTableData({
   customer,
+  page,
+  setPage,
+  totalCustomers,
 }: {
   customer: Customer;
+  page: number;
+  setPage: (page: number) => void;
+  totalCustomers: number;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -64,9 +70,13 @@ export default function CustomersTableData({
           description: "Customer deleted.",
           variant: "success",
         });
-        queryClient.invalidateQueries({
-          queryKey: getGetAllCustomersQueryKey(),
-        });
+        if (totalCustomers === 1 && page > 1) {
+          setPage(page - 1);
+        } else {
+          queryClient.invalidateQueries({
+            queryKey: getGetAllCustomersQueryKey(),
+          });
+        }
       },
       onError: () => {
         toast({

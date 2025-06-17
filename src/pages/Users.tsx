@@ -12,12 +12,14 @@ import { PaginationDemo } from "@/components/custom/Pagination";
 import { useDebounce } from "use-debounce";
 import useDeleteUserWithToast from "@/hooks/useDeleteUserWithToast";
 import type { User } from "@/store/useUserStore";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Users() {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const limit = 5;
+  const queryClient = useQueryClient();
 
   const { data } = useGetUsers(
     { page, limit, search: debouncedSearch },
@@ -39,7 +41,18 @@ export default function Users() {
   const deleteUserMutation = useDeleteUserWithToast(queryKey);
 
   const handleDelete = (id: string) => {
-    deleteUserMutation.mutate({ id });
+    deleteUserMutation.mutate(
+      { id },
+      {
+        onSuccess: () => {
+          if (users.length === 1 && page > 1) {
+            setPage(page - 1);
+          } else {
+            queryClient.invalidateQueries({ queryKey });
+          }
+        },
+      }
+    );
   };
 
   return (
