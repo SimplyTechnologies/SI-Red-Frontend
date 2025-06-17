@@ -5,27 +5,26 @@ import { useVehiclesStore } from "@/store/useVehiclesStore";
 
 const FiltersInitializer = () => {
   const location = useLocation();
-  const { setMake, setModel, setAvailability } = useVehicleFilters();
+  const { setMake, setModel, setAvailability, setHasAppliedFilters } = useVehicleFilters();
   const { setSearch } = useVehiclesStore();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const { make, availability, search, models } = {
-      make: searchParams.get("make"),
-      availability: searchParams.get("availability"),
-      search: searchParams.get("search"),
-      models: searchParams.getAll("model"),
-    };
+    const hasFiltersInUrl =
+      searchParams.has("make") ||
+      searchParams.has("availability") ||
+      searchParams.has("model");
 
-    if (!make && !availability && models.length === 0) {
-      useVehicleFilters.getState().resetFilters();
-      return;
+    if (hasFiltersInUrl) {
+      setHasAppliedFilters(true);
+      const make = searchParams.get("make");
+      const availability = searchParams.get("availability");
+      const models = searchParams.getAll("model");
+
+      if (make) setMake(make);
+      if (availability) setAvailability(availability);
+      if (models.length > 0) setModel(models);
     }
-
-    if (make) setMake(make);
-    if (availability) setAvailability(availability);
-    if (models.length > 0) setModel(models);
-    if (search) setSearch(search);
   }, [location.search]);
 
   return null;

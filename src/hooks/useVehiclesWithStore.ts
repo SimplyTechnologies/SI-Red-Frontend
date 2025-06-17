@@ -6,8 +6,8 @@ import { useVehicleFilters } from "@/store/useVehicleFilters";
 
 export const useVehiclesWithStore = () => {
   const search = useVehiclesStore((s) => s.search);
-  const { make, model, availability } = useVehicleFilters();
-  
+  const { make, model, availability, hasAppliedFilters } = useVehicleFilters();
+
   const { setPagination, setVehicles, setVehicleMapPoints } =
     useVehiclesStore();
 
@@ -18,9 +18,19 @@ export const useVehiclesWithStore = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteVehicles(search, make ?? undefined, model ?? undefined, availability ?? undefined);
+  } = useInfiniteVehicles(
+    search,
+    hasAppliedFilters ? make ?? undefined : undefined,
+    hasAppliedFilters ? model ?? undefined : undefined,
+    hasAppliedFilters ? availability ?? undefined : undefined
+  );
 
-  const { data: mapPoints } = useGetVehicleMapPoints({ search }); 
+  const { data: mapPoints } = useGetVehicleMapPoints({
+    ...(search ? { search } : {}),
+    ...(hasAppliedFilters && make ? { make } : {}),
+    ...(hasAppliedFilters && model?.length ? { model } : {}),
+    ...(hasAppliedFilters && availability ? { availability } : {}),
+  });
 
   useEffect(() => {
     if (vehicles?.pages) {

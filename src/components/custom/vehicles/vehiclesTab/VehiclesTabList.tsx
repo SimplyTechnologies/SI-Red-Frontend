@@ -7,7 +7,7 @@ import { useVehicleFilters } from '@/store/useVehicleFilters';
 
 export default function VehiclesTabList() {
     const { setActiveTab, search, downloadVehiclesCsv, isDownloadingCsv } = useVehiclesStore();
-    const { make, model, availability } = useVehicleFilters();
+    const { hasAppliedFilters } = useVehicleFilters();
     const { toast } = useToast();
 
     const handleDownload = async () => {
@@ -22,10 +22,9 @@ export default function VehiclesTabList() {
         }
     };
 
-
     return (
         <>
-            {search || make || model || availability ? (
+            {search || hasAppliedFilters ? (
                 <></>
             ) : (
                 <TabsList className="w-full md:w-2/3 p-0 bg-background justify-between border-b rounded-none">

@@ -18,6 +18,7 @@ export default function VehicleFilters() {
     setModel,
     setAvailability,
     resetFilters,
+    setHasAppliedFilters,
   } = useVehicleFilters();
   const { data: makes = [] } = useGetAllMakes();
   const navigate = useNavigate();
@@ -36,8 +37,7 @@ export default function VehicleFilters() {
   }));
 
   const backToVehicles = () => {
-    resetFilters();
-    navigate("/vehicles");
+    navigate(-1);
   };
 
   const showSelectedFilters = () => {
@@ -49,6 +49,13 @@ export default function VehicleFilters() {
       model.forEach((m) => searchParams.append("model", m));
     }
 
+    setHasAppliedFilters(
+      (make && make.length > 0) ||
+        (model && model.length > 0) ||
+        (availability && availability.length > 0)
+        ? true
+        : false
+    );
     navigate(`/vehicles?${searchParams.toString()}`);
   };
 
@@ -65,9 +72,24 @@ export default function VehicleFilters() {
   return (
     <div className="flex flex-col lg:flex-row md:flex-row h-full">
       <div className="w-full lg:w-3/5 lg:h-full pt-5 px-5 bg-white">
-        <div className="flex items-center text-heading font-semibold">
-          <BackIcon className="cursor-pointer mr-2" onClick={backToVehicles} />
-          <h1>Filters</h1>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center text-heading font-semibold">
+            <BackIcon
+              className="cursor-pointer mr-2"
+              onClick={backToVehicles}
+            />
+            <h1>Filters</h1>
+          </div>
+          <Button
+            variant="outline"
+            className="w-max-content font-medium text-sm text-heading mt-2"
+            onClick={() => {
+              resetFilters();
+              navigate("/filters");
+            }}
+          >
+            Clear all
+          </Button>
         </div>
 
         <div className="mt-6">
