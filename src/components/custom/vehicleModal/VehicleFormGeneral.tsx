@@ -12,6 +12,7 @@ import type { ModelInfo, ModelResponse } from "@/api/schemas";
 import { useParams } from "react-router-dom";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
 import { useEffect } from "react";
+import { clearFieldError, validateField } from "@/utils/validateField";
 
 interface Props {
   make: MakeInfo | null;
@@ -33,6 +34,7 @@ interface Props {
   errorModel?: string;
   errorMake?: string;
   errorYear?: string;
+  setFieldErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 export default function VehicleFormGeneral({
@@ -55,6 +57,7 @@ export default function VehicleFormGeneral({
   errorModel,
   errorMake,
   errorYear,
+  setFieldErrors,
 }: Props) {
   const params = useParams<{ id: string }>();
   const id = params.id || "";
@@ -68,7 +71,6 @@ export default function VehicleFormGeneral({
         setMake(vehicle.model.make);
         const fetchedModels = await fetchModels(vehicle.model.make.id);
 
-        // After models fetched, safely set model
         const foundModel = fetchedModels.find((m) => m.id === vehicle.model_id);
         if (foundModel) {
           setModel(foundModel);
@@ -109,6 +111,7 @@ export default function VehicleFormGeneral({
         <Select
           value={make ? String(make.id) : ""}
           onValueChange={async (val) => {
+            clearFieldError("make_id", setFieldErrors);
             const selected = makes.find((m) => m.id === +val);
             if (selected) {
               setMake(selected);
@@ -117,7 +120,17 @@ export default function VehicleFormGeneral({
             }
           }}
         >
-          <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+          <SelectTrigger
+            onBlur={() =>
+              validateField(
+                "make_id",
+                make?.id ? String(make.id) : "",
+                setFieldErrors
+              )
+            }
+            onFocus={() => clearFieldError("make_id", setFieldErrors)}
+            className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+          >
             <SelectValue placeholder="Select make" />
           </SelectTrigger>
           <SelectContent>
@@ -139,11 +152,22 @@ export default function VehicleFormGeneral({
           value={model ? String(model.id) : ""}
           disabled={!make}
           onValueChange={(val) => {
+            clearFieldError("model_id", setFieldErrors);
             const selected = models.find((m) => m.id === +val);
             if (selected) setModel(selected);
           }}
         >
-          <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+          <SelectTrigger
+            onBlur={() =>
+              validateField(
+                "model_id",
+                model?.id ? String(model.id) : "",
+                setFieldErrors
+              )
+            }
+            onFocus={() => clearFieldError("model_id", setFieldErrors)}
+            className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+          >
             <SelectValue placeholder="Select model" />
           </SelectTrigger>
           <SelectContent>
@@ -164,8 +188,18 @@ export default function VehicleFormGeneral({
         >
           Year
         </Label>
-        <Select value={year} onValueChange={setYear}>
-          <SelectTrigger className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md">
+        <Select
+          value={year}
+          onValueChange={(val) => {
+            setYear(val);
+            clearFieldError("year", setFieldErrors);
+          }}
+        >
+          <SelectTrigger
+            onBlur={() => validateField("year", year, setFieldErrors)}
+            onFocus={() => clearFieldError("year", setFieldErrors)}
+            className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+          >
             <SelectValue placeholder="Select year" />
           </SelectTrigger>
           <SelectContent>

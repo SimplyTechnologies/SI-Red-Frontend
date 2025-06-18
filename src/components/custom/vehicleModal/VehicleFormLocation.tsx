@@ -1,5 +1,6 @@
 import FormField from "./FormField";
 import { VehicleFormError } from "./VehicleFormError";
+import { validateField } from "@/utils/validateField";
 
 interface Props {
   street: string;
@@ -12,6 +13,7 @@ interface Props {
   setState: (val: string) => void;
   setCountry: (val: string) => void;
   setZip: (val: string) => void;
+  setFieldErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   errors: Partial<
     Record<"street" | "city" | "state" | "country" | "zipcode", string>
   >;
@@ -28,6 +30,7 @@ export default function VehicleFormLocation({
   setState,
   setCountry,
   setZip,
+  setFieldErrors,
   errors,
 }: Props) {
   return (
@@ -39,6 +42,8 @@ export default function VehicleFormLocation({
           placeholder="Enter Street"
           value={street}
           onChange={(e) => setStreet(e.target.value)}
+          onBlur={() => validateField("street", street, setFieldErrors)}
+          setFieldErrors={setFieldErrors}
         />
         <VehicleFormError data={errors.street || ""} />
       </div>
@@ -50,6 +55,8 @@ export default function VehicleFormLocation({
           placeholder="Enter city"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          onBlur={() => validateField("city", city, setFieldErrors)}
+          setFieldErrors={setFieldErrors}
         />
         <VehicleFormError data={errors.city || ""} />
       </div>
@@ -61,6 +68,8 @@ export default function VehicleFormLocation({
           placeholder="Enter state"
           value={state}
           onChange={(e) => setState(e.target.value)}
+          onBlur={() => validateField("state", state, setFieldErrors)}
+          setFieldErrors={setFieldErrors}
         />
         <VehicleFormError data={errors.state || ""} />
       </div>
@@ -72,17 +81,21 @@ export default function VehicleFormLocation({
           placeholder="Enter country"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
+          onBlur={() => validateField("country", country, setFieldErrors)}
+          setFieldErrors={setFieldErrors}
         />
         <VehicleFormError data={errors.country || ""} />
       </div>
 
       <div className="col-span-2">
         <FormField
-          id="zip"
+          id="zipcode"
           label="Zip Code"
           placeholder="Enter Zip Code"
           value={zip}
           onChange={(e) => setZip(e.target.value)}
+          onBlur={() => validateField("zipcode", zip, setFieldErrors)}
+          setFieldErrors={setFieldErrors}
         />
         <VehicleFormError data={errors.zipcode || ""} />
       </div>
