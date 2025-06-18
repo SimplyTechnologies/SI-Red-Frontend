@@ -12,7 +12,10 @@ import type { ModelInfo, ModelResponse } from "@/api/schemas";
 import { useParams } from "react-router-dom";
 import { useGetVehicle } from "@/api/vehicle/vehicle";
 import { useEffect } from "react";
-import { clearFieldError, validateField } from "@/utils/validateField";
+import {
+  clearFieldError,
+  validateField,
+} from "@/utils/validations/validateField";
 
 interface Props {
   make: MakeInfo | null;

@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { clearFieldError } from "@/utils/validateField";
+import { clearFieldError } from "@/utils/validations/validateField";
 
 interface Props {
   id: string;
@@ -11,7 +11,7 @@ interface Props {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setFieldErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-  onBlur?: () => void; 
+  onBlur?: () => void;
 }
 
 export default function FormField({
@@ -23,7 +23,7 @@ export default function FormField({
   value,
   onChange,
   onBlur,
-  setFieldErrors
+  setFieldErrors,
 }: Props) {
   return (
     <div className={className}>

@@ -1,7 +1,10 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VehicleFormError } from "./VehicleFormError";
-import { clearFieldError, validateField } from "@/utils/validateField";
+import {
+  clearFieldError,
+  validateField,
+} from "@/utils/validations/validateField";
 
 interface Props {
   vin: string;

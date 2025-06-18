@@ -14,7 +14,7 @@ export default function ExpiredLinkScreen() {
       >
         Link Expired
       </h2>
-      <p className="mb-6 text-[#192252] font-[14px] mb-[53px]">
+      <p className="text-[#192252] font-[14px] mb-[53px]">
         The link you followed has expired, or you might not have a permission.
       </p>
       <Button

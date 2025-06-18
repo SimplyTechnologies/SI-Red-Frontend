@@ -6,6 +6,7 @@ interface Props {
   error?: string;
   hasTriedSubmit: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: () => void; 
 }
 
 export default function ConfirmPasswordField({
@@ -13,6 +14,7 @@ export default function ConfirmPasswordField({
   error,
   hasTriedSubmit,
   onChange,
+  onBlur
 }: Props) {
   return (
     <div className="w-full max-w-[450px]">
@@ -31,6 +33,7 @@ export default function ConfirmPasswordField({
         placeholder="Enter Password"
         value={value}
         onChange={onChange}
+        onBlur={onBlur} 
         className={`w-full h-[48px] md:h-[56px] rounded-[8px] border bg-white transition-colors ${
           hasTriedSubmit && error
             ? "border-red-500 focus-visible:ring-red-500"

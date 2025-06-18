@@ -6,7 +6,7 @@ import usePlacesAutocomplete, {
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { useCreateVehicleMutation } from "@/hooks/useCreateVehicleMutation";
 import { useUpdateVehicleMutation } from "./useUpdateVehicleMutation";
-import { clearFieldError } from "@/utils/validateField";
+import { clearFieldError } from "@/utils/validations/validateField";
 
 export function useVehicleFormLogic(onSuccess: () => void) {
   const {

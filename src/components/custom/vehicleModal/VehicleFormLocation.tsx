@@ -1,6 +1,6 @@
 import FormField from "./FormField";
 import { VehicleFormError } from "./VehicleFormError";
-import { validateField } from "@/utils/validateField";
+import { validateField } from "@/utils/validations/validateField";
 
 interface Props {
   street: string;
