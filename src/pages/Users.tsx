@@ -13,6 +13,8 @@ import { useDebounce } from "use-debounce";
 import useDeleteUserWithToast from "@/hooks/useDeleteUserWithToast";
 import type { User } from "@/store/useUserStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTableSortStore } from "@/store/useTableSortStore";
+import UsersTableSkeleton from "@/components/custom/users/UsersTableSkeleton";
 
 export default function Users() {
   const [search, setSearch] = useState("");
@@ -20,10 +22,19 @@ export default function Users() {
   const [page, setPage] = useState(1);
   const limit = 5;
   const queryClient = useQueryClient();
+  const { users: usersSortData } = useTableSortStore();
 
-  const { data } = useGetUsers(
-    { page, limit, search: debouncedSearch },
-    { query: { select: (res) => res } }
+  const { data, isLoading } = useGetUsers(
+    {
+      page,
+      limit,
+      search: debouncedSearch,
+      sortBy: usersSortData.sortBy ?? undefined,
+      sortOrder: usersSortData.sortOrder ?? undefined,
+    },
+    {
+      query: {select: (res) => res}
+    }
   );
 
   const setUsers = useUserStore((state) => state.setUsers);
@@ -63,6 +74,13 @@ export default function Users() {
           <Table>
             <TableHeaderComponent tableName={TABLE_PAGES.USERS} />
             <TableBody>
+              {!data && isLoading && (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <UsersTableSkeleton />
+                  </TableCell>
+                </TableRow>
+              )}
               {users.length ? (
                 <>
                   {users.map((user: User) => (
