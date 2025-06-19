@@ -138,6 +138,9 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
     }
   }, [localYear]);
 
+  const isLocationEmpty = locationValue?.trim() === "";
+  const isCoordinatesEmpty = row.coordinates?.trim() === "";
+
   const isMakeEmpty = localMake.trim() === "";
   const isModelEmpty = localModel.trim() === "";
   const isYearInvalid =
@@ -151,7 +154,9 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
     !makeModelValidation?.makeMsg &&
     !makeModelValidation?.modelMsg &&
     !vinValidation?.error &&
-    !row.vinExists;
+    !row.vinExists &&
+    !isLocationEmpty &&
+    !isCoordinatesEmpty;
 
   const renderField = (field: FieldKey) => {
     const mismatch = row.mismatch as Partial<
@@ -225,6 +230,17 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           index={index}
           onChange={onChange}
           row={row}
+          error={isLocationEmpty ? "Location is required" : undefined}
+        />
+      );
+    }
+
+    if (field === "coordinates") {
+      return (
+        <EditableField
+          value={row.coordinates}
+          onChange={(val) => onChange(index, { ...row, coordinates: val })}
+          error={isCoordinatesEmpty ? "Coordinates are required" : undefined}
         />
       );
     }

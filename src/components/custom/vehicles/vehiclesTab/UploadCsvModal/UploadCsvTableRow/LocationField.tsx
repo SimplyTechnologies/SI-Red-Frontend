@@ -11,6 +11,7 @@ interface Props {
   index: number;
   onChange: (index: number, updated: any) => void;
   row: any;
+  error?: string; // 👈 добавлено
 }
 
 export function LocationField({
@@ -23,6 +24,7 @@ export function LocationField({
   index,
   onChange,
   row,
+  error,
 }: Props) {
   const handleSelectLocation = async (description: string) => {
     setValue(description, false);
@@ -37,13 +39,13 @@ export function LocationField({
       onChange(index, {
         ...row,
         combinedLocation: description,
-        coordinates: lat && lng ? `${lat},${lng}` : undefined,
+        coordinates: lat && lng ? `${lat},${lng}` : "",
       });
     } catch {
       onChange(index, {
         ...row,
         combinedLocation: description,
-        coordinates: undefined,
+        coordinates: "",
       });
     }
   };
@@ -57,7 +59,7 @@ export function LocationField({
       setValue={setValue}
       setLocation={() => {}}
       onSelect={handleSelectLocation}
-      error={undefined}
+      error={error}
     />
   );
 }
