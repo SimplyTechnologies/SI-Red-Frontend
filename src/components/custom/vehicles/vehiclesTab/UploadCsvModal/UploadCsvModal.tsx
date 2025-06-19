@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UploadCsvTableRow } from "./UploadCsvTableRow";
+import { UploadCsvTableRow } from "./UploadCsvTableRow/UploadCsvTableRow";
 import { Button } from "@/components/ui/button";
 
 const DEFAULT_LOCATION = "48 Leo Street, Yerevan, Yerevan, Armenia";
