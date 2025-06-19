@@ -7,6 +7,7 @@ import VinField from "./VinField";
 import LocationAutocomplete from "./LocationAutocomplete";
 import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 import { useParams } from "react-router-dom";
+import { useReverseGeocode } from "@/hooks/useReverseGeocode";
 
 interface Props {
   onSuccess: () => void;
@@ -26,6 +27,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     setYear,
     setVin,
     setLocation,
+    setLocationDescription,
     street,
     city,
     state,
@@ -37,6 +39,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     setCountry,
     setZip,
     fetchModels,
+    prefillLatLng,
   } = useVehicleStore();
 
   const {
@@ -54,11 +57,29 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     data,
     setValue,
   } = useVehicleFormLogic(onSuccess);
-  const {id} = useParams();
+  const { id } = useParams();
+
+  const { isLoading: isReverseGeocoding } = useReverseGeocode(
+    prefillLatLng,
+    (data) => {
+      setStreet(data.components.street);
+      setCity(data.components.city);
+      setState(data.components.state);
+      setCountry(data.components.country);
+      setZip(data.components.zip);
+      setLocation(data.address);
+      setLocationDescription(data.address);
+      setValue(data.address);
+    }
+  );
 
   return (
     <form
-      onSubmit={title===VEHICLE_DIALOG_TITLE.EDIT && id ? (e) => handleUpdate(e, id) : handleSubmit}
+      onSubmit={
+        title === VEHICLE_DIALOG_TITLE.EDIT && id
+          ? (e) => handleUpdate(e, id)
+          : handleSubmit
+      }
       className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
     >
       <div className="col-span-2 text-[16px] font-[700] text-heading font-dm-sans mb-0.5">
@@ -96,6 +117,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
       />
 
       <LocationAutocomplete
+        isReverseGeocoding={isReverseGeocoding}
         value={value}
         ready={ready}
         status={status}
