@@ -1,4 +1,5 @@
 import { useVehicleStore } from "@/store/useVehicleModalStore";
+import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { Button } from "@/components/ui/button";
 import { useVehicleFormLogic } from "@/hooks/useVehicleFormLogic";
 import VehicleFormGeneral from "./VehicleFormGeneral";
@@ -7,6 +8,7 @@ import VinField from "./VinField";
 import LocationAutocomplete from "./LocationAutocomplete";
 import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 import { useParams } from "react-router-dom";
+import VehicleImageUploader from "../vehicles/VehicleImageUploader";
 
 interface Props {
   onSuccess: () => void;
@@ -39,6 +41,8 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     fetchModels,
   } = useVehicleStore();
 
+  const { selectedVehicle } = useVehiclesStore();
+
   const {
     vinError,
     formError,
@@ -54,11 +58,15 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     data,
     setValue,
   } = useVehicleFormLogic(onSuccess);
-  const {id} = useParams();
+  const { id } = useParams();
 
   return (
     <form
-      onSubmit={title===VEHICLE_DIALOG_TITLE.EDIT && id ? (e) => handleUpdate(e, id) : handleSubmit}
+      onSubmit={
+        title === VEHICLE_DIALOG_TITLE.EDIT && id
+          ? (e) => handleUpdate(e, id)
+          : handleSubmit
+      }
       className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
     >
       <div className="col-span-2 text-[16px] font-[700] text-heading font-dm-sans mb-0.5">
@@ -125,6 +133,8 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
           zipcode: fieldErrors.zipcode,
         }}
       />
+
+      <VehicleImageUploader existingImages={selectedVehicle?.images} />
 
       <div className="col-span-2">
         <Button
