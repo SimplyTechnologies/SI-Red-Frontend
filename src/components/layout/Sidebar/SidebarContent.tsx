@@ -12,6 +12,7 @@ import Customers from "@/assets/icons/customers.svg?react";
 import Tooltip from "@/components/tooltip";
 import { useAuthStore } from "@/store/authStore";
 import { USER_ROLE } from "@/constants/constants";
+import VehicleIcon from "./VehicleIcon";
 
 const navItems = [
   { label: "Dashboard", icon: Dashboard, to: "/" },
@@ -60,6 +61,8 @@ export default function SidebarContent() {
                 ) : (
                   <DashboardActive />
                 )
+              ) : label === "Vehicles" ? (
+                <VehicleIcon isActive={isActive} isExpanded={isExpanded} />
               ) : (
                 <Icon
                   className={cn(
