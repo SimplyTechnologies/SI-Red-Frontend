@@ -10,7 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationDialog from "../ConfirmationDialog";
 import { DELETE_TITLE } from "@/constants/constants";
-import { Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Download, FileText, Trash2 } from "lucide-react";
 
 interface Vehicle {
   vin: string;
@@ -25,6 +32,13 @@ interface Customer {
   email: string;
   assignedDate: string;
   vehicles: Vehicle[];
+  documents?: Array<{
+    id: string;
+    name: string;
+    fileUrl: string;
+    mimeType?: string;
+    size?: number;
+  }>;
 }
 
 function formatDateTime(dateString: string | undefined) {
@@ -137,19 +151,120 @@ export default function CustomersTableData({
         <TableCell className="font-bold">{customer.email}</TableCell>
         <TableCell>{customer.phoneNumber}</TableCell>
         <TableCell>
-          <ConfirmationDialog
-            onConfirm={(id) => deleteCustomer({ id })}
-            title={`Delete ${DELETE_TITLE.CUSTOMER}`}
-            description="Are you sure that you would like to delete this customer? This action cannot be undone."
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            showTrigger={true}
-            iconClassName="text-[#FA5087] bg-[#FFE0EA]"
-            triggerContent={
-              <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
-            }
-            onConfirmArgs={[customer.id]}
-          />
+          <div className="flex items-center gap-2">
+            {/* File viewer icon */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <button
+                  className="hover:bg-accent p-2 rounded-md transition-colors"
+                  title="View Documents"
+                >
+                  <FileText className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out h-5 w-5" />
+
+                </button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Customer Documents</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+                  {customer.documents && customer.documents.length > 0 ? (
+                    customer.documents.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between p-3 bg-accent/50 rounded-md hover:bg-accent"
+                      >
+                        <div className="flex flex-col overflow-hidden mr-2">
+                          <span
+                            className="font-medium text-sm truncate"
+                            title={doc.name}
+                          >
+                            {doc.name}
+                          </span>
+                          {doc.size && (
+                            <span className="text-xs text-muted-foreground">
+                              {(doc.size / 1024 / 1024).toFixed(2)} MB
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const response = await fetch(doc.fileUrl);
+
+                              if (!response.ok) {
+                                throw new Error(
+                                  `Download failed with status ${response.status}`
+                                );
+                              }
+
+                              const contentDisposition = response.headers.get(
+                                "Content-Disposition"
+                              );
+                              const filename =
+                                contentDisposition?.match(
+                                  /filename="(.+)"/
+                                )?.[1] || doc.name;
+
+                              const blob = await response.blob();
+                              const url = window.URL.createObjectURL(blob);
+
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = filename;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              window.URL.revokeObjectURL(url);
+
+                              toast({
+                                title: "Download complete",
+                                description: `${filename} downloaded successfully.`,
+                                variant: "success",
+                              });
+                            } catch (error) {
+                              console.error("Download error:", error);
+                              toast({
+                                title: "Download failed",
+                                description:
+                                  "We couldn’t download the file. Please check your internet or try again later.",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                          className="hover:bg-background p-2 rounded-md transition-colors"
+                          title="Download file"
+                        >
+                          <Download className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>No documents available</p>
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+
+
+            {/* Existing delete button */}
+            <ConfirmationDialog
+              onConfirm={(id) => deleteCustomer({ id })}
+              title={`Delete ${DELETE_TITLE.CUSTOMER}`}
+              description="Are you sure that you would like to delete this customer? This action cannot be undone."
+              open={isOpen}
+              onOpenChange={setIsOpen}
+              showTrigger={true}
+              iconClassName="text-[#FA5087] bg-[#FFE0EA]"
+              triggerContent={
+                <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
+              }
+              onConfirmArgs={[customer.id]}
+            />
+          </div>
         </TableCell>
       </TableRow>
 

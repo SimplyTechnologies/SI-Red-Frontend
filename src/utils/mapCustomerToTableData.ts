@@ -15,5 +15,6 @@ export function mapCustomerToTableData(c: CustomerWithVehicles) {
       }`,
       assignedDate: v.assignedDate,
     })),
+    documents: c.documents ?? [],
   };
 }

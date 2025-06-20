@@ -1,7 +1,11 @@
 import { useRef, useState, useEffect } from "react";
 import FormField from "./FormField";
 import { Button } from "@/components/ui/button";
+import { Upload, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import AsyncAutocompleteField from "./AsyncAutocompleteField";
+import clsx from "clsx";
 
 interface Props {
   onSubmit: (values: {
@@ -9,10 +13,20 @@ interface Props {
     lastName: string;
     email: string;
     phoneNumber: string;
+    documents?: File[];
   }) => void;
   submitLabel?: string;
   externalErrors?: Record<string, string>;
   emailAutocomplete?: boolean;
+  showUploadField?: boolean;
+}
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phoneNumber?: string;
+  documents?: string;
 }
 
 export default function Form({
@@ -20,23 +34,23 @@ export default function Form({
   submitLabel = "Save",
   externalErrors = {},
   emailAutocomplete = false,
+  showUploadField = false,
 }: Props) {
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState<{
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phoneNumber?: string;
-  }>({});
+  const [documents, setDocuments] = useState<File[]>([]);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    const hasExternal =
-      externalErrors && Object.keys(externalErrors).length > 0;
+    const hasExternal = Object.keys(externalErrors).length > 0;
     if (
       hasExternal &&
       JSON.stringify(errors) !== JSON.stringify(externalErrors)
@@ -45,12 +59,54 @@ export default function Form({
     }
   }, [externalErrors]);
 
+  const validateFile = (file: File) => {
+    const validTypes = ["application/pdf", "image/jpeg", "image/png"];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!validTypes.includes(file.type)) {
+      return "Invalid file type. Only PDF, JPEG, and PNG are allowed.";
+    }
+
+    if (file.size > maxSize) {
+      return "File size should be less than 5MB.";
+    }
+
+    return null;
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const newDocuments: File[] = [];
+    let validationError: string | null = null;
+
+    for (const file of files) {
+      const error = validateFile(file);
+      if (error) {
+        validationError = error;
+        break;
+      }
+      newDocuments.push(file);
+    }
+
+    if (validationError) {
+      setErrors((prev) => ({ ...prev, documents: validationError }));
+      return;
+    }
+
+    setDocuments((prev) => [...prev, ...newDocuments]);
+    setErrors((prev) => ({ ...prev, documents: undefined }));
+  };
+
+  const removeFile = (index: number) => {
+    setDocuments((prev) => prev.filter((_, i) => i !== index));
+    if (documents.length === 1) {
+      setErrors((prev) => ({ ...prev, documents: undefined }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const firstName = firstNameRef.current?.value.trim() || "";
-    const lastName = lastNameRef.current?.value.trim() || "";
-    const phoneNumber = phoneRef.current?.value.trim() || "";
     const resolvedEmail = emailAutocomplete
       ? email.trim()
       : emailRef.current?.value.trim() || "";
@@ -61,6 +117,7 @@ export default function Form({
       lastName,
       email: resolvedEmail,
       phoneNumber,
+      documents,
     });
   };
 
@@ -70,8 +127,10 @@ export default function Form({
         <FormField
           id="firstName"
           label="First Name"
-          placeholder="Enter Name"
+          placeholder="Enter First Name"
           className="flex-1"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
           inputRef={firstNameRef}
           error={errors.firstName}
         />
@@ -80,7 +139,8 @@ export default function Form({
           label="Last Name"
           placeholder="Enter Last Name"
           className="flex-1"
-          inputRef={lastNameRef}
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
           error={errors.lastName}
         />
       </div>
@@ -91,14 +151,16 @@ export default function Form({
         placeholder="+1XXXXXXXXXX"
         type="tel"
         inputRef={phoneRef}
+        value={phoneNumber}
+        onChange={(e) => setPhoneNumber(e.target.value)}
         error={errors.phoneNumber}
       />
 
       {emailAutocomplete ? (
         <AsyncAutocompleteField
           id="email"
-          label="Mail"
-          placeholder="Enter Mail"
+          label="Email"
+          placeholder="Enter Email"
           value={email}
           setValue={setEmail}
           error={errors.email}
@@ -115,12 +177,81 @@ export default function Form({
       ) : (
         <FormField
           id="email"
-          label="Mail"
-          placeholder="Enter Mail"
+          label="Email"
+          placeholder="Enter Email"
           type="text"
           inputRef={emailRef}
           error={errors.email}
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
         />
+      )}
+
+      {showUploadField && (
+        <div className="flex flex-col gap-[1px]">
+          <Label
+            htmlFor="documents"
+            className="text-xs text-heading text-text-muted mb-[5px]"
+          >
+            Documents
+          </Label>
+          <div
+            className={clsx(
+              "min-h-[44px] rounded-md border border-input bg-background",
+              errors.documents && "border-destructive"
+            )}
+          >
+            <div className="flex items-center h-11 px-3">
+              <Input
+                id="documents"
+                type="file"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+              <Label
+                htmlFor="documents"
+                className="flex items-center gap-2 cursor-pointer hover:text-accent-foreground"
+              >
+                <Upload className="h-4 w-4 text-text-muted" />
+                <span className="text-sm text-text-muted">
+                  Upload Documents
+                </span>
+              </Label>
+            </div>
+
+            {documents.length > 0 && (
+              <div className="px-3 py-2 border-t border-input">
+                {documents.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-1"
+                  >
+                    <span className="text-sm truncate max-w-[200px]">
+                      {file.name}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0 hover:bg-muted"
+                      onClick={() => removeFile(index)}
+                    >
+                      <X className="h-4 w-4 text-text-muted" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {errors.documents && (
+            <p className="text-[11px] text-destructive ml-1 h-[14px]">
+              {errors.documents}
+            </p>
+          )}
+        </div>
       )}
 
       <Button

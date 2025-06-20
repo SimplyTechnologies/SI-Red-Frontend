@@ -9,6 +9,8 @@ interface Props {
   placeholder: string;
   type?: string;
   className?: string;
+  value: string; // <-- Add this line
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputRef?: Ref<HTMLInputElement>;
   error?: string;
 }
@@ -21,6 +23,8 @@ export default function FormField({
   className = "",
   inputRef,
   error,
+  value,
+  onChange,
 }: Props) {
   return (
     <div className={clsx("flex flex-col gap-[1px]", className)}>
@@ -35,6 +39,8 @@ export default function FormField({
         id={id}
         type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className={clsx(
           "h-11 rounded-md border text-sm placeholder:text-[#858C98]",
           error ? "border-red-500" : "border-border"
