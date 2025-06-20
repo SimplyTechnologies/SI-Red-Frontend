@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Download, FileText, Trash2 } from "lucide-react";
+import Tooltip from "@/components/tooltip";
 
 interface Vehicle {
   vin: string;
@@ -252,18 +253,20 @@ export default function CustomersTableData({
 
             {/* Existing delete button */}
             <ConfirmationDialog
-              onConfirm={(id) => deleteCustomer({ id })}
-              title={`Delete ${DELETE_TITLE.CUSTOMER}`}
-              description="Are you sure that you would like to delete this customer? This action cannot be undone."
-              open={isOpen}
-              onOpenChange={setIsOpen}
-              showTrigger={true}
-              iconClassName="text-[#FA5087] bg-[#FFE0EA]"
-              triggerContent={
-                <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
-              }
-              onConfirmArgs={[customer.id]}
-            />
+            onConfirm={(id) => deleteCustomer({ id })}
+            title={`Delete ${DELETE_TITLE.CUSTOMER}`}
+            description="Are you sure that you would like to delete this customer? This action cannot be undone."
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            showTrigger={true}
+            iconClassName="text-[#FA5087] bg-[#FFE0EA]"
+            triggerContent={
+              <Tooltip label="Delete" side="bottom" variant="reversed">
+              <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
+              </Tooltip>
+            }
+            onConfirmArgs={[customer.id]}
+          />
           </div>
         </TableCell>
       </TableRow>

@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AsyncAutocompleteField from "./AsyncAutocompleteField";
 import clsx from "clsx";
+import {
+  validateUserField,
+  clearUserFieldError,
+} from "@/utils/validations/validateUserField";
 
 interface Props {
   onSubmit: (values: {
@@ -121,6 +125,20 @@ export default function Form({
     });
   };
 
+  const isFormValid = () => {
+    const requiredFields = [
+      firstNameRef.current?.value.trim(),
+      lastNameRef.current?.value.trim(),
+      phoneRef.current?.value.trim(),
+      emailAutocomplete ? email.trim() : emailRef.current?.value.trim(),
+    ];
+
+    const hasEmptyField = requiredFields.some((val) => !val);
+    const hasErrors = Object.keys(errors).length > 0;
+
+    return !hasEmptyField && !hasErrors;
+  };
+
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
       <div className="flex flex-col sm:flex-row gap-4">
@@ -133,6 +151,10 @@ export default function Form({
           onChange={(e) => setFirstName(e.target.value)}
           inputRef={firstNameRef}
           error={errors.firstName}
+          onBlur={(e) =>
+            validateUserField("firstName", e.target.value, setErrors)
+          }
+          onChange={() => clearUserFieldError("firstName", setErrors)}
         />
         <FormField
           id="lastName"
@@ -142,6 +164,10 @@ export default function Form({
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           error={errors.lastName}
+          onBlur={(e) =>
+            validateUserField("lastName", e.target.value, setErrors)
+          }
+          onChange={() => clearUserFieldError("lastName", setErrors)}
         />
       </div>
 
@@ -154,6 +180,10 @@ export default function Form({
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
         error={errors.phoneNumber}
+        onBlur={(e) =>
+          validateUserField("phoneNumber", e.target.value, setErrors)
+        }
+        onChange={() => clearUserFieldError("phoneNumber", setErrors)}
       />
 
       {emailAutocomplete ? (
@@ -162,17 +192,24 @@ export default function Form({
           label="Email"
           placeholder="Enter Email"
           value={email}
-          setValue={setEmail}
+          setValue={(val) => {
+            setEmail(val);
+            clearUserFieldError("email", setErrors);
+          }}
           error={errors.email}
           onCustomerSelect={(customer) => {
             setEmail(customer.email ?? "");
             if (firstNameRef.current)
               firstNameRef.current.value = customer.firstName ?? "";
+            clearUserFieldError("firstName", setErrors);
             if (lastNameRef.current)
               lastNameRef.current.value = customer.lastName ?? "";
+            clearUserFieldError("lastName", setErrors);
             if (phoneRef.current)
               phoneRef.current.value = customer.phoneNumber ?? "";
+            clearUserFieldError("phoneNumber", setErrors);
           }}
+          onBlur={() => validateUserField("email", email, setErrors)}
         />
       ) : (
         <FormField
@@ -184,6 +221,8 @@ export default function Form({
           error={errors.email}
           value={email} 
           onChange={(e) => setEmail(e.target.value)} 
+          onBlur={(e) => validateUserField("email", e.target.value, setErrors)}
+          onChange={() => clearUserFieldError("email", setErrors)}
         />
       )}
 
@@ -257,6 +296,7 @@ export default function Form({
       <Button
         type="submit"
         className="w-full h-12 rounded-md bg-sidebar-collapsed text-white hover:bg-[#2f2e78]"
+        disabled={!isFormValid()}
       >
         {submitLabel}
       </Button>

@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { InputField } from "./InputField";
 import { ACCOUNT_ACTIVATION_INPUTS } from "@/constants/constants";
 import { useVerifyToken, useActivateAccount } from "@/api/user/user";
+import {
+  clearActivationFieldError,
+  isActivationDisabled,
+} from "@/utils/validations/validateActivationField";
 
 import PasswordInput from "./PasswordInput";
 import { makeActivationInputProps } from "@/utils/makeActivationInputProps";
@@ -55,10 +59,13 @@ export default function AccountActivationForm({ userInfo }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [id]: value,
     }));
+
+    clearActivationFieldError(id as keyof FormData, setErrors);
   };
 
   const activateMutation = useActivateAccount();
@@ -109,7 +116,8 @@ export default function AccountActivationForm({ userInfo }: Props) {
           input,
           formData,
           handleChange,
-          errors
+          errors,
+          setErrors
         );
 
         return input.id === "password" ? (
@@ -127,7 +135,9 @@ export default function AccountActivationForm({ userInfo }: Props) {
       <Button
         type="submit"
         className="w-full h-[56px] text-[18px] bg-[#3E368E] hover:bg-[#2F2B6A]"
-        disabled={activateMutation.isPending}
+        disabled={
+          activateMutation.isPending || isActivationDisabled(formData, errors)
+        }
       >
         {activateMutation.isPending ? "Activating..." : "Activate"}
       </Button>

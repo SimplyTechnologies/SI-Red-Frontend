@@ -81,8 +81,8 @@ export default function VehicleFilters() {
             <h1>Filters</h1>
           </div>
           <Button
-            variant="outline"
-            className="w-max-content font-medium text-sm text-heading mt-2"
+            variant="link"
+            className="w-max-content font-medium text-sm text-[#534F95] hover:no-underline"
             onClick={() => {
               resetFilters();
               navigate("/filters");

@@ -6,6 +6,10 @@ import usePlacesAutocomplete, {
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 import { useCreateVehicleMutation } from "@/hooks/useCreateVehicleMutation";
 import { useUpdateVehicleMutation } from "./useUpdateVehicleMutation";
+import { useCreateVehicleWithImages } from "./useCreateVehicleWithImages";
+import { useUpdateVehicleWithImages } from "./useUpdateVehicleWithImages";
+import type { VehicleInput } from "@/api/schemas";
+import { clearFieldError } from "@/utils/validations/validateField";
 
 export function useVehicleFormLogic(onSuccess: () => void) {
   const {
@@ -35,7 +39,12 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     fetchMakes,
     fetchModels,
     decodeVin,
+    images,
+    setImages,
+    deletedImageIds,
+    setDeletedImageIds
   } = useVehicleStore();
+  
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [vinError, setVinError] = useState("");
@@ -45,6 +54,27 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     lat: number | null;
     lng: number | null;
   }>({ lat: null, lng: null });
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    if (street.trim()) clearFieldError("street", setFieldErrors);
+  }, [street]);
+
+  useEffect(() => {
+    if (city.trim()) clearFieldError("city", setFieldErrors);
+  }, [city]);
+
+  useEffect(() => {
+    if (state.trim()) clearFieldError("state", setFieldErrors);
+  }, [state]);
+
+  useEffect(() => {
+    if (country.trim()) clearFieldError("country", setFieldErrors);
+  }, [country]);
+
+  useEffect(() => {
+    if (/^\d{4,6}$/.test(zip)) clearFieldError("zipcode", setFieldErrors);
+  }, [zip]);
 
   const {
     ready,
@@ -58,8 +88,31 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     fetchMakes();
   }, [fetchMakes]);
 
+  function isFormValid(): boolean {
+    const requiredFields = [
+      make?.id,
+      model?.id,
+      year,
+      vin,
+      location,
+      street,
+      city,
+      state,
+      country,
+      zip,
+    ];
+
+    const hasEmpty = requiredFields.some(
+      (val) => !val || String(val).trim() === ""
+    );
+    const hasErrors = Object.keys(fieldErrors).length > 0 || vinError !== "";
+
+    return !hasEmpty && !hasErrors;
+  }
+
   const handleVinChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().trim();
+    clearFieldError("vin", setFieldErrors);
     setVin(value);
     const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
     if (!vinRegex.test(value)) {
@@ -80,6 +133,8 @@ export function useVehicleFormLogic(onSuccess: () => void) {
           return;
         }
         setMake(matchedMake);
+        clearFieldError("make_id", setFieldErrors);
+
         const fetchedModels = await fetchModels(matchedMake.id);
         const matchedModel = fetchedModels.find(
           (m) => m.name.toLowerCase() === decodedData.model.toLowerCase()
@@ -89,7 +144,10 @@ export function useVehicleFormLogic(onSuccess: () => void) {
           return;
         }
         setModel(matchedModel);
+        clearFieldError("model_id", setFieldErrors);
+
         setYear(String(decodedData.year));
+        clearFieldError("year", setFieldErrors);
       } else {
         setVinError("Failed to decode VIN.");
       }
@@ -118,7 +176,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
         : "";
       const getStreetNumber = getComponent("street_number") + " ";
       const getPolitical = getComponent("political") + " ";
-      setStreet(getPolitical + getSubPromise + getStreetNumber + getComponent("route"));
+      setStreet(
+        getPolitical + getSubPromise + getStreetNumber + getComponent("route")
+      );
       setCity(getComponent("locality"));
       setState(getComponent("administrative_area_level_1"));
       setCountry(getComponent("country"));
@@ -135,7 +195,21 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     onSuccess();
   });
 
+  const { mutate: createVehicleWithImages } = useCreateVehicleWithImages(() => {
+    setValue("");
+    clearSuggestions();
+    setCoordinates({ lat: null, lng: null });
+    onSuccess();
+  });
+
   const { mutate: updateVehicleMutation } = useUpdateVehicleMutation(() => {
+    setValue("");
+    clearSuggestions();
+    setCoordinates({ lat: null, lng: null });
+    onSuccess();
+  });
+
+  const { mutate: updateVehicleWithImages } = useUpdateVehicleWithImages(() => {
     setValue("");
     clearSuggestions();
     setCoordinates({ lat: null, lng: null });
@@ -204,28 +278,36 @@ export function useVehicleFormLogic(onSuccess: () => void) {
 
     const locationString = lat && lng ? `${lat},${lng}` : "";
 
-    createVehicle(
-      {
-        data: {
-          make_id: make?.id,
-          model_id: model!?.id,
-          year,
-          vin,
-          location: locationString,
-          street,
-          city,
-          state,
-          country,
-          zipcode: zip,
-        },
-      },
-      {
-        onError: handleErrorResponse,
-        onSuccess: () => {
-          setLocationDescription("");
-        },
-      }
-    );
+    const vehicleData = {
+      make_id: make?.id,
+      model_id: model!?.id,
+      year,
+      vin,
+      location: locationString,
+      street,
+      city,
+      state,
+      country,
+      zipcode: zip,
+    };
+
+    if (images.length > 0) {
+      createVehicleWithImages(
+        { data: vehicleData, images },
+        { onError: handleErrorResponse }
+      );
+    } else {
+      createVehicle(
+        { data: vehicleData },
+        {
+          onError: handleErrorResponse,
+          onSuccess: () => {
+            setLocationDescription("");
+            setImages([]);
+          },
+        }
+      );
+    }
   };
 
   const handleUpdate = async (e: React.FormEvent, vehicleId: string) => {
@@ -236,6 +318,7 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     let lat = coordinates.lat;
     let lng = coordinates.lng;
 
+    // Try to resolve lat/lng from address if not available
     if (!lat || !lng) {
       const coords = await resolveCoordinates();
       if (!coords) {
@@ -247,31 +330,70 @@ export function useVehicleFormLogic(onSuccess: () => void) {
       setCoordinates(coords);
     }
 
-    const locationString = lat && lng ? `${lat},${lng}` : "";
+    const locationString = `${lat},${lng}`;
 
-    updateVehicleMutation(
-      {
-        id: vehicleId,
-        data: {
-          make_id: make?.id,
-          model_id: model?.id,
-          year,
-          vin,
-          location: locationString,
-          street,
-          city,
-          state,
-          country,
-          zipcode: zip,
-        },
-      },
-      {
-        onError: handleErrorResponse,
-        onSuccess: () => {
-          setLocationDescription("");
-        },
-      }
-    );
+    const vehicleData = {
+      make_id: make?.id,
+      model_id: model?.id,
+      year,
+      vin,
+      location: locationString,
+      street,
+      city,
+      state,
+      country,
+      zipcode: zip,
+    };
+
+    const hasImages = images.length > 0;
+    const hasDeletedImages = deletedImageIds.length > 0;
+
+    // If we have either new or deleted images, use multipart update
+    if (hasImages || hasDeletedImages) {
+      const formData = new FormData();
+
+      // Append vehicle fields
+      Object.entries(vehicleData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+
+      // Append new image files
+      images.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      // Append deleted image IDs
+      deletedImageIds.forEach((id) => {
+        formData.append("deletedImageIds", id.toString());
+      });
+
+      updateVehicleWithImages(
+        { id: vehicleId, data: vehicleData as VehicleInput, images },
+        {
+          onError: handleErrorResponse,
+          onSuccess: () => {
+            setLocationDescription("");
+            setImages([]);
+            setDeletedImageIds([]);
+          },
+        }
+      );
+    } else {
+      // No image changes — use normal JSON update
+      updateVehicleMutation(
+        { id: vehicleId, data: vehicleData },
+        {
+          onError: handleErrorResponse,
+          onSuccess: () => {
+            setLocationDescription("");
+            setImages([]);
+            setDeletedImageIds([]);
+          },
+        }
+      );
+    }
   };
 
   return {
@@ -288,5 +410,9 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     status,
     data,
     setValue,
+    imageFiles,
+    setImageFiles,
+    setFieldErrors,
+    isFormValid,
   };
 }

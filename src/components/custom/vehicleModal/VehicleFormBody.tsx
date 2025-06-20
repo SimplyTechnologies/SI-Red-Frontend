@@ -1,4 +1,5 @@
 import { useVehicleStore } from "@/store/useVehicleModalStore";
+import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { Button } from "@/components/ui/button";
 import { useVehicleFormLogic } from "@/hooks/useVehicleFormLogic";
 import VehicleFormGeneral from "./VehicleFormGeneral";
@@ -7,6 +8,8 @@ import VinField from "./VinField";
 import LocationAutocomplete from "./LocationAutocomplete";
 import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 import { useParams } from "react-router-dom";
+import VehicleImageUploader from "../vehicles/VehicleImageUploader";
+import { useReverseGeocode } from "@/hooks/useReverseGeocode";
 
 interface Props {
   onSuccess: () => void;
@@ -26,6 +29,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     setYear,
     setVin,
     setLocation,
+    setLocationDescription,
     street,
     city,
     state,
@@ -37,7 +41,10 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     setCountry,
     setZip,
     fetchModels,
+    prefillLatLng,
   } = useVehicleStore();
+
+  const { selectedVehicle } = useVehiclesStore();
 
   const {
     vinError,
@@ -53,12 +60,32 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     status,
     data,
     setValue,
+    setFieldErrors,
+    isFormValid,
   } = useVehicleFormLogic(onSuccess);
-  const {id} = useParams();
+  const { id } = useParams();
+
+  const { isLoading: isReverseGeocoding } = useReverseGeocode(
+    prefillLatLng,
+    (data) => {
+      setStreet(data.components.street);
+      setCity(data.components.city);
+      setState(data.components.state);
+      setCountry(data.components.country);
+      setZip(data.components.zip);
+      setLocation(data.address);
+      setLocationDescription(data.address);
+      setValue(data.address);
+    }
+  );
 
   return (
     <form
-      onSubmit={title===VEHICLE_DIALOG_TITLE.EDIT && id ? (e) => handleUpdate(e, id) : handleSubmit}
+      onSubmit={
+        title === VEHICLE_DIALOG_TITLE.EDIT && id
+          ? (e) => handleUpdate(e, id)
+          : handleSubmit
+      }
       className="grid grid-cols-2 gap-x-3 gap-y-2.5 mt-2.5"
     >
       <div className="col-span-2 text-[16px] font-[700] text-heading font-dm-sans mb-0.5">
@@ -85,6 +112,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         errorModel={fieldErrors.model_id}
         errorMake={fieldErrors.make_id}
         errorYear={fieldErrors.year}
+        setFieldErrors={setFieldErrors}
       />
 
       <VinField
@@ -93,9 +121,11 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         error={vinError || fieldErrors.vin}
         onChange={handleVinChange}
         setVin={setVin}
+        setFieldErrors={setFieldErrors}
       />
 
       <LocationAutocomplete
+        isReverseGeocoding={isReverseGeocoding}
         value={value}
         ready={ready}
         status={status}
@@ -117,6 +147,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         setState={setState}
         setCountry={setCountry}
         setZip={setZip}
+        setFieldErrors={setFieldErrors}
         errors={{
           street: fieldErrors.street,
           city: fieldErrors.city,
@@ -126,9 +157,12 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         }}
       />
 
+      <VehicleImageUploader existingImages={selectedVehicle?.images} />
+
       <div className="col-span-2">
         <Button
           type="submit"
+          disabled={!isFormValid()}
           className="w-full h-[48px] bg-[#403C89] text-white rounded-[8px] text-[14px] font-semibold leading-[140%]"
         >
           Submit

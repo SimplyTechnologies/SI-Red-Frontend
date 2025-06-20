@@ -13,6 +13,8 @@ interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputRef?: Ref<HTMLInputElement>;
   error?: string;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onChange: () => void
 }
 
 export default function FormField({
@@ -25,13 +27,11 @@ export default function FormField({
   error,
   value,
   onChange,
+  onBlur,
 }: Props) {
   return (
     <div className={clsx("flex flex-col gap-[1px]", className)}>
-      <Label
-        htmlFor={id}
-        className="text-xs text-heading text-text-muted mb-[5px]"
-      >
+      <Label htmlFor={id} className="text-xs text-heading mb-[5px]">
         {label}
       </Label>
       <Input
@@ -45,6 +45,8 @@ export default function FormField({
           "h-11 rounded-md border text-sm placeholder:text-[#858C98]",
           error ? "border-red-500" : "border-border"
         )}
+        onBlur={onBlur}
+        onChange={onChange}
       />
       <div className="h-[14px]">
         {error && <p className="text-[11px] text-red-500 ml-1">{error}</p>}

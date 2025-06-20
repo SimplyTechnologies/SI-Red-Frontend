@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/config/apiConfig";
 import { useAuthStore } from "@/store/authStore";
 
-type ResponseType = 'json' | 'blob' | 'stream';
+type ResponseType = "json" | "blob" | "stream";
 
 interface MutatorConfig<T = any> {
   url: string;
@@ -59,8 +59,8 @@ export const customMutator = async <T>({
   data,
   params,
   signal,
-  responseType = 'json',
-  headers = {}
+  responseType = "json",
+  headers = {},
 }: MutatorConfig): Promise<T> => {
   const makeRequest = async (accessToken?: string): Promise<Response> => {
     const queryString = params
@@ -143,7 +143,9 @@ const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
     } catch {
       errorBody = { message: res.statusText };
     }
-    const error = new Error(errorBody.message || "Something went wrong") as Error & ErrorResponse;
+    const error = new Error(
+      errorBody.message || "Something went wrong"
+    ) as Error & ErrorResponse;
     error.status = res.status;
     error.data = errorBody;
     throw error;
@@ -151,12 +153,12 @@ const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
 
   // Handle different response types appropriately
   switch (responseType) {
-    case 'blob':
-      return await res.blob() as T;
-    case 'stream':
+    case "blob":
+      return (await res.blob()) as T;
+    case "stream":
       const blob = await res.blob();
-      return new Blob([blob], { type: 'text/csv' }) as unknown as T;
-    case 'json':
+      return new Blob([blob], { type: "text/csv" }) as unknown as T;
+    case "json":
     default:
       return await res.json();
   }
