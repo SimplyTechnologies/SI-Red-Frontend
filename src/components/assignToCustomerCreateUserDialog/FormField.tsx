@@ -9,10 +9,11 @@ interface Props {
   placeholder: string;
   type?: string;
   className?: string;
+  value: string; // <-- Add this line
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   inputRef?: Ref<HTMLInputElement>;
   error?: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onChange: () => void
 }
 
 export default function FormField({
@@ -23,8 +24,9 @@ export default function FormField({
   className = "",
   inputRef,
   error,
+  value,
+  onChange,
   onBlur,
-  onChange
 }: Props) {
   return (
     <div className={clsx("flex flex-col gap-[1px]", className)}>
@@ -36,12 +38,13 @@ export default function FormField({
         id={id}
         type={type}
         placeholder={placeholder}
+        value={value}
+        onChange={onChange}
         className={clsx(
           "h-11 rounded-md border text-sm placeholder:text-[#858C98]",
           error ? "border-red-500" : "border-border"
         )}
         onBlur={onBlur}
-        onChange={onChange}
       />
       <div className="h-[14px]">
         {error && <p className="text-[11px] text-red-500 ml-1">{error}</p>}

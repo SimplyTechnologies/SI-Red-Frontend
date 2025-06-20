@@ -80,27 +80,22 @@ export const customMutator = async <T>({
         })()
       : "";
 
-    const defaultHeaders: Record<string, string> = {
-      ...(method !== "GET" && { "Content-Type": "application/json" }),
-      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-      ...headers,
-    };
-    let body: BodyInit | null = null;
-
-    if (data instanceof FormData) {
-      body = data;
-      delete defaultHeaders["Content-Type"]; 
-    } else if (data) {
-      body = JSON.stringify(data);
-    }
-
-    return fetch(`${BASE_URL}${url}${queryString}`, {
-      method,
-      headers: defaultHeaders,
-      body,
-      signal,
-    });
+const isFormData = typeof FormData !== "undefined" && data instanceof FormData;
+  const defaultHeaders: Record<string, string> = {
+    ...(method !== 'GET' && !isFormData && { "Content-Type": "application/json" }),
+    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    ...headers
   };
+
+  return fetch(`${BASE_URL}${url}${queryString}`, {
+    method,
+    headers: defaultHeaders,
+    ...(data && {
+      body: isFormData ? data : JSON.stringify(data)
+    }),
+    signal,
+  });
+};
 
   const accessToken = localStorage.getItem("accessToken");
   let res = await makeRequest(accessToken || undefined);
