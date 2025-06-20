@@ -12,12 +12,18 @@ interface Props {
   formData: FormData;
   isEditing: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   errors: Partial<Record<keyof FormData, string>>;
 }
 
-export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
-  const inputClass =
-    "block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500";
+export function ProfileForm({ formData, isEditing, onChange, errors, onBlur }: Props) {
+  const baseInputClass =
+    "block h-[6vh] w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500";
+
+  const inputClass = isEditing
+    ? `${baseInputClass} text-gray-900`
+    : `${baseInputClass} text-text-muted`;
+    
   return (
     <>
       <div className="grid gap-6 md:grid-cols-2 w-[42vw]">
@@ -34,6 +40,7 @@ export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
             name="firstName"
             value={formData.firstName}
             onChange={onChange}
+            onBlur={onBlur}
             readOnly={!isEditing}
             className={inputClass}
           />
@@ -53,6 +60,7 @@ export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
             name="lastName"
             value={formData.lastName}
             onChange={onChange}
+            onBlur={onBlur}
             readOnly={!isEditing}
             className={inputClass}
           />
@@ -73,6 +81,7 @@ export function ProfileForm({ formData, isEditing, onChange, errors }: Props) {
           name="phoneNumber"
           value={formData.phoneNumber}
           onChange={onChange}
+          onBlur={onBlur}
           readOnly={!isEditing}
           className={inputClass}
         />

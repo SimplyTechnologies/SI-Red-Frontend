@@ -7,12 +7,15 @@ import VehiclesTabListSkeleton from './VehiclesTabListSkeleton';
 import { useInfiniteVehicles } from '@/hooks/useInfiniteVehicles';
 import { useVehiclesStore } from '@/store/useVehiclesStore';
 import { useEffect, useMemo } from 'react';
+import { useVehicleFilters } from '@/store/useVehicleFilters';
+import { useInitializeVehicleFilters } from '../../../../hooks/useInitializeVehicleFilters';
 
 export default function VehiclesTabContent() {
+    useInitializeVehicleFilters();
     const search = useVehiclesStore((s) => s.search);
-
+    const { make, model, availability } = useVehicleFilters();
     const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-        useInfiniteVehicles(search);
+        useInfiniteVehicles(search, make ?? undefined, model ?? undefined, availability ?? undefined);
 
     const allVehicles = useMemo(() => data?.pages.flat() ?? [], [data]);
 

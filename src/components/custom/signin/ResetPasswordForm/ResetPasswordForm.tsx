@@ -8,6 +8,7 @@ import ConfirmPasswordField from "./ConfirmPasswordField";
 import useResetPasswordForm from "@/hooks/useResetPasswordForm";
 import ExpiredLinkScreen from "./ExpiredLinkScreen";
 import { useVerifyResetToken } from "@/api/authentication/authentication";
+import { isActivationDisabled } from "@/utils/validations/validateActivationField";
 
 export default function ResetPasswordForm() {
   const [searchParams] = useSearchParams();
@@ -24,6 +25,8 @@ export default function ResetPasswordForm() {
     handleChange,
     handleValidateAndOpenDialog,
     handleResetConfirmed,
+    handleBlurConfirmPassword,
+    hasBlurredConfirmPassword,
   } = useResetPasswordForm();
 
   const { mutate: verifyToken, status } = useVerifyResetToken({
@@ -66,13 +69,15 @@ export default function ResetPasswordForm() {
         <ConfirmPasswordField
           value={formData.confirmPassword}
           error={errors.confirmPassword}
-          hasTriedSubmit={hasTriedSubmit}
+          hasTriedSubmit={hasTriedSubmit || hasBlurredConfirmPassword}
           onChange={handleChange}
+          onBlur={handleBlurConfirmPassword}
         />
 
         <Button
           type="submit"
           className="w-full h-[56px] text-[18px] bg-[#3E368E] hover:bg-[#2F2B6A]"
+          disabled={isActivationDisabled(formData, errors)}
         >
           Reset Password
         </Button>

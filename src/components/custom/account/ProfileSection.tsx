@@ -13,6 +13,8 @@ export function ProfileSection() {
     handleSave,
     handleCancel,
     setIsEditing,
+    handleBlur,
+    isSaveDisabled
   } = useProfileForm();
 
   return (
@@ -28,11 +30,13 @@ export function ProfileSection() {
           onEdit={() => setIsEditing(true)}
           onSave={handleSave}
           onCancel={handleCancel}
+          isSaveDisabled={isSaveDisabled} 
         />
         <ProfileForm
           formData={formData}
           isEditing={isEditing}
           onChange={handleChange}
+          onBlur={handleBlur} 
           errors={errors}
         />
       </div>

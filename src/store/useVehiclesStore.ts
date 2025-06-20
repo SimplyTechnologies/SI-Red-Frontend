@@ -7,7 +7,7 @@ import { getVehicle } from "@/api/vehicle/vehicle";
 import { customMutator } from "@/lib/api/customMutator";
 
 type VehiclesTab = (typeof VEHICLES_TABS)[keyof typeof VEHICLES_TABS];
-type DownloadType = 'vehicles' | 'favorites';
+type DownloadType = "vehicles" | "favorites";
 
 type VehiclesStore = {
   vehicles: VehicleResponse[];
@@ -24,7 +24,10 @@ type VehiclesStore = {
   setFavorites: (vehicles: VehicleResponse[]) => void;
   setActiveTab: (tab: VehiclesTab) => void;
   toggleFavorite: (vehicle: VehicleResponse) => void;
-  downloadVehiclesCsv: (search?: string) => Promise<void>;
+  downloadVehiclesCsv: (
+    search?: string,
+    filters?: Record<string, any>
+  ) => Promise<void>;
   fetchNextPage: () => void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
@@ -93,36 +96,49 @@ export const useVehiclesStore = create<VehiclesStore>((set, get) => ({
     }
   },
 
-  downloadVehiclesCsv: async (search?: string) => {
+  downloadVehiclesCsv: async (
+    search?: string,
+    filters?: Record<string, any>
+  ) => {
     set({ isDownloadingCsv: true });
     try {
-      const type: DownloadType = get().activeTab === VEHICLES_TABS.FAVORITES 
-        ? 'favorites' 
-        : 'vehicles';
+      const type: DownloadType =
+        get().activeTab === VEHICLES_TABS.FAVORITES ? "favorites" : "vehicles";
+
+      // Build query params
+      const params = new URLSearchParams();
+      if (search) params.append("search", search);
+      if (filters) {
+        for (const [key, value] of Object.entries(filters)) {
+          if (value != null && value !== "") {
+            // If value is array, join with comma, else just string
+            const val = Array.isArray(value) ? value.join(",") : String(value);
+            params.append(key, val);
+          }
+        }
+      }
+      params.append("type", type);
+
+      const url = `/vehicles/download-csv?${params.toString()}`;
 
       const blob = await customMutator<Blob>({
-        url: '/vehicles/download-csv',
-        method: 'GET',
-        params: {
-          ...(search && { search }),
-          type
-        },
-        responseType: 'stream',
+        url,
+        method: "GET",
+        responseType: "stream",
         headers: {
-          'Accept': 'text/csv'
-        }
+          Accept: "text/csv",
+        },
       });
 
-      const prefix = type === 'favorites' ? 'favorite-vehicles' : 'vehicles';
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${prefix}_${new Date().toISOString().split('T')[0]}.csv`;
+      const prefix = type === "favorites" ? "favorite-vehicles" : "vehicles";
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `${prefix}_${new Date().toISOString().split("T")[0]}.csv`;
       document.body.appendChild(link);
       link.click();
-      
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(downloadUrl);
     } catch (error) {
       console.error("Failed to download CSV:", error);
       throw error;

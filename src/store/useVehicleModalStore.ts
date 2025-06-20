@@ -19,6 +19,7 @@ interface VehicleState {
   country: string;
   zip: string;
   isAddNewVehicleModalOpened: boolean;
+  prefillLatLng: { lat: number; lng: number } | null;
 
   // Data lists
   makes: MakeInfo[];
@@ -42,11 +43,18 @@ interface VehicleState {
   setCountry: (country: string) => void;
   setZip: (zip: string) => void;
   setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened: boolean) => void;
+  prefillLatLngLocation: (lat: number, lng: number) => void;
+  clearPrefillLatLng: () => void;
 
   // Async actions
   fetchMakes: () => Promise<void>;
   fetchModels: (makeId: number) => Promise<ModelResponse[]>;
   decodeVin: (vin: string) => Promise<VinResponse | null>;
+  images: File[];
+  setImages: (files: File[]) => void;
+
+  deletedImageIds: string[];
+  setDeletedImageIds: (ids: string[] | ((prev: string[]) => string[])) => void;
 }
 
 export const useVehicleStore = create<VehicleState>((set) => ({
@@ -63,10 +71,13 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   country: "",
   zip: "",
   isAddNewVehicleModalOpened: false,
+  prefillLatLng: null,
 
   // Data lists
   makes: [],
   models: [],
+  images: [],
+  deletedImageIds: [],
 
   // Status
   isLoadingModels: false,
@@ -74,6 +85,12 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   error: "",
 
   // Setters
+  setImages: (files) => set({ images: files }),
+  setDeletedImageIds: (ids) =>
+    set((state) => ({
+      deletedImageIds:
+        typeof ids === "function" ? ids(state.deletedImageIds) : ids,
+    })),
   setMake: (make) => set({ make }),
   setModel: (model) => set({ model }),
   setYear: (year) => set({ year }),
@@ -86,20 +103,30 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   setCountry: (country) => set({ country }),
   setZip: (zip) => set({ zip }),
   setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) => {
-    set({
-      make: null,
-      model: null,
-      year: "",
-      vin: "",
-      location: "",
-      street: "",
-      city: "",
-      state: "",
-      country: "",
-      zip: "",
-    });
+    if (!isAddNewVehicleModalOpened) {
+      set({
+        make: null,
+        model: null,
+        year: "",
+        vin: "",
+        location: "",
+        street: "",
+        city: "",
+        state: "",
+        country: "",
+        zip: "",
+        prefillLatLng: null
+      });
+    }
+
     set({ isAddNewVehicleModalOpened });
   },
+  prefillLatLngLocation: (lat, lng) =>
+    set({
+      prefillLatLng: { lat, lng },
+      location: "",
+    }),
+  clearPrefillLatLng: () => set({ prefillLatLng: null }),
 
   // Fetch list of makes
   fetchMakes: async () => {

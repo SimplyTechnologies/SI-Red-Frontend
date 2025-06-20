@@ -6,6 +6,7 @@ import Map from "@/components/map/Map";
 import VehicleHeader from "./VehicleHeader";
 import VehicleInfo from "./VehicleInfo";
 import AssignCustomerSection from "./AssignCustomerSection";
+import { VehiclesImagesCarousel } from "./VehiclesImagesCarousel";
 
 export default function VehicleDetails() {
   const { selectedVehicle, setSelectedVehicle } = useVehiclesStore((s) => ({
@@ -27,9 +28,16 @@ export default function VehicleDetails() {
         <div className="p-5 pb-0">
           <VehicleHeader />
           <VehicleInfo isLoading={isLoading} />
-          {!isLoading && !selectedVehicle?.customer && selectedVehicle?.model && (
-            <AssignCustomerSection />
+
+          {selectedVehicle?.images?.length ? (
+            <VehiclesImagesCarousel selectedVehicle={selectedVehicle} />
+          ) : (
+            ""
           )}
+
+          {!isLoading &&
+            !selectedVehicle?.customer &&
+            selectedVehicle?.model && <AssignCustomerSection />}
         </div>
       </div>
       <Map className="w-full h-full" />

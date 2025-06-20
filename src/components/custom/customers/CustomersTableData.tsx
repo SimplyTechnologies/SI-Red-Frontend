@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import ConfirmationDialog from "../ConfirmationDialog";
 import { DELETE_TITLE } from "@/constants/constants";
 import { Trash2 } from "lucide-react";
+import Tooltip from "@/components/tooltip";
 
 interface Vehicle {
   vin: string;
@@ -146,7 +147,9 @@ export default function CustomersTableData({
             showTrigger={true}
             iconClassName="text-[#FA5087] bg-[#FFE0EA]"
             triggerContent={
+              <Tooltip label="Delete" side="bottom" variant="reversed">
               <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
+              </Tooltip>
             }
             onConfirmArgs={[customer.id]}
           />

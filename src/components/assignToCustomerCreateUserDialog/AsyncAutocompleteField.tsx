@@ -14,6 +14,7 @@ interface Props {
   setValue: (val: string) => void;
   error?: string;
   onCustomerSelect: (customer: CustomerResponse) => void;
+  onBlur?: () => void;
 }
 
 export default function AsyncAutocompleteField({
@@ -24,6 +25,7 @@ export default function AsyncAutocompleteField({
   setValue,
   error,
   onCustomerSelect,
+  onBlur,
 }: Props) {
   const [isFocused, setIsFocused] = useState(false);
   const [debouncedValue] = useDebounce(value, 300);
@@ -56,12 +58,15 @@ export default function AsyncAutocompleteField({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setTimeout(() => setIsFocused(false), 100)}
           placeholder={placeholder}
           className={clsx(
             "h-11 w-full rounded-md border text-sm placeholder:text-[#858C98]",
             error ? "border-red-500" : "border-border"
           )}
+          onBlur={() => {
+            setTimeout(() => setIsFocused(false), 100);
+            onBlur?.();
+          }}
         />
 
         {isFocused && data.length > 0 && (
@@ -85,7 +90,7 @@ export default function AsyncAutocompleteField({
           error ? "text-red-500 h-[14px]" : "invisible h-[14px]"
         )}
       >
-        {error ?? "placeholder"}
+        {error}
       </p>
     </div>
   );

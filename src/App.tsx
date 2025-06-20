@@ -12,6 +12,7 @@ import ProtectedLayout from "./components/layout/ProtectedLayout";
 import PublicOnlyRoute from "./components/layout/PublicOnlyRoute";
 import { USER_ROLE } from "./constants/constants";
 import Roles from "./lib/roles";
+import VehicleFilters from "./pages/VehicleFilters";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
 
@@ -53,6 +54,7 @@ export default function App() {
       >
         <Route path="/" element={<Dashboard />} />
         <Route path="/vehicles" element={<Vehicles />} />
+        <Route path="/filters" element={<VehicleFilters />} />
         <Route
           path="/users"
           element={

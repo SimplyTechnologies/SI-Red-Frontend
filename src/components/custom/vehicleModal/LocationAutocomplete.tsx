@@ -6,6 +6,7 @@ import { useVehicleStore } from "@/store/useVehicleModalStore";
 import clsx from "clsx";
 
 interface Props {
+  isReverseGeocoding: boolean;
   value: string;
   ready: boolean;
   status: string;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function LocationAutocomplete({
+  isReverseGeocoding,
   value,
   ready,
   status,
@@ -49,7 +51,7 @@ export default function LocationAutocomplete({
 
       <Input
         id="location"
-        value={value}
+        value={isReverseGeocoding ? "Loading address..." : value}
         onChange={(e) => {
           const val = e.target.value;
           setLocationDescription(val);

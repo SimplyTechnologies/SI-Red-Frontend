@@ -4,20 +4,20 @@ export const VEHICLES_TABS = {
 } as const;
 
 export const customersTableHeaders = [
-  "Name",
-  "Vehicle",
-  "Assign Date",
-  "Email",
-  "Phone Number",
-  "Actions",
+  { label: "Name", sortable: true, sortKey: "name" },
+  { label: "Vehicle", sortable: false, sortKey: "vehicle" },
+  { label: "Assign Date", sortable: true, sortKey: "assignedDate" },
+  { label: "Email", sortable: true, sortKey: "email" },
+  { label: "Phone Number", sortable: true, sortKey: "phoneNumber" },
+  { label: "Actions", sortable: false },
 ];
 
 export const usersTableHeaders = [
-  "Name",
-  "Email",
-  "Phone Number",
-  "Status",
-  "Action",
+  { label: "Name", sortable: true, sortKey: "name" },
+  { label: "Email", sortable: true, sortKey: "email" },
+  { label: "Phone Number", sortable: true, sortKey: "phoneNumber" },
+  { label: "Status", sortable: true, sortKey: "status" },
+  { label: "Action(s)", sortable: false },
 ];
 
 export const TABLE_PAGES = {
@@ -113,3 +113,9 @@ export const USER_ROLE = {
 } as const;
 
 export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
+
+export const availabilityOptions = [
+  { id: " ", name: "Select vehicle status" },
+  { id: "in stock", name: VEHICLE_STATUS["in stock"] },
+  { id: "sold", name: VEHICLE_STATUS["sold"] },
+];

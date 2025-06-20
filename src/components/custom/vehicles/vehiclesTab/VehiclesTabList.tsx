@@ -7,6 +7,8 @@ import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { useToast } from "@/hooks/use-toast";
 import UploadCsvModal from "./UploadCsvModal/UploadCsvModal";
 import { Loader2 } from "lucide-react";
+import { useVehicleFilters } from "@/store/useVehicleFilters";
+import Tooltip from "@/components/tooltip";
 
 export default function VehiclesTabList() {
   const { setActiveTab, search, downloadVehiclesCsv, isDownloadingCsv } =
@@ -18,9 +20,16 @@ export default function VehiclesTabList() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { make, model, availability, hasAppliedFilters } = useVehicleFilters();
+  const filters = {
+    make: Array.isArray(make) ? make.join(",") : make,
+    model: Array.isArray(model) ? model.join(",") : model,
+    availability,
+  };
+
   const handleDownload = async () => {
     try {
-      await downloadVehiclesCsv(search);
+      await downloadVehiclesCsv(search, filters);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -37,65 +46,77 @@ export default function VehiclesTabList() {
       setIsUploadModalOpen(true);
     }
   };
-
   return (
     <>
-      {search ? null : (
-        <TabsList className="w-full md:w-2/3 p-0 bg-background justify-between border-b rounded-none">
-          <div>
-            {Object.values(VEHICLES_TABS).map((tabLabel) => (
-              <TabsTrigger
-                key={tabLabel}
-                value={tabLabel}
-                onClick={() => setActiveTab(tabLabel)}
-                className="rounded-none h-full font-normal data-[state=active]:shadow-none pb-[10px] border-b-[3px] border-transparent data-[state=active]:border-sidebar-collapsed data-[state=active]:text-sidebar-collapsed data-[state=active]:font-bold"
-              >
-                {tabLabel}
-              </TabsTrigger>
-            ))}
-          </div>
+      <TabsList className="w-full md:w-2/3 p-0 bg-background justify-between border-b rounded-none">
+        {search || hasAppliedFilters ? (
+          <TabsTrigger
+            key={VEHICLES_TABS.VEHICLES}
+            value={VEHICLES_TABS.VEHICLES}
+            onClick={() => {}}
+            className="rounded-none cursor-default h-full font-normal data-[state=active]:shadow-none pb-[10px] border-b-[3px] border-transparent data-[state=active]:border-sidebar-collapsed data-[state=active]:text-sidebar-collapsed data-[state=active]:font-bold"
+          >
+            {VEHICLES_TABS.VEHICLES}
+          </TabsTrigger>
+        ) : (
+          <>
+            <div>
+              {Object.values(VEHICLES_TABS).map((tabLabel) => (
+                <TabsTrigger
+                  key={tabLabel}
+                  value={tabLabel}
+                  onClick={() => setActiveTab(tabLabel)}
+                  className="rounded-none h-full font-normal data-[state=active]:shadow-none pb-[10px] border-b-[3px] border-transparent data-[state=active]:border-sidebar-collapsed data-[state=active]:text-sidebar-collapsed data-[state=active]:font-bold"
+                >
+                  {tabLabel}
+                </TabsTrigger>
+              ))}
+            </div>
 
-          <div className="flex gap-4 items-center mr-14">
-            <button
-              onClick={handleDownload}
-              disabled={isDownloadingCsv}
-              className="disabled:opacity-50"
-            >
-              <DownloadIcon className="cursor-pointer hover:opacity-80 w-[24px] h-[24px]" />
-            </button>
+            <div className="flex gap-4 items-center mr-14">
+              <input
+                type="file"
+                accept=".csv"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+            </div>
+          </>
+        )}
 
-            <button>
-              {isUploadingCsv ? (
-                <Loader2 className="animate-spin w-[21px] h-[21px] text-[#AFAFAF] cursor-default" />
-              ) : (
-                <ExportIcon
-                  onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer hover:opacity-80 w-[21px] h-[21px]"
-                />
-              )}
-            </button>
-
-            <input
-              type="file"
-              accept=".csv"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              onChange={handleFileChange}
+        <UploadCsvModal
+          open={isUploadModalOpen && !isUploadingCsv}
+          onOpenChange={(open) => {
+            setIsUploadModalOpen(open);
+            if (!open) setUploadedFile(null);
+          }}
+          file={uploadedFile}
+          isUploadingCsv={isUploadingCsv}
+          setIsUploadingCsv={setIsUploadingCsv}
+        />
+        <button onClick={handleDownload} disabled={isDownloadingCsv}>
+          <Tooltip label="Export" variant="reversed" side="bottom">
+            <DownloadIcon
+              className={`cursor-pointer hover:opacity-80 ${
+                isDownloadingCsv ? "opacity-50" : ""
+              }`}
             />
-          </div>
-        </TabsList>
-      )}
-
-      <UploadCsvModal
-        open={isUploadModalOpen && !isUploadingCsv}
-        onOpenChange={(open) => {
-          setIsUploadModalOpen(open);
-          if (!open) setUploadedFile(null);
-        }}
-        file={uploadedFile}
-        isUploadingCsv={isUploadingCsv}
-        setIsUploadingCsv={setIsUploadingCsv}
-      />
+          </Tooltip>
+        </button>
+        <button>
+          {isUploadingCsv ? (
+            <Loader2 className="animate-spin w-[21px] h-[21px] text-[#AFAFAF] cursor-default" />
+          ) : (
+            <Tooltip label="Import" variant="reversed" side="bottom">
+              <ExportIcon
+                onClick={() => fileInputRef.current?.click()}
+                className="cursor-pointer hover:opacity-80 w-[21px] h-[21px]"
+              />
+            </Tooltip>
+          )}
+        </button>
+      </TabsList>
     </>
   );
 }

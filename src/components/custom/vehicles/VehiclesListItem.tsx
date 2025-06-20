@@ -4,8 +4,9 @@ import { getVehicleStatusBadge } from "@/helpers/getVehicleStatusBadge";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { useNavigate } from "react-router-dom";
 import type { VehicleStatusKeys } from "@/constants/constants";
+import VehicleImageIcon from "./VehicleImageIcon";
 interface propVehicle extends VehicleResponse {
-  isFavorite: boolean;
+  isFavorite?: boolean;
 }
 
 type Props = {
@@ -21,7 +22,7 @@ export default function VehiclesListItem({ vehicle }: Props) {
     toggleFavorite: s.toggleFavorite,
     setSelectedVehicle: s.setSelectedVehicle,
   }));
-  const LikeButtonIcon = getLikeIcon(vehicle?.isFavorite);
+  const LikeButtonIcon = getLikeIcon(vehicle?.isFavorite!);
   const navigate = useNavigate();
 
   const showVehicleDetails = () => {
@@ -35,12 +36,17 @@ export default function VehiclesListItem({ vehicle }: Props) {
       className="w-full py-5 flex justify-between gap-2 border-b"
     >
       <div className="flex w-3/4 cursor-pointer" onClick={showVehicleDetails}>
-        <VehicleStatusIcon />
+        {vehicle?.images!?.length > 0 ? (
+          <VehicleImageIcon imageIcon={vehicle.images![0]} status={vehicle.status}/>
+        ) : (
+          <VehicleStatusIcon />
+        )}
+
         <div className="text-[14px] ml-3">
           <p className="text-heading font-bold">{vehicle.vin}</p>
           <p className="text-text-muted">
             {" "}
-            {vehicle.model!.name} {vehicle?.model!.make.name} {vehicle.year}
+            {vehicle?.model!.make.name} {vehicle.model!.name} {vehicle.year}
           </p>
           <p className="text-text-muted">
             Location:{" "}
