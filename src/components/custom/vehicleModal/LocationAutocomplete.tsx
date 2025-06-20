@@ -54,7 +54,7 @@ export default function LocationAutocomplete({
           const val = e.target.value;
           setLocationDescription(val);
           setValue(val);
-          onInputChange?.(val); // 👈 безопасный вызов только если передан
+          onInputChange?.(val);
         }}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}

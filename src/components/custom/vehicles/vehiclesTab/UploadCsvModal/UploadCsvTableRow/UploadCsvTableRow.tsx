@@ -26,7 +26,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const [localVin, setLocalVin] = useState(row.vin);
   const [localYear, setLocalYear] = useState(row.year);
   const [vinChanged, setVinChanged] = useState(false);
-  const [MakeChanged, setMakeChanged] = useState(false); /////
+  const [MakeChanged, setMakeChanged] = useState(false);
   const [ModelChanged, setModelChanged] = useState(false);
   const [YearChanged, setYearChanged] = useState(false);
   const [localExclude, setLocalExclude] = useState(true);
@@ -80,8 +80,6 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
       },
     }
   );
-
-  // console.log("vinValidation result:", vinValidation);
 
   useEffect(() => {
     if (vinValidation) {

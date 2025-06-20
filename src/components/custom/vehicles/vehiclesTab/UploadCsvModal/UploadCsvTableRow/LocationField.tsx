@@ -71,7 +71,7 @@ export function LocationField({
       setValue={setValue}
       setLocation={() => {}}
       onSelect={handleSelectLocation}
-      onInputChange={handleInputChange} // 👈 добавлено
+      onInputChange={handleInputChange}
       error={error}
       showLabel={false}
       className="w-full"
