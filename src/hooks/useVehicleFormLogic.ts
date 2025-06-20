@@ -9,6 +9,7 @@ import { useUpdateVehicleMutation } from "./useUpdateVehicleMutation";
 import { useCreateVehicleWithImages } from "./useCreateVehicleWithImages";
 import { useUpdateVehicleWithImages } from "./useUpdateVehicleWithImages";
 import type { VehicleInput } from "@/api/schemas";
+import { clearFieldError } from "@/utils/validations/validateField";
 
 export function useVehicleFormLogic(onSuccess: () => void) {
   const {
@@ -55,6 +56,26 @@ export function useVehicleFormLogic(onSuccess: () => void) {
   }>({ lat: null, lng: null });
   const [imageFiles, setImageFiles] = useState<File[]>([]);
 
+  useEffect(() => {
+    if (street.trim()) clearFieldError("street", setFieldErrors);
+  }, [street]);
+
+  useEffect(() => {
+    if (city.trim()) clearFieldError("city", setFieldErrors);
+  }, [city]);
+
+  useEffect(() => {
+    if (state.trim()) clearFieldError("state", setFieldErrors);
+  }, [state]);
+
+  useEffect(() => {
+    if (country.trim()) clearFieldError("country", setFieldErrors);
+  }, [country]);
+
+  useEffect(() => {
+    if (/^\d{4,6}$/.test(zip)) clearFieldError("zipcode", setFieldErrors);
+  }, [zip]);
+
   const {
     ready,
     value,
@@ -67,8 +88,31 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     fetchMakes();
   }, [fetchMakes]);
 
+  function isFormValid(): boolean {
+    const requiredFields = [
+      make?.id,
+      model?.id,
+      year,
+      vin,
+      location,
+      street,
+      city,
+      state,
+      country,
+      zip,
+    ];
+
+    const hasEmpty = requiredFields.some(
+      (val) => !val || String(val).trim() === ""
+    );
+    const hasErrors = Object.keys(fieldErrors).length > 0 || vinError !== "";
+
+    return !hasEmpty && !hasErrors;
+  }
+
   const handleVinChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toUpperCase().trim();
+    clearFieldError("vin", setFieldErrors);
     setVin(value);
     const vinRegex = /^[A-HJ-NPR-Z0-9]{17}$/;
     if (!vinRegex.test(value)) {
@@ -89,6 +133,8 @@ export function useVehicleFormLogic(onSuccess: () => void) {
           return;
         }
         setMake(matchedMake);
+        clearFieldError("make_id", setFieldErrors);
+
         const fetchedModels = await fetchModels(matchedMake.id);
         const matchedModel = fetchedModels.find(
           (m) => m.name.toLowerCase() === decodedData.model.toLowerCase()
@@ -98,7 +144,10 @@ export function useVehicleFormLogic(onSuccess: () => void) {
           return;
         }
         setModel(matchedModel);
+        clearFieldError("model_id", setFieldErrors);
+
         setYear(String(decodedData.year));
+        clearFieldError("year", setFieldErrors);
       } else {
         setVinError("Failed to decode VIN.");
       }
@@ -363,5 +412,7 @@ export function useVehicleFormLogic(onSuccess: () => void) {
     setValue,
     imageFiles,
     setImageFiles,
+    setFieldErrors,
+    isFormValid,
   };
 }

@@ -1,5 +1,3 @@
-import React from "react";
-
 export const ProfileFormError: React.FC<{ data: string | undefined }> = ({
   data,
 }) => {

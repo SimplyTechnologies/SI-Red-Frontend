@@ -7,6 +7,7 @@ import { useDebounce } from "use-debounce";
 import { VEHICLES_TABS } from "@/constants/constants";
 import { useNavigate } from "react-router-dom";
 import { useVehicleFilters } from "@/store/useVehicleFilters";
+import Tooltip from "@/components/tooltip";
 
 export default function Filter() {
   const setSearch = useVehiclesStore((s) => s.setSearch);
@@ -41,17 +42,19 @@ export default function Filter() {
           className="w-full border-0 p-0 text-sm focus-visible:ring-0"
         />
       </div>
-      {hasAppliedFilters ? (
-        <ListFilterPlus
-          className="w-5 h-5 cursor-pointer text-heading"
-          onClick={showFiltersPage}
-        />
-      ) : (
-        <ListFilter
-          className="w-5 h-5 cursor-pointer text-[#AFAFAF]"
-          onClick={showFiltersPage}
-        />
-      )}
+      <Tooltip label="Filter" side="bottom" variant="reversed">
+        {hasAppliedFilters ? (
+          <ListFilterPlus
+            className="w-5 h-5 cursor-pointer text-heading"
+            onClick={showFiltersPage}
+          />
+        ) : (
+          <ListFilter
+            className="w-5 h-5 cursor-pointer text-[#AFAFAF]"
+            onClick={showFiltersPage}
+          />
+        )}
+      </Tooltip>
     </div>
   );
 }
