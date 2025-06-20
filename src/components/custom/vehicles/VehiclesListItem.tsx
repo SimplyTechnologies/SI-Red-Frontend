@@ -40,7 +40,7 @@ export default function VehiclesListItem({ vehicle }: Props) {
           <p className="text-heading font-bold">{vehicle.vin}</p>
           <p className="text-text-muted">
             {" "}
-            {vehicle.model!.name} {vehicle?.model!.make.name} {vehicle.year}
+            {vehicle?.model!.make.name} {vehicle.model!.name} {vehicle.year}
           </p>
           <p className="text-text-muted">
             Location:{" "}

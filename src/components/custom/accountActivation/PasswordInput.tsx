@@ -19,6 +19,8 @@ type Props = {
 
 const PasswordInput = ({ inputProps, formData, hasTriedSubmit }: Props) => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [hasBlurredPassword, setHasBlurredPassword] = useState(false);
+
   const isMobile = useIsMobile();
 
   return (
@@ -27,7 +29,15 @@ const PasswordInput = ({ inputProps, formData, hasTriedSubmit }: Props) => {
         <InputField
           {...inputProps}
           onFocus={() => setIsPasswordFocused(true)}
-          onBlur={() => setIsPasswordFocused(false)}
+          onChange={(e) => {
+            inputProps.onChange?.(e);
+            setHasBlurredPassword(false); 
+          }}
+          onBlur={() => {
+            setIsPasswordFocused(false);
+            setHasBlurredPassword(true);
+            inputProps.onBlur?.();
+          }}
         />
       </PopoverTrigger>
       <PopoverContent
@@ -42,7 +52,9 @@ const PasswordInput = ({ inputProps, formData, hasTriedSubmit }: Props) => {
         {passwordRules.map((rule, index) => {
           const passed = rule.test(formData.password);
           const showRed =
-            hasTriedSubmit && !passed && formData.password.length > 0;
+            (hasBlurredPassword || hasTriedSubmit) &&
+            !passed &&
+            formData.password.length > 0;
 
           const icon = passed ? (
             <Check className="w-4 h-4 text-green-400" />
