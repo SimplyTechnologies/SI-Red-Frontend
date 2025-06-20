@@ -1,4 +1,5 @@
 import { useVehicleStore } from "@/store/useVehicleModalStore";
+import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { Button } from "@/components/ui/button";
 import { useVehicleFormLogic } from "@/hooks/useVehicleFormLogic";
 import VehicleFormGeneral from "./VehicleFormGeneral";
@@ -7,6 +8,7 @@ import VinField from "./VinField";
 import LocationAutocomplete from "./LocationAutocomplete";
 import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 import { useParams } from "react-router-dom";
+import VehicleImageUploader from "../vehicles/VehicleImageUploader";
 import { useReverseGeocode } from "@/hooks/useReverseGeocode";
 
 interface Props {
@@ -41,6 +43,8 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     fetchModels,
     prefillLatLng,
   } = useVehicleStore();
+
+  const { selectedVehicle } = useVehiclesStore();
 
   const {
     vinError,
@@ -152,6 +156,8 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
           zipcode: fieldErrors.zipcode,
         }}
       />
+
+      <VehicleImageUploader existingImages={selectedVehicle?.images} />
 
       <div className="col-span-2">
         <Button

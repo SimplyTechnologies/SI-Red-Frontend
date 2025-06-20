@@ -50,6 +50,11 @@ interface VehicleState {
   fetchMakes: () => Promise<void>;
   fetchModels: (makeId: number) => Promise<ModelResponse[]>;
   decodeVin: (vin: string) => Promise<VinResponse | null>;
+  images: File[];
+  setImages: (files: File[]) => void;
+
+  deletedImageIds: string[];
+  setDeletedImageIds: (ids: string[] | ((prev: string[]) => string[])) => void;
 }
 
 export const useVehicleStore = create<VehicleState>((set) => ({
@@ -71,6 +76,8 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   // Data lists
   makes: [],
   models: [],
+  images: [],
+  deletedImageIds: [],
 
   // Status
   isLoadingModels: false,
@@ -78,6 +85,12 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   error: "",
 
   // Setters
+  setImages: (files) => set({ images: files }),
+  setDeletedImageIds: (ids) =>
+    set((state) => ({
+      deletedImageIds:
+        typeof ids === "function" ? ids(state.deletedImageIds) : ids,
+    })),
   setMake: (make) => set({ make }),
   setModel: (model) => set({ model }),
   setYear: (year) => set({ year }),
