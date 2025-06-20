@@ -160,8 +160,9 @@ export default function CustomersTableData({
                   className="hover:bg-accent p-2 rounded-md transition-colors"
                   title="View Documents"
                 >
-                  <FileText className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out h-5 w-5" />
-
+                  <Tooltip label="Download" side="bottom" variant="reversed">
+                    <FileText className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out h-5 w-5" />
+                  </Tooltip>
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
@@ -250,23 +251,22 @@ export default function CustomersTableData({
               </DialogContent>
             </Dialog>
 
-
             {/* Existing delete button */}
             <ConfirmationDialog
-            onConfirm={(id) => deleteCustomer({ id })}
-            title={`Delete ${DELETE_TITLE.CUSTOMER}`}
-            description="Are you sure that you would like to delete this customer? This action cannot be undone."
-            open={isOpen}
-            onOpenChange={setIsOpen}
-            showTrigger={true}
-            iconClassName="text-[#FA5087] bg-[#FFE0EA]"
-            triggerContent={
-              <Tooltip label="Delete" side="bottom" variant="reversed">
-              <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
-              </Tooltip>
-            }
-            onConfirmArgs={[customer.id]}
-          />
+              onConfirm={(id) => deleteCustomer({ id })}
+              title={`Delete ${DELETE_TITLE.CUSTOMER}`}
+              description="Are you sure that you would like to delete this customer? This action cannot be undone."
+              open={isOpen}
+              onOpenChange={setIsOpen}
+              showTrigger={true}
+              iconClassName="text-[#FA5087] bg-[#FFE0EA]"
+              triggerContent={
+                <Tooltip label="Delete" side="bottom" variant="reversed">
+                  <Trash2 className="text-text-muted opacity-50 hover:text-heading hover:opacity-100 transition duration-300 ease-in-out" />
+                </Tooltip>
+              }
+              onConfirmArgs={[customer.id]}
+            />
           </div>
         </TableCell>
       </TableRow>

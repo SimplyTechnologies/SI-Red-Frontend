@@ -14,7 +14,6 @@ interface Props {
   inputRef?: Ref<HTMLInputElement>;
   error?: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onChange: () => void
 }
 
 export default function FormField({
@@ -46,7 +45,6 @@ export default function FormField({
           error ? "border-red-500" : "border-border"
         )}
         onBlur={onBlur}
-        onChange={onChange}
       />
       <div className="h-[14px]">
         {error && <p className="text-[11px] text-red-500 ml-1">{error}</p>}

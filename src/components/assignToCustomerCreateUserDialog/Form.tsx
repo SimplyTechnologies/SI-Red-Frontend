@@ -127,17 +127,17 @@ export default function Form({
 
   const isFormValid = () => {
     const requiredFields = [
-      firstNameRef.current?.value.trim(),
-      lastNameRef.current?.value.trim(),
-      phoneRef.current?.value.trim(),
-      emailAutocomplete ? email.trim() : emailRef.current?.value.trim(),
+      firstName.trim(),
+      lastName.trim(),
+      phoneNumber.trim(),
+      email.trim(),
     ];
 
     const hasEmptyField = requiredFields.some((val) => !val);
-    const hasErrors = Object.keys(errors).length > 0;
+  const hasErrors = Object.keys(errors).some((key) => errors[key as keyof FormErrors]);
 
-    return !hasEmptyField && !hasErrors;
-  };
+  return !hasEmptyField && !hasErrors;
+};
 
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
@@ -148,13 +148,26 @@ export default function Form({
           placeholder="Enter First Name"
           className="flex-1"
           value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
+          onChange={(e) => {
+            setFirstName(e.target.value);
+            clearUserFieldError(
+              "firstName",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
+          }}
           inputRef={firstNameRef}
           error={errors.firstName}
           onBlur={(e) =>
-            validateUserField("firstName", e.target.value, setErrors)
+            validateUserField(
+              "firstName",
+              e.target.value,
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            )
           }
-          onChange={() => clearUserFieldError("firstName", setErrors)}
         />
         <FormField
           id="lastName"
@@ -162,12 +175,25 @@ export default function Form({
           placeholder="Enter Last Name"
           className="flex-1"
           value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
+          onChange={(e) => {
+            setLastName(e.target.value);
+            clearUserFieldError(
+              "lastName",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
+          }}
           error={errors.lastName}
           onBlur={(e) =>
-            validateUserField("lastName", e.target.value, setErrors)
+            validateUserField(
+              "lastName",
+              e.target.value,
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            )
           }
-          onChange={() => clearUserFieldError("lastName", setErrors)}
         />
       </div>
 
@@ -178,12 +204,25 @@ export default function Form({
         type="tel"
         inputRef={phoneRef}
         value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
+        onChange={(e) => {
+          setPhoneNumber(e.target.value);
+          clearUserFieldError(
+            "phoneNumber",
+            setErrors as React.Dispatch<
+              React.SetStateAction<Record<string, string>>
+            >
+          );
+        }}
         error={errors.phoneNumber}
         onBlur={(e) =>
-          validateUserField("phoneNumber", e.target.value, setErrors)
+          validateUserField(
+            "phoneNumber",
+            e.target.value,
+            setErrors as React.Dispatch<
+              React.SetStateAction<Record<string, string>>
+            >
+          )
         }
-        onChange={() => clearUserFieldError("phoneNumber", setErrors)}
       />
 
       {emailAutocomplete ? (
@@ -194,22 +233,50 @@ export default function Form({
           value={email}
           setValue={(val) => {
             setEmail(val);
-            clearUserFieldError("email", setErrors);
+            clearUserFieldError(
+              "email",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
           }}
           error={errors.email}
           onCustomerSelect={(customer) => {
             setEmail(customer.email ?? "");
             if (firstNameRef.current)
               firstNameRef.current.value = customer.firstName ?? "";
-            clearUserFieldError("firstName", setErrors);
+            clearUserFieldError(
+              "firstName",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
             if (lastNameRef.current)
               lastNameRef.current.value = customer.lastName ?? "";
-            clearUserFieldError("lastName", setErrors);
+            clearUserFieldError(
+              "lastName",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
             if (phoneRef.current)
               phoneRef.current.value = customer.phoneNumber ?? "";
-            clearUserFieldError("phoneNumber", setErrors);
+            clearUserFieldError(
+              "phoneNumber",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
           }}
-          onBlur={() => validateUserField("email", email, setErrors)}
+          onBlur={() =>
+            validateUserField(
+              "email",
+              email,
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            )
+          }
         />
       ) : (
         <FormField
@@ -219,10 +286,25 @@ export default function Form({
           type="text"
           inputRef={emailRef}
           error={errors.email}
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          onBlur={(e) => validateUserField("email", e.target.value, setErrors)}
-          onChange={() => clearUserFieldError("email", setErrors)}
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            clearUserFieldError(
+              "email",
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            );
+          }}
+          onBlur={(e) =>
+            validateUserField(
+              "email",
+              e.target.value,
+              setErrors as React.Dispatch<
+                React.SetStateAction<Record<string, string>>
+              >
+            )
+          }
         />
       )}
 
