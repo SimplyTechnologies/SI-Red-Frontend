@@ -61,7 +61,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     data,
     setValue,
     setFieldErrors,
-    isFormValid
+    isFormValid,
   } = useVehicleFormLogic(onSuccess);
   const { id } = useParams();
 
