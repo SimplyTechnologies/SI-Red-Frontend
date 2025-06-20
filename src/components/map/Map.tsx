@@ -22,8 +22,11 @@ export default function CustomMap({ style, className }: CustomMapProps) {
   }));
   const activeTab = useVehiclesStore((s) => s.activeTab);
   const vehicleMapPoints = useVehiclesStore((s) => s.vehicleMapPoints);
-  const { setAddNewVehicleModalOpen, prefillLatLngLocation } =
-    useVehicleStore();
+  const {
+    isAddNewVehicleModalOpened,
+    setAddNewVehicleModalOpen,
+    prefillLatLngLocation,
+  } = useVehicleStore();
 
   const visibleVehicles = selectedVehicle
     ? [selectedVehicle]
@@ -41,6 +44,25 @@ export default function CustomMap({ style, className }: CustomMapProps) {
     clientX: number;
     clientY: number;
   } | null>(null);
+
+  useEffect(() => {
+    if (isAddNewVehicleModalOpened) {
+      setOpenRightMenu(false);
+    }
+  }, [isAddNewVehicleModalOpened]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!mapContainerRef.current?.contains(e.target as Node)) {
+        setOpenRightMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -78,10 +100,6 @@ export default function CustomMap({ style, className }: CustomMapProps) {
       });
       (event.map as any).__rightClickListenerAdded = true;
     }
-  };
-
-  const handleCloseMenu = () => {
-    setOpenRightMenu(false);
   };
 
   return (
@@ -123,7 +141,6 @@ export default function CustomMap({ style, className }: CustomMapProps) {
                     ); // ✅ store prefill
                   }
                   setAddNewVehicleModalOpen(true);
-                  handleCloseMenu();
                 }}
                 className="text-heading"
               >
