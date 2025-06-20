@@ -116,7 +116,6 @@ export default function Form({
       : emailRef.current?.value.trim() || "";
 
     setErrors({});
-    /////
     if (showUploadField) {
       onSubmit({
         firstName,
@@ -320,7 +319,7 @@ export default function Form({
         />
       )}
 
-      {showUploadField && (
+      {false && (
         <div className="flex flex-col gap-[1px]">
           <Label
             htmlFor="documents"
