@@ -11,6 +11,8 @@ import { useGetAllCustomers } from "@/api/customer/customer";
 import type { CustomerResponse } from "@/api/schemas";
 import { useDebounce } from "use-debounce";
 import { mapCustomerToTableData } from "@/utils/mapCustomerToTableData";
+import { useTableSortStore } from "@/store/useTableSortStore";
+import CustomersTableSkeleton from "@/components/custom/customers/CustomersTableSkeleton";
 
 export type CustomerWithVehicles = CustomerResponse & {
   vehicles: {
@@ -31,11 +33,14 @@ export default function Customers() {
   const [debouncedSearch] = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const limit = 5;
+  const { customers: customersSortData } = useTableSortStore();
 
   const { data, isLoading } = useGetAllCustomers({
     page,
     limit,
     search: debouncedSearch,
+    sortBy: customersSortData.sortBy ?? undefined,
+    sortOrder: customersSortData.sortOrder ?? undefined,
   });
 
   useEffect(() => {
@@ -55,7 +60,13 @@ export default function Customers() {
           <Table>
             <TableHeaderComponent tableName={TABLE_PAGES.CUSTOMERS} />
             <TableBody>
-              {isLoading ? null : customers.length > 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6}>
+                    <CustomersTableSkeleton />
+                  </TableCell>
+                </TableRow>
+              ) : customers.length > 0 ? (
                 <>
                   {(customers as CustomerWithVehicles[]).map((c) => (
                     <CustomersTableData
