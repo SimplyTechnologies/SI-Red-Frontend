@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VehicleFormError } from "./VehicleFormError";
 import { useVehicleStore } from "@/store/useVehicleModalStore";
+import clsx from "clsx";
 
 interface Props {
   value: string;
@@ -13,6 +14,10 @@ interface Props {
   setLocation: (val: string) => void;
   onSelect: (val: string) => void;
   error?: string;
+  showLabel?: boolean;
+  className?: string;
+  inputClassName?: string;
+  onInputChange?: (val: string) => void;
 }
 
 export default function LocationAutocomplete({
@@ -23,32 +28,44 @@ export default function LocationAutocomplete({
   setValue,
   onSelect,
   error,
+  showLabel = true,
+  className = "",
+  inputClassName = "",
+  onInputChange,
 }: Props) {
   const { setLocationDescription } = useVehicleStore();
-
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className="col-span-2 relative">
-      <Label
-        htmlFor="location"
-        className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
-      >
-        Location
-      </Label>
+    <div className={clsx("col-span-2 relative", className)}>
+      {showLabel && (
+        <Label
+          htmlFor="location"
+          className="text-text-muted font-dm-sans font-medium text-[13px] leading-[140%]"
+        >
+          Location
+        </Label>
+      )}
+
       <Input
         id="location"
         value={value}
         onChange={(e) => {
-          setLocationDescription(e.target.value);
-          setValue(e.target.value);
+          const val = e.target.value;
+          setLocationDescription(val);
+          setValue(val);
+          onInputChange?.(val); // 👈 безопасный вызов только если передан
         }}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         disabled={!ready}
         placeholder="Set location"
-        className="w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md"
+        className={clsx(
+          "w-full h-[48px] border border-[#DBDDE1] px-3 rounded-md",
+          inputClassName
+        )}
       />
+
       {status === "OK" && isFocused && (
         <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-40 overflow-y-auto">
           {data.map(({ place_id, description }) => (
@@ -62,6 +79,7 @@ export default function LocationAutocomplete({
           ))}
         </ul>
       )}
+
       <VehicleFormError data={error || ""} />
     </div>
   );

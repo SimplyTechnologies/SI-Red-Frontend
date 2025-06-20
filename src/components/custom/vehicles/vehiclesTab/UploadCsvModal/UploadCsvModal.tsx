@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { uploadCsvWithFormData } from "@/utils/uploadCsvWithFormData";
@@ -20,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { UploadCsvTableRow } from "./UploadCsvTableRow/UploadCsvTableRow";
 import { Button } from "@/components/ui/button";
+import { useBulkCreateVehicles } from "@/api/vehicle/vehicle";
 
 const DEFAULT_LOCATION = "48 Leo Street, Yerevan, Yerevan, Armenia";
 const DEFAULT_COORDINATES = "40.1801922,44.5029779";
@@ -27,37 +26,57 @@ const DEFAULT_COORDINATES = "40.1801922,44.5029779";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  file: File | null;
+  isUploadingCsv: boolean;
+  setIsUploadingCsv: (val: boolean) => void;
 }
-
-export default function UploadCsvModal({ open, onOpenChange }: Props) {
+export default function UploadCsvModal({
+  open,
+  onOpenChange,
+  file,
+  setIsUploadingCsv,
+  isUploadingCsv,
+}: Props) {
   const [rows, setRows] = useState<ParsedVehicleUpload[] | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const setIsUploading = setIsUploadingCsv;
+
   const { toast } = useToast();
+  const [includeMap, setIncludeMap] = useState<Record<number, boolean>>({});
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      const result = await uploadCsvWithFormData(file);
-      setRows(result);
-    } catch (err) {
-      toast({
-        variant: "destructive",
-        title: "Upload failed",
-        description: (err as Error).message,
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleRowChange = (index: number, updated: ParsedVehicleUpload) => {
+  const handleRowChange = (
+    index: number,
+    updated: ParsedVehicleUpload,
+    include?: boolean
+  ) => {
     setRows((prev) =>
       prev ? prev.map((row, i) => (i === index ? updated : row)) : null
     );
+    if (include !== undefined) {
+      setIncludeMap((prev) => ({ ...prev, [index]: include }));
+    }
   };
+
+  useEffect(() => {
+    const upload = async () => {
+      if (!file) return;
+      setIsUploading(true);
+      try {
+        const result = await uploadCsvWithFormData(file);
+        setRows(result);
+      } catch (err) {
+        toast({
+          variant: "destructive",
+          title: "Upload failed",
+          description: "Incorrect file format",
+        });
+        onOpenChange(false);
+      } finally {
+        setIsUploading(false);
+      }
+    };
+
+    upload();
+  }, [file]);
 
   const setDefaultLocationForEmpty = () => {
     setRows(
@@ -66,9 +85,7 @@ export default function UploadCsvModal({ open, onOpenChange }: Props) {
           const isLocationEmpty = !row.combinedLocation?.trim();
           const isCoordinatesEmpty = !row.coordinates?.trim();
 
-          if (!isLocationEmpty && !isCoordinatesEmpty) return row;
-
-          return {
+          const updatedRow = {
             ...row,
             combinedLocation: isLocationEmpty
               ? DEFAULT_LOCATION
@@ -77,41 +94,65 @@ export default function UploadCsvModal({ open, onOpenChange }: Props) {
               ? DEFAULT_COORDINATES
               : row.coordinates,
           };
+
+          return updatedRow;
         }) ?? null
     );
   };
 
+  const { mutate: bulkCreate, isPending } = useBulkCreateVehicles({
+    mutation: {
+      onSuccess: () => {
+        toast({
+          variant: "success",
+          title: "Vehicles imported successfully",
+          description: "All selected vehicles were added.",
+        });
+        onOpenChange(false);
+      },
+      onError: (error) => {
+        toast({
+          variant: "destructive",
+          title: "Import failed",
+          description: (error as Error).message || "Unknown error",
+        });
+      },
+    },
+  });
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        if (!open) {
+          setRows(null);
+          setIncludeMap({});
+        }
+        onOpenChange(open);
+      }}
+    >
       <DialogContent className="max-w-5xl sm:max-w-6xl">
         <DialogHeader>
           <DialogTitle className="text-xl">Upload Vehicles CSV</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          <div>
-            <Label htmlFor="csv-upload">Select CSV File</Label>
-            <Input
-              id="csv-upload"
-              type="file"
-              accept=".csv"
-              onChange={handleUpload}
-              disabled={isUploading}
-            />
-            {isUploading && (
-              <p className="text-sm text-muted-foreground mt-1">Uploading...</p>
-            )}
-          </div>
+          {isUploadingCsv && (
+            <p className="text-sm text-muted-foreground mt-1">Uploading...</p>
+          )}
 
           {rows && (
             <>
-              <Button
-                variant="outline"
-                onClick={setDefaultLocationForEmpty}
-                className="mb-2"
-              >
-                Set empty locations to default
-              </Button>
+              <div className="flex justify-end gap-2 mb-2">
+                <Button
+                  variant="link"
+                  onClick={setDefaultLocationForEmpty}
+                  className="text-[#534f95] hover:no-underline"
+                >
+                  Use Default for Empty Locations
+                </Button>
+              </div>
+
               <ScrollArea className="max-h-[400px] overflow-y-auto border rounded-md">
                 <Table>
                   <TableHeader>
@@ -137,6 +178,33 @@ export default function UploadCsvModal({ open, onOpenChange }: Props) {
                   </TableBody>
                 </Table>
               </ScrollArea>
+              <div className="flex justify-end gap-2 mb-2">
+                <Button
+                  onClick={() => {
+                    if (!rows) return;
+
+                    const included = rows.filter(
+                      (_, index) => includeMap[index] === true
+                    );
+
+                    const vehicles = included.map((r) => ({
+                      make: r.make!,
+                      model: r.model!,
+                      vin: r.vin,
+                      year: r.year!,
+                      combinedLocation: r.combinedLocation!,
+                      coordinates: r.coordinates!,
+                    }));
+
+                    bulkCreate({ data: { vehicles } });
+                  }}
+                  disabled={
+                    isPending || !Object.values(includeMap).some(Boolean)
+                  }
+                >
+                  {isPending ? "Importing..." : "Submit Vehicles"}
+                </Button>
+              </div>
             </>
           )}
         </div>

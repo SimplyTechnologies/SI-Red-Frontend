@@ -16,7 +16,13 @@ export function MakeModelField({ value, onChange, error, disabled }: Props) {
         className={error ? "border-red-500" : ""}
         disabled={disabled}
       />
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      <p
+        className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${
+          error ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {error || "⠀"}
+      </p>
     </div>
   );
 }

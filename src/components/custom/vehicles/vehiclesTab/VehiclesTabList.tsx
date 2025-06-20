@@ -1,17 +1,22 @@
+import { useRef, useState } from "react";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DownloadIcon from "@/assets/icons/download.svg?react";
 import ExportIcon from "@/assets/icons/export.svg?react";
 import { VEHICLES_TABS } from "@/constants/constants";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
 import UploadCsvModal from "./UploadCsvModal/UploadCsvModal";
+import { Loader2 } from "lucide-react";
 
 export default function VehiclesTabList() {
   const { setActiveTab, search, downloadVehiclesCsv, isDownloadingCsv } =
     useVehiclesStore();
   const { toast } = useToast();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isUploadingCsv, setIsUploadingCsv] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDownload = async () => {
     try {
@@ -22,6 +27,14 @@ export default function VehiclesTabList() {
         title: "Download failed",
         description: "Could not download vehicles data. Please try again.",
       });
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+      setIsUploadModalOpen(true);
     }
   };
 
@@ -48,19 +61,40 @@ export default function VehiclesTabList() {
               disabled={isDownloadingCsv}
               className="disabled:opacity-50"
             >
-              <DownloadIcon className="cursor-pointer hover:opacity-80" />
+              <DownloadIcon className="cursor-pointer hover:opacity-80 w-[24px] h-[24px]" />
             </button>
 
-            <button onClick={() => setIsUploadModalOpen(true)}>
-              <ExportIcon className="cursor-pointer hover:opacity-80" />
+            <button>
+              {isUploadingCsv ? (
+                <Loader2 className="animate-spin w-[21px] h-[21px] text-[#AFAFAF] cursor-default" />
+              ) : (
+                <ExportIcon
+                  onClick={() => fileInputRef.current?.click()}
+                  className="cursor-pointer hover:opacity-80 w-[21px] h-[21px]"
+                />
+              )}
             </button>
+
+            <input
+              type="file"
+              accept=".csv"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
           </div>
         </TabsList>
       )}
 
       <UploadCsvModal
-        open={isUploadModalOpen}
-        onOpenChange={setIsUploadModalOpen}
+        open={isUploadModalOpen && !isUploadingCsv}
+        onOpenChange={(open) => {
+          setIsUploadModalOpen(open);
+          if (!open) setUploadedFile(null);
+        }}
+        file={uploadedFile}
+        isUploadingCsv={isUploadingCsv}
+        setIsUploadingCsv={setIsUploadingCsv}
       />
     </>
   );

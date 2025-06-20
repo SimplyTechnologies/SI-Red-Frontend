@@ -11,7 +11,7 @@ interface Props {
   index: number;
   onChange: (index: number, updated: any) => void;
   row: any;
-  error?: string; // 👈 добавлено
+  error?: string;
 }
 
 export function LocationField({
@@ -50,6 +50,18 @@ export function LocationField({
     }
   };
 
+  const handleInputChange = (text: string) => {
+    setValue(text);
+
+    if (text.trim() === "") {
+      onChange(index, {
+        ...row,
+        combinedLocation: "",
+        coordinates: "",
+      });
+    }
+  };
+
   return (
     <LocationAutocomplete
       value={value}
@@ -59,7 +71,11 @@ export function LocationField({
       setValue={setValue}
       setLocation={() => {}}
       onSelect={handleSelectLocation}
+      onInputChange={handleInputChange} // 👈 добавлено
       error={error}
+      showLabel={false}
+      className="w-full"
+      inputClassName="h-[40px] text-sm"
     />
   );
 }

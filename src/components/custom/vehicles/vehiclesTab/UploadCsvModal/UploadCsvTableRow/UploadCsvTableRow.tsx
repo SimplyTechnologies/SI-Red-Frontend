@@ -5,7 +5,6 @@ import { useDebounce } from "use-debounce";
 import { useValidateMakeModel, useValidateVin } from "@/api/vehicle/vehicle";
 import { useEffect, useState } from "react";
 import usePlacesAutocomplete from "use-places-autocomplete";
-import { ConflictFieldWrapper } from "./ConflictFieldWrapper";
 import { EditableField } from "./EditableField";
 import { MakeModelField } from "./MakeModelField";
 import { VinField } from "./VinField";
@@ -14,26 +13,12 @@ import { LocationField } from "./LocationField";
 interface Props {
   row: ParsedVehicleUpload;
   index: number;
-  onChange: (index: number, updated: ParsedVehicleUpload) => void;
+  onChange: (
+    index: number,
+    updated: ParsedVehicleUpload,
+    include?: boolean
+  ) => void;
 }
-
-type FieldKey =
-  | "make"
-  | "model"
-  | "vin"
-  | "year"
-  | "combinedLocation"
-  | "coordinates";
-type FieldWithMismatch = "model" | "year";
-
-const fieldOrder = [
-  { key: "make", label: "Make" },
-  { key: "model", label: "Model" },
-  { key: "vin", label: "VIN" },
-  { key: "year", label: "Year" },
-  { key: "combinedLocation", label: "Location" },
-  { key: "coordinates", label: "Coordinates" },
-] as const;
 
 export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const [localMake, setLocalMake] = useState(row.make ?? "");
@@ -41,6 +26,9 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const [localVin, setLocalVin] = useState(row.vin);
   const [localYear, setLocalYear] = useState(row.year);
   const [vinChanged, setVinChanged] = useState(false);
+  const [MakeChanged, setMakeChanged] = useState(false); /////
+  const [ModelChanged, setModelChanged] = useState(false);
+  const [YearChanged, setYearChanged] = useState(false);
   const [localExclude, setLocalExclude] = useState(true);
 
   const [debouncedMake] = useDebounce(localMake, 500);
@@ -70,16 +58,21 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const shouldValidateVin =
     vinChanged &&
     debouncedVin.length === 17 &&
-    localMake.trim() !== "" &&
-    localModel.trim() !== "" &&
-    localYear?.trim() !== "";
+    MakeChanged &&
+    ModelChanged &&
+    YearChanged;
+  console.log("vinChanged", vinChanged);
+  console.log("debouncedVin.length", debouncedVin.length === 17);
+  console.log("localMake.trim()", localMake.trim() !== "");
+  console.log("localModel.trim()", localModel.trim() !== "");
+  console.log("localYear?.trim()", localYear?.trim() !== "");
 
   const { data: vinValidation, isFetching: isVinFetching } = useValidateVin(
     {
       vin: debouncedVin,
-      make: row.make && row.make === "" ? undefined : row.make,
-      model: row.model && row.model === "" ? undefined : row.model,
-      year: row.year && row.year === "" ? undefined : row.year,
+      make: row.make || "",
+      model: row.model || "",
+      year: row.year || "",
     },
     {
       query: {
@@ -88,11 +81,12 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
     }
   );
 
+  // console.log("vinValidation result:", vinValidation);
+
   useEffect(() => {
     if (vinValidation) {
       const updatedRow: ParsedVehicleUpload = {
         ...row,
-        mismatch: vinValidation.mismatch,
         error: vinValidation.error,
         vinExists: vinValidation.vinExists,
         make: row.make || vinValidation.make,
@@ -100,51 +94,58 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
         year: row.year || vinValidation.year,
       };
 
-      if (!row.make && vinValidation.make) {
-        setLocalMake(vinValidation.make);
-      }
-      if (!row.model && vinValidation.model) {
-        setLocalModel(vinValidation.model);
-      }
-      if (!row.year && vinValidation.year) {
-        setLocalYear(vinValidation.year);
-      }
+      if (!row.make && vinValidation.make) setLocalMake(vinValidation.make);
+      if (!row.model && vinValidation.model) setLocalModel(vinValidation.model);
+      if (!row.year && vinValidation.year) setLocalYear(vinValidation.year);
 
       onChange(index, updatedRow);
     }
   }, [vinValidation]);
 
   useEffect(() => {
-    if (row.vin !== localVin) {
-      onChange(index, { ...row, vin: localVin });
-    }
+    if (row.vin !== localVin) onChange(index, { ...row, vin: localVin });
   }, [localVin]);
 
   useEffect(() => {
-    if (row.make !== localMake) {
-      onChange(index, { ...row, make: localMake });
-    }
+    if (row.make !== localMake) onChange(index, { ...row, make: localMake });
   }, [localMake]);
 
   useEffect(() => {
-    if (row.model !== localModel) {
+    if (row.model !== localModel)
       onChange(index, { ...row, model: localModel });
-    }
   }, [localModel]);
 
   useEffect(() => {
-    if (row.year !== localYear) {
-      onChange(index, { ...row, year: localYear });
-    }
+    if (row.year !== localYear) onChange(index, { ...row, year: localYear });
   }, [localYear]);
+
+  useEffect(() => {
+    if (
+      (locationValue?.trim() || "") !== (row.combinedLocation?.trim() || "")
+    ) {
+      onChange(index, { ...row, combinedLocation: locationValue });
+    }
+  }, [locationValue]);
+
+  useEffect(() => {
+    if (row.combinedLocation && row.combinedLocation !== locationValue) {
+      setValue(row.combinedLocation, false);
+    }
+  }, [row.combinedLocation]);
 
   const isLocationEmpty = locationValue?.trim() === "";
   const isCoordinatesEmpty = row.coordinates?.trim() === "";
-
   const isMakeEmpty = localMake.trim() === "";
   const isModelEmpty = localModel.trim() === "";
   const isYearInvalid =
     localYear && (localYear.trim() === "" || !/^\d{4}$/.test(localYear.trim()));
+
+  const vinErrorText =
+    (localVin.length >= 0 && localVin.length < 17) || localVin.length > 17
+      ? "VIN must be exactly 17 characters long"
+      : row.vinExists
+      ? "VIN already exists"
+      : vinValidation?.error || "";
 
   const isValid =
     !isMakeEmpty &&
@@ -156,70 +157,71 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
     !vinValidation?.error &&
     !row.vinExists &&
     !isLocationEmpty &&
-    !isCoordinatesEmpty;
+    !isCoordinatesEmpty &&
+    vinErrorText === "";
 
-  const renderField = (field: FieldKey) => {
-    const mismatch = row.mismatch as Partial<
-      Record<FieldWithMismatch, { original: string; actual: string }>
-    >;
+  useEffect(() => {
+    onChange(index, row, isValid && localExclude);
+  }, [isValid, localExclude]);
 
-    if (mismatch?.[field as FieldWithMismatch]) {
-      const { original, actual } = mismatch[field as FieldWithMismatch]!;
-      return (
-        <ConflictFieldWrapper
-          original={original}
-          actual={actual}
-          selected={row[field]}
-          onSelect={(val: string | undefined) =>
-            onChange(index, { ...row, [field]: val })
-          }
-        />
-      );
-    }
-
-    if (field === "make") {
-      return (
+  return (
+    <TableRow>
+      <TableCell>
         <MakeModelField
           value={localMake}
-          onChange={setLocalMake}
+          onChange={(val) => {
+            setLocalMake(val);
+            setMakeChanged(true);
+          }}
           error={
             isMakeEmpty ? "Make is required" : makeModelValidation?.makeMsg
           }
           disabled={row.vinExists}
         />
-      );
-    }
-
-    if (field === "model") {
-      return (
+      </TableCell>
+      <TableCell>
         <MakeModelField
           value={localModel}
-          onChange={setLocalModel}
+          onChange={(val) => {
+            setLocalModel(val);
+            setModelChanged(true);
+          }}
           error={
             isModelEmpty ? "Model is required" : makeModelValidation?.modelMsg
           }
           disabled={row.vinExists}
         />
-      );
-    }
-
-    if (field === "vin") {
-      return (
+      </TableCell>
+      <TableCell>
         <VinField
           value={localVin}
           onChange={(val) => {
             setLocalVin(val);
             setVinChanged(true);
           }}
-          error={vinValidation?.error}
+          error={vinErrorText}
           isFetching={isVinFetching}
-          exists={row.vinExists ?? false}
         />
-      );
-    }
-
-    if (field === "combinedLocation") {
-      return (
+      </TableCell>
+      <TableCell>
+        <EditableField
+          value={localYear}
+          onChange={(val) => {
+            setLocalYear(val);
+            onChange(index, { ...row, year: val });
+            setYearChanged(true);
+          }}
+          error={
+            localYear?.trim() === ""
+              ? "Year is required"
+              : !/^\d{4}$/.test(localYear ? localYear : "")
+              ? "Year must be a 4-digit number"
+              : undefined
+          }
+          disabled={row.vinExists}
+        />
+      </TableCell>
+      <TableCell>
         <LocationField
           value={locationValue}
           ready={ready}
@@ -232,64 +234,22 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           row={row}
           error={isLocationEmpty ? "Location is required" : undefined}
         />
-      );
-    }
-
-    if (field === "coordinates") {
-      return (
+      </TableCell>
+      <TableCell>
         <EditableField
           value={row.coordinates}
           onChange={(val) => onChange(index, { ...row, coordinates: val })}
           error={isCoordinatesEmpty ? "Coordinates are required" : undefined}
         />
-      );
-    }
-
-    if (field === "year") {
-      return (
-        <EditableField
-          value={localYear}
-          onChange={(val) => {
-            setLocalYear(val);
-            onChange(index, { ...row, year: val });
-          }}
-          error={
-            localYear?.trim() === ""
-              ? "Year is required"
-              : !/^\d{4}$/.test(localYear ? localYear : "")
-              ? "Year must be a 4-digit number"
-              : undefined
-          }
-          disabled={row.vinExists}
-        />
-      );
-    }
-
-    return (
-      <EditableField
-        value={row[field]}
-        onChange={(val) => onChange(index, { ...row, [field]: val })}
-      />
-    );
-  };
-
-  return (
-    <TableRow>
-      {fieldOrder.map(({ key }) => (
-        <TableCell key={key}>{renderField(key)}</TableCell>
-      ))}
+      </TableCell>
       <TableCell className="text-center">
         <Switch
           checked={isValid && localExclude}
-          disabled={
-            !isValid &&
-            (!row.mismatch || Object.keys(row.mismatch).length === 0) &&
-            localExclude
-          }
+          disabled={!isValid && localExclude}
           onCheckedChange={(checked) => {
             setLocalExclude(checked);
+            onChange(index, row, checked);
           }}
-          className="bg-[#403C89]"
         />
       </TableCell>
     </TableRow>
