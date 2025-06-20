@@ -147,7 +147,7 @@ export default function UploadCsvModal({
                 <Button
                   variant="link"
                   onClick={setDefaultLocationForEmpty}
-                  className="text-[#534f95] hover:no-underline"
+                  className="text-[#534f95] text-[14px] font-semibold hover:no-underline"
                 >
                   Use Default for Empty Locations
                 </Button>
@@ -180,6 +180,7 @@ export default function UploadCsvModal({
               </ScrollArea>
               <div className="flex justify-end gap-2 mb-2">
                 <Button
+                  className="w-[200px] h-[48px] bg-[#403C89] text-white rounded-[8px] text-[14px] font-semibold leading-[140%]"
                   onClick={() => {
                     if (!rows) return;
 

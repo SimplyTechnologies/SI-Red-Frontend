@@ -58,14 +58,9 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const shouldValidateVin =
     vinChanged &&
     debouncedVin.length === 17 &&
-    MakeChanged &&
-    ModelChanged &&
-    YearChanged;
-  console.log("vinChanged", vinChanged);
-  console.log("debouncedVin.length", debouncedVin.length === 17);
-  console.log("localMake.trim()", localMake.trim() !== "");
-  console.log("localModel.trim()", localModel.trim() !== "");
-  console.log("localYear?.trim()", localYear?.trim() !== "");
+    !MakeChanged &&
+    !ModelChanged &&
+    !YearChanged;
 
   const { data: vinValidation, isFetching: isVinFetching } = useValidateVin(
     {
