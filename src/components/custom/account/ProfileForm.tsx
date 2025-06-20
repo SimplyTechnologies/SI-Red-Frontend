@@ -16,15 +16,14 @@ interface Props {
   errors: Partial<Record<keyof FormData, string>>;
 }
 
-export function ProfileForm({
-  formData,
-  isEditing,
-  onChange,
-  errors,
-  onBlur,
-}: Props) {
-  const inputClass =
-    "block h-[6vh] w-full p-2.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500";
+export function ProfileForm({ formData, isEditing, onChange, errors, onBlur }: Props) {
+  const baseInputClass =
+    "block h-[6vh] w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500";
+
+  const inputClass = isEditing
+    ? `${baseInputClass} text-gray-900`
+    : `${baseInputClass} text-text-muted`;
+    
   return (
     <>
       <div className="grid gap-6 md:grid-cols-2 w-[42vw]">
