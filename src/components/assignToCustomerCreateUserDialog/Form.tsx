@@ -116,13 +116,23 @@ export default function Form({
       : emailRef.current?.value.trim() || "";
 
     setErrors({});
-    onSubmit({
-      firstName,
-      lastName,
-      email: resolvedEmail,
-      phoneNumber,
-      documents,
-    });
+    /////
+    if (showUploadField) {
+      onSubmit({
+        firstName,
+        lastName,
+        email: resolvedEmail,
+        phoneNumber,
+        documents,
+      });
+    } else {
+      onSubmit({
+        firstName,
+        lastName,
+        email: resolvedEmail,
+        phoneNumber,
+      });
+    }
   };
 
   const isFormValid = () => {
@@ -134,10 +144,12 @@ export default function Form({
     ];
 
     const hasEmptyField = requiredFields.some((val) => !val);
-  const hasErrors = Object.keys(errors).some((key) => errors[key as keyof FormErrors]);
+    const hasErrors = Object.keys(errors).some(
+      (key) => errors[key as keyof FormErrors]
+    );
 
-  return !hasEmptyField && !hasErrors;
-};
+    return !hasEmptyField && !hasErrors;
+  };
 
   return (
     <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
