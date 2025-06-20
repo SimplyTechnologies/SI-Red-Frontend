@@ -76,7 +76,7 @@ export default function SidebarContent() {
               {isExpanded && (
                 <span className="text-sm text-text-muted">{label}</span>
               )}
-              {!isExpanded && <Tooltip label={label} />}
+              {!isExpanded && <Tooltip label={label} className="ml-8" />}
             </>
           )}
         </NavLink>
