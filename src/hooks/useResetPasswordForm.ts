@@ -5,6 +5,7 @@ import { passwordRules } from "@/constants/constants";
 import { useResetPassword } from "@/api/authentication/authentication";
 import { useAuthStore } from "@/store/authStore";
 import type { FormData } from "../components/custom/accountActivation/AccountActivationForm";
+import { validateActivationField } from "@/utils/validations/validateActivationField";
 
 export default function useResetPasswordForm() {
   const [searchParams] = useSearchParams();
@@ -20,6 +21,8 @@ export default function useResetPasswordForm() {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [hasTriedSubmit, setHasTriedSubmit] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [hasBlurredConfirmPassword, setHasBlurredConfirmPassword] =
+    useState(false);
 
   const resetPasswordMutation = useResetPassword({
     mutation: {
@@ -50,6 +53,17 @@ export default function useResetPasswordForm() {
     if (errors[id as keyof FormData]) {
       setErrors((prev) => ({ ...prev, [id]: undefined }));
     }
+  };
+
+  const handleBlurConfirmPassword = () => {
+    setHasBlurredConfirmPassword(true);
+
+    validateActivationField(
+      "confirmPassword",
+      formData.confirmPassword,
+      formData,
+      setErrors
+    );
   };
 
   const validate = (): boolean => {
@@ -112,7 +126,8 @@ export default function useResetPasswordForm() {
     },
     formData,
     handleChange,
-    errors
+    errors,
+    setErrors
   );
 
   return {
@@ -125,5 +140,7 @@ export default function useResetPasswordForm() {
     handleChange,
     handleValidateAndOpenDialog,
     handleResetConfirmed,
+    handleBlurConfirmPassword,
+    hasBlurredConfirmPassword
   };
 }

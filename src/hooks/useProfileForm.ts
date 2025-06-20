@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { useUpdateUser } from "@/api/user/user";
+import {
+  validateProfileField,
+  clearProfileFieldError,
+} from "@/utils/validations/validateProfileField";
 
 export function useProfileForm() {
   const {
@@ -23,7 +27,14 @@ export function useProfileForm() {
   >({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    clearProfileFieldError(name, setErrors);
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    validateProfileField(name, value, setErrors);
   };
 
   const handleCancel = () => {
@@ -56,16 +67,30 @@ export function useProfileForm() {
   });
 
   const handleSave = () => {
+    let hasError = false;
+    Object.entries(formData).forEach(([name, value]) => {
+      validateProfileField(name, value, setErrors);
+      if (!value.trim()) hasError = true;
+    });
+
+    if (Object.keys(errors).length > 0 || hasError) return;
+
     updateUser({ data: formData });
   };
+
+  const isSaveDisabled =
+    Object.values(errors).length > 0 ||
+    Object.values(formData).some((val) => !val.trim());
 
   return {
     formData,
     errors,
     isEditing,
     handleChange,
+    handleBlur,
     handleSave,
     handleCancel,
     setIsEditing,
+    isSaveDisabled,
   };
 }
