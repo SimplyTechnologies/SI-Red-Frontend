@@ -5,6 +5,7 @@ import { VehicleFormError } from "./VehicleFormError";
 import { useVehicleStore } from "@/store/useVehicleModalStore";
 
 interface Props {
+  isReverseGeocoding: boolean;
   value: string;
   ready: boolean;
   status: string;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function LocationAutocomplete({
+  isReverseGeocoding,
   value,
   ready,
   status,
@@ -38,7 +40,7 @@ export default function LocationAutocomplete({
       </Label>
       <Input
         id="location"
-        value={value}
+        value={isReverseGeocoding ? "Loading address..." : value}
         onChange={(e) => {
           setLocationDescription(e.target.value);
           setValue(e.target.value);

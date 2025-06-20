@@ -1,4 +1,5 @@
 import { useVehicleStore } from "@/store/useVehicleModalStore";
+import { useVehiclesStore } from "@/store/useVehiclesStore";
 import { Button } from "@/components/ui/button";
 import { useVehicleFormLogic } from "@/hooks/useVehicleFormLogic";
 import VehicleFormGeneral from "./VehicleFormGeneral";
@@ -7,6 +8,8 @@ import VinField from "./VinField";
 import LocationAutocomplete from "./LocationAutocomplete";
 import { VEHICLE_DIALOG_TITLE } from "@/constants/constants";
 import { useParams } from "react-router-dom";
+import VehicleImageUploader from "../vehicles/VehicleImageUploader";
+import { useReverseGeocode } from "@/hooks/useReverseGeocode";
 
 interface Props {
   onSuccess: () => void;
@@ -26,6 +29,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     setYear,
     setVin,
     setLocation,
+    setLocationDescription,
     street,
     city,
     state,
@@ -37,7 +41,10 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     setCountry,
     setZip,
     fetchModels,
+    prefillLatLng,
   } = useVehicleStore();
+
+  const { selectedVehicle } = useVehiclesStore();
 
   const {
     vinError,
@@ -57,6 +64,20 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     isFormValid
   } = useVehicleFormLogic(onSuccess);
   const { id } = useParams();
+
+  const { isLoading: isReverseGeocoding } = useReverseGeocode(
+    prefillLatLng,
+    (data) => {
+      setStreet(data.components.street);
+      setCity(data.components.city);
+      setState(data.components.state);
+      setCountry(data.components.country);
+      setZip(data.components.zip);
+      setLocation(data.address);
+      setLocationDescription(data.address);
+      setValue(data.address);
+    }
+  );
 
   return (
     <form
@@ -104,6 +125,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
       />
 
       <LocationAutocomplete
+        isReverseGeocoding={isReverseGeocoding}
         value={value}
         ready={ready}
         status={status}
@@ -134,6 +156,8 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
           zipcode: fieldErrors.zipcode,
         }}
       />
+
+      <VehicleImageUploader existingImages={selectedVehicle?.images} />
 
       <div className="col-span-2">
         <Button
