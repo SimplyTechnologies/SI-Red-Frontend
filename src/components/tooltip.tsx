@@ -4,7 +4,7 @@ interface SimpleTooltipProps {
   label: string;
   side?: "top" | "bottom" | "left" | "right";
   className?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?: "default" | "reversed";
 }
 
