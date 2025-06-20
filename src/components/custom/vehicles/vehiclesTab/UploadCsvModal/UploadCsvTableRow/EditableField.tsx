@@ -5,15 +5,23 @@ interface Props {
   onChange: (value: string) => void;
   error?: string;
   disabled?: boolean;
+  placeholder?: string;
 }
 
-export function EditableField({ value, onChange, error, disabled }: Props) {
+export function EditableField({
+  value,
+  onChange,
+  error,
+  disabled,
+  placeholder,
+}: Props) {
   return (
     <div>
       <Input
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
+        placeholder={placeholder}
       />
       <p
         className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${

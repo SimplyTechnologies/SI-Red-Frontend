@@ -5,16 +5,23 @@ interface Props {
   onChange: (val: string) => void;
   error?: string;
   disabled?: boolean;
+  placeholder?: string;
 }
 
-export function MakeModelField({ value, onChange, error, disabled }: Props) {
+export function MakeModelField({
+  value,
+  onChange,
+  error,
+  disabled,
+  placeholder,
+}: Props) {
   return (
     <div>
       <Input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={error ? "border-red-500" : ""}
         disabled={disabled}
+        placeholder={placeholder}
       />
       <p
         className={`text-xs text-red-500 mt-1 transition-opacity duration-200 h-[16px] ${

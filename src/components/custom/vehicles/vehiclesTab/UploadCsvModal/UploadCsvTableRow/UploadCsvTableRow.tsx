@@ -30,6 +30,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const [ModelChanged, setModelChanged] = useState(false);
   const [YearChanged, setYearChanged] = useState(false);
   const [localExclude, setLocalExclude] = useState(true);
+  const [shouldValidateVin, setShouldValidateVin] = useState(false);
 
   const [debouncedMake] = useDebounce(localMake, 500);
   const [debouncedModel] = useDebounce(localModel, 500);
@@ -55,12 +56,18 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
     }
   );
 
-  const shouldValidateVin =
-    vinChanged &&
-    debouncedVin.length === 17 &&
-    !MakeChanged &&
-    !ModelChanged &&
-    !YearChanged;
+  useEffect(() => {
+    setShouldValidateVin(
+      localVin.length === 17 &&
+        localMake === "" &&
+        localModel === "" &&
+        localYear === ""
+    );
+  }, [localMake, localModel, localYear]);
+
+  useEffect(() => {
+    setShouldValidateVin(localVin.length === 17);
+  }, [localVin]);
 
   const { data: vinValidation, isFetching: isVinFetching } = useValidateVin(
     {
@@ -170,6 +177,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
             isMakeEmpty ? "Make is required" : makeModelValidation?.makeMsg
           }
           disabled={row.vinExists}
+          placeholder="Make"
         />
       </TableCell>
       <TableCell>
@@ -183,6 +191,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
             isModelEmpty ? "Model is required" : makeModelValidation?.modelMsg
           }
           disabled={row.vinExists}
+          placeholder="Model"
         />
       </TableCell>
       <TableCell>
@@ -194,6 +203,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           }}
           error={vinErrorText}
           isFetching={isVinFetching}
+          placeholder="VIN"
         />
       </TableCell>
       <TableCell>
@@ -212,6 +222,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
               : undefined
           }
           disabled={row.vinExists}
+          placeholder="Year"
         />
       </TableCell>
       <TableCell>
@@ -233,6 +244,7 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           value={row.coordinates}
           onChange={(val) => onChange(index, { ...row, coordinates: val })}
           error={isCoordinatesEmpty ? "Coordinates are required" : undefined}
+          placeholder="Coordinates"
         />
       </TableCell>
       <TableCell className="text-center">
