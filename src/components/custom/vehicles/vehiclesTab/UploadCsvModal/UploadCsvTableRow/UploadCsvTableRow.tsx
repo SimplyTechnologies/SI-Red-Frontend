@@ -25,10 +25,6 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
   const [localModel, setLocalModel] = useState(row.model ?? "");
   const [localVin, setLocalVin] = useState(row.vin);
   const [localYear, setLocalYear] = useState(row.year);
-  const [vinChanged, setVinChanged] = useState(false);
-  const [MakeChanged, setMakeChanged] = useState(false);
-  const [ModelChanged, setModelChanged] = useState(false);
-  const [YearChanged, setYearChanged] = useState(false);
   const [localExclude, setLocalExclude] = useState(true);
   const [shouldValidateVin, setShouldValidateVin] = useState(false);
 
@@ -171,7 +167,6 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           value={localMake}
           onChange={(val) => {
             setLocalMake(val);
-            setMakeChanged(true);
           }}
           error={
             isMakeEmpty ? "Make is required" : makeModelValidation?.makeMsg
@@ -185,7 +180,6 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           value={localModel}
           onChange={(val) => {
             setLocalModel(val);
-            setModelChanged(true);
           }}
           error={
             isModelEmpty ? "Model is required" : makeModelValidation?.modelMsg
@@ -199,7 +193,6 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           value={localVin}
           onChange={(val) => {
             setLocalVin(val);
-            setVinChanged(true);
           }}
           error={vinErrorText}
           isFetching={isVinFetching}
@@ -212,7 +205,6 @@ export function UploadCsvTableRow({ row, index, onChange }: Props) {
           onChange={(val) => {
             setLocalYear(val);
             onChange(index, { ...row, year: val });
-            setYearChanged(true);
           }}
           error={
             localYear?.trim() === ""

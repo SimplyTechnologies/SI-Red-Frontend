@@ -2,11 +2,8 @@ export function clearFieldError(
   name: string,
   setFieldErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>
 ) {
-  console.log(name);
   setFieldErrors((prev) => {
-    console.log("prev >>>", prev);
     const { [name]: removed, ...rest } = prev;
-    console.log("rest>>>",rest);
     return rest;
   });
 }
