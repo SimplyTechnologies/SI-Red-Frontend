@@ -5,13 +5,15 @@ import CustomerFormDialog from "@/components/assignToCustomerCreateUserDialog/Fo
 import CustomerForm from "@/components/assignToCustomerCreateUserDialog/Form";
 import { toast } from "@/hooks/use-toast";
 import { useVehiclesStore } from "@/store/useVehiclesStore";
-import { useAssignCustomerWithDataMutation } from "@/api/vehicle/vehicle.custom";
+import { useAssignCustomerWithDataMutation } from "@/hooks/vehicle.custom";
 import { useQueryClient } from "@tanstack/react-query";
 import { getGetAllCustomersQueryKey } from "@/api/customer/customer"; // adjust path if needed
 
 export default function AssignCustomerSection() {
   const [open, setOpen] = useState(false);
-  const [externalErrors, setExternalErrors] = useState<Record<string, string>>({});
+  const [externalErrors, setExternalErrors] = useState<Record<string, string>>(
+    {}
+  );
   const { id = "" } = useParams<{ id: string }>();
   const setSelectedVehicle = useVehiclesStore((s) => s.setSelectedVehicle);
   const queryClient = useQueryClient();
@@ -29,7 +31,11 @@ export default function AssignCustomerSection() {
         Assign to Customer
       </Button>
 
-      <CustomerFormDialog open={open} onOpenChange={setOpen} title="Assign to Customer">
+      <CustomerFormDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Assign to Customer"
+      >
         <CustomerForm
           submitLabel="Assign"
           onSubmit={(values) => {
@@ -49,9 +55,9 @@ export default function AssignCustomerSection() {
               { id, data: formData },
               {
                 onSuccess: async (data) => {
-                   queryClient.invalidateQueries({
-                queryKey: getGetAllCustomersQueryKey(),
-              });
+                  queryClient.invalidateQueries({
+                    queryKey: getGetAllCustomersQueryKey(),
+                  });
 
                   const message =
                     data?.message || "Vehicle has been assigned successfully.";
