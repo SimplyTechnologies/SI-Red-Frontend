@@ -56,6 +56,8 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
     status,
     data,
     setValue,
+    setFieldErrors,
+    isFormValid
   } = useVehicleFormLogic(onSuccess);
   const { id } = useParams();
 
@@ -106,6 +108,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         errorModel={fieldErrors.model_id}
         errorMake={fieldErrors.make_id}
         errorYear={fieldErrors.year}
+        setFieldErrors={setFieldErrors}
       />
 
       <VinField
@@ -114,6 +117,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         error={vinError || fieldErrors.vin}
         onChange={handleVinChange}
         setVin={setVin}
+        setFieldErrors={setFieldErrors}
       />
 
       <LocationAutocomplete
@@ -139,6 +143,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
         setState={setState}
         setCountry={setCountry}
         setZip={setZip}
+        setFieldErrors={setFieldErrors}
         errors={{
           street: fieldErrors.street,
           city: fieldErrors.city,
@@ -151,6 +156,7 @@ export default function VehicleFormBody({ onSuccess, title }: Props) {
       <div className="col-span-2">
         <Button
           type="submit"
+          disabled={!isFormValid()}
           className="w-full h-[48px] bg-[#403C89] text-white rounded-[8px] text-[14px] font-semibold leading-[140%]"
         >
           Submit
