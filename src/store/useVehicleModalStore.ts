@@ -19,6 +19,7 @@ interface VehicleState {
   country: string;
   zip: string;
   isAddNewVehicleModalOpened: boolean;
+  prefillLatLng: { lat: number; lng: number } | null;
 
   // Data lists
   makes: MakeInfo[];
@@ -42,6 +43,8 @@ interface VehicleState {
   setCountry: (country: string) => void;
   setZip: (zip: string) => void;
   setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened: boolean) => void;
+  prefillLatLngLocation: (lat: number, lng: number) => void;
+  clearPrefillLatLng: () => void;
 
   // Async actions
   fetchMakes: () => Promise<void>;
@@ -63,6 +66,7 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   country: "",
   zip: "",
   isAddNewVehicleModalOpened: false,
+  prefillLatLng: null,
 
   // Data lists
   makes: [],
@@ -86,20 +90,30 @@ export const useVehicleStore = create<VehicleState>((set) => ({
   setCountry: (country) => set({ country }),
   setZip: (zip) => set({ zip }),
   setAddNewVehicleModalOpen: (isAddNewVehicleModalOpened) => {
-    set({
-      make: null,
-      model: null,
-      year: "",
-      vin: "",
-      location: "",
-      street: "",
-      city: "",
-      state: "",
-      country: "",
-      zip: "",
-    });
+    if (!isAddNewVehicleModalOpened) {
+      set({
+        make: null,
+        model: null,
+        year: "",
+        vin: "",
+        location: "",
+        street: "",
+        city: "",
+        state: "",
+        country: "",
+        zip: "",
+        prefillLatLng: null
+      });
+    }
+
     set({ isAddNewVehicleModalOpened });
   },
+  prefillLatLngLocation: (lat, lng) =>
+    set({
+      prefillLatLng: { lat, lng },
+      location: "",
+    }),
+  clearPrefillLatLng: () => set({ prefillLatLng: null }),
 
   // Fetch list of makes
   fetchMakes: async () => {
